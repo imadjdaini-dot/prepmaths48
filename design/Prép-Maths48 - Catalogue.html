@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Catalogue des cours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f2ed; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482; --red:#cf5b54;
+  --r-lg:20px; --r-md:15px; --r-sm:11px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --sidebar-w:252px;
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15.5px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.13; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:16px; height:16px; } .icon.lg{ width:24px; height:24px; }
+.btn{ display:inline-flex; align-items:center; gap:8px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:14.5px; cursor:pointer; padding:11px 18px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 16px -7px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); } .btn-ghost:hover{ border-color:#d2d3cb; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); }
+.btn-sm{ padding:8px 14px; font-size:13.5px; } .btn-block{ width:100%; }
+.tag{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; padding:3px 8px; border-radius:6px; background:var(--line-2); color:var(--ink-2); }
+.bar{ height:7px; border-radius:6px; background:var(--line); overflow:hidden; }
+.bar > i{ display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+.bar.green > i{ background:linear-gradient(90deg,var(--green),#28a073); }
+.bar.cyan > i{ background:linear-gradient(90deg,var(--cyan),#1aa3b5); }
+
+/* layout */
+.app{ display:grid; grid-template-columns:var(--sidebar-w) 1fr; min-height:100vh; }
+.sidebar{ background:var(--navy); color:#aebbd0; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; padding:20px 16px; }
+.sb-logo{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:700; font-size:19px; color:#fff; padding:6px 8px 18px; }
+.sb-logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--accent); color:var(--accent-ink); padding:4px 9px; border-radius:9px; font-size:14px; }
+.sb-group{ font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#5d6f8a; padding:14px 10px 7px; }
+.nav-item{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; font-weight:500; font-size:14.5px; cursor:pointer; transition:.14s; position:relative; color:inherit; }
+.nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+.nav-item.active{ background:rgba(255,255,255,.09); color:#fff; }
+.nav-item.active::before{ content:""; position:absolute; left:-16px; top:9px; bottom:9px; width:3px; border-radius:0 3px 3px 0; background:var(--accent); }
+.nav-item .badge{ margin-left:auto; font-family:var(--font-mono); font-size:10px; background:var(--accent); color:var(--accent-ink); padding:1px 6px; border-radius:20px; }
+.nav-item .lockmini{ margin-left:auto; opacity:.5; }
+.sb-spacer{ flex:1; }
+.sb-user{ display:flex; align-items:center; gap:11px; padding:12px; border-radius:14px; background:rgba(255,255,255,.05); margin-top:8px; }
+.sb-user .av{ width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#3a4f70,#243a5c); display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; color:#cdd8e8; font-size:13px; flex:0 0 auto; }
+.sb-user .nm{ font-size:13.5px; line-height:1.2; min-width:0; }
+.sb-user .nm b{ color:#fff; display:block; font-family:var(--font-body); }
+.sb-user .nm span{ font-size:11.5px; color:#7e90ac; }
+
+.main{ min-width:0; display:flex; flex-direction:column; }
+.topbar{ position:sticky; top:0; z-index:30; background:color-mix(in srgb,var(--bg) 85%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; padding:13px 30px; }
+.search{ flex:1; max-width:440px; display:flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--line); border-radius:11px; padding:9px 14px; color:var(--muted); font-size:14px; }
+.search input{ border:0; background:none; outline:none; flex:1; font-family:var(--font-body); font-size:14px; color:var(--ink); }
+.search kbd{ font-family:var(--font-mono); font-size:10px; border:1px solid var(--line); border-radius:5px; padding:1px 6px; color:var(--muted); }
+.tb-actions{ margin-left:auto; display:flex; align-items:center; gap:10px; }
+.iconbtn{ width:40px; height:40px; border-radius:11px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; color:var(--ink-2); cursor:pointer; transition:.14s; position:relative; }
+.iconbtn:hover{ border-color:#d2d3cb; color:var(--ink); }
+.iconbtn .dot{ position:absolute; top:9px; right:10px; width:7px; height:7px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); }
+.tb-av{ width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#cfd6e0,#aeb8c6); }
+
+.content{ padding:30px; max-width:1340px; width:100%; margin:0 auto; }
+
+/* page head */
+.pagehead{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-bottom:22px; }
+.pagehead h1{ font-size:30px; letter-spacing:-.03em; }
+.pagehead .sub{ color:var(--muted); margin-top:6px; }
+.pagehead .sub b{ color:var(--ink); }
+.sort{ display:flex; align-items:center; gap:10px; }
+.sort .sel{ display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:9px 13px; cursor:pointer; }
+.view-toggle{ display:flex; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:3px; }
+.view-toggle .v{ width:34px; height:30px; border-radius:7px; display:grid; place-items:center; color:var(--muted); cursor:pointer; }
+.view-toggle .v.on{ background:var(--navy); color:#fff; }
+
+/* filters */
+.filters{ display:flex; gap:9px; flex-wrap:wrap; margin-bottom:14px; }
+.filter{ display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:600; padding:9px 15px; border-radius:100px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); cursor:pointer; transition:.16s; }
+.filter:hover{ border-color:#d2d3cb; }
+.filter.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.filter .ct{ font-family:var(--font-mono); font-size:10px; background:var(--line-2); color:var(--ink-2); padding:1px 6px; border-radius:20px; }
+.filter.active .ct{ background:rgba(255,255,255,.18); color:#fff; }
+.filter.cat-bac.active{ background:var(--navy); }
+.filter.cat-concours.active{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+.filter.cat-concours.active .ct{ background:rgba(58,41,6,.16); color:var(--accent-ink); }
+.subfilters{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; align-items:center; }
+.chip2{ font-size:13px; font-weight:600; padding:6px 12px; border-radius:9px; border:1px solid var(--line); background:var(--surface); color:var(--muted); cursor:pointer; transition:.14s; }
+.chip2:hover{ color:var(--ink); } .chip2.on{ background:var(--accent-soft); color:var(--accent-2); border-color:color-mix(in srgb,var(--accent) 30%,var(--line)); }
+.subfilters .lab{ font-family:var(--font-mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-right:4px; }
+.result-count{ font-size:13.5px; color:var(--muted); margin-bottom:18px; }
+.result-count b{ color:var(--ink); }
+
+/* grid */
+.course-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.ccard{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); overflow:hidden; transition:.22s; cursor:pointer; display:flex; flex-direction:column; }
+.ccard:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:#dcddd4; }
+.ccard .cthumb{ height:150px; position:relative; background:linear-gradient(135deg,var(--navy-2),var(--navy-3)); overflow:hidden; }
+.ccard .cthumb::after{ content:""; position:absolute; inset:0; opacity:.55; background:radial-gradient(420px 160px at 22% 0%, color-mix(in srgb,var(--cyan) 42%, transparent), transparent 60%); }
+.ccard .cthumb .glyph{ position:absolute; right:16px; bottom:8px; font-family:var(--font-mono); font-size:48px; font-weight:700; color:rgba(255,255,255,.13); }
+.ccard .cthumb .lvl{ position:absolute; left:14px; top:14px; font-family:var(--font-mono); font-size:10px; padding:5px 9px; border-radius:7px; }
+.ccard .cthumb .fav{ position:absolute; right:12px; top:12px; width:30px; height:30px; border-radius:9px; background:rgba(0,0,0,.3); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.2); display:grid; place-items:center; color:#fff; z-index:2; }
+.ccard .cthumb .fav.on{ color:var(--accent); }
+.ccard .cthumb .badge-new{ position:absolute; left:14px; bottom:12px; background:var(--green); color:#fff; font-size:11px; font-weight:700; padding:3px 9px; border-radius:7px; }
+.ccard .cbody{ padding:17px; flex:1; display:flex; flex-direction:column; }
+.ccard .cbody .ctop{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.ccard .cbody h3{ font-size:17.5px; margin:0 0 6px; }
+.ccard .cbody .cdesc{ color:var(--muted); font-size:13.5px; margin:0; flex:1; }
+.cmeta{ display:flex; gap:14px; font-size:12.5px; color:var(--muted); margin:13px 0 0; flex-wrap:wrap; }
+.cmeta .mi{ display:flex; align-items:center; gap:6px; }
+.diff{ display:inline-flex; gap:3px; align-items:center; }
+.diff i{ width:7px; height:7px; border-radius:50%; background:var(--line); }
+.diff i.on{ background:var(--accent); }
+.cfoot{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:14px; margin-top:14px; border-top:1px solid var(--line-2); }
+.cfoot .prog{ flex:1; min-width:0; }
+.cfoot .prog .pl{ font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-bottom:5px; display:flex; justify-content:space-between; }
+.cfoot .start{ font-family:var(--font-mono); font-size:11px; color:var(--muted); }
+.lvl.sm{ background:color-mix(in srgb,var(--cyan) 16%,transparent); color:#1796a6; }
+.lvl.med{ background:color-mix(in srgb,var(--accent) 18%,transparent); color:var(--accent-2); }
+.lvl.svt{ background:color-mix(in srgb,var(--green) 16%,transparent); color:#1c8f63; }
+.lvl.eng{ background:rgba(255,255,255,.16); color:#fff; }
+
+.empty{ display:none; text-align:center; padding:60px 20px; color:var(--muted); }
+.empty.show{ display:block; }
+
+/* concours banner */
+.cc-banner{ margin-top:34px; background:linear-gradient(135deg,var(--navy),var(--navy-2)); color:#e9eef7; border-radius:var(--r-lg); padding:30px 32px; display:flex; align-items:center; gap:24px; position:relative; overflow:hidden; flex-wrap:wrap; }
+.cc-banner::after{ content:""; position:absolute; inset:0; background:radial-gradient(500px 240px at 100% 0%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%); }
+.cc-banner .ci{ position:relative; z-index:1; flex:1; min-width:260px; }
+.cc-banner .lbl{ font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; color:var(--accent); }
+.cc-banner h2{ color:#fff; font-size:24px; margin:7px 0 6px; }
+.cc-banner p{ margin:0; color:#9fb0c9; font-size:14.5px; max-width:520px; }
+.cc-banner .btn{ position:relative; z-index:1; }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:1180px){ .course-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:960px){
+  :root{ --sidebar-w:74px; }
+  .sb-logo span,.sb-group,.nav-item span,.nav-item .badge,.nav-item .lockmini,.sb-user .nm{ display:none; }
+  .sb-logo,.nav-item,.sb-user{ justify-content:center; }
+}
+@media (max-width:760px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ position:fixed; bottom:0; top:auto; left:0; right:0; height:auto; flex-direction:row; z-index:50; padding:8px; gap:4px; }
+  .sb-logo,.sb-group,.sb-spacer,.sb-user{ display:none; }
+  .sidebar .nav-list{ display:flex; gap:4px; width:100%; justify-content:space-around; }
+  .nav-item{ flex-direction:column; gap:3px; font-size:10px; padding:7px 4px; } .nav-item span{ display:block; } .nav-item.active::before{ display:none; }
+  .search{ display:none; }
+  .course-grid{ grid-template-columns:1fr; }
+  .content{ padding:18px 16px 90px; }
+  #tweaks{ left:12px; right:12px; width:auto; bottom:80px; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3z"/><path d="M5 4v16"/><path d="M19 17H8a3 3 0 0 0-3 3"/></symbol>
+  <symbol id="ic-route" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="ic-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.5L7.5 21l4.5-2.5L16.5 21 15 13.5"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.7 2.3-2.7 4"/><path d="M12 17.5h.01"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18 6l-1.8 1.8M7.8 16.2L6 18M18 18l-1.8-1.8M7.8 7.8L6 6"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-bookmark" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></symbol>
+  <symbol id="ic-bm-fill" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-sort" viewBox="0 0 24 24"><path d="M7 5v14M7 19l-3-3M7 5l3 3M17 19V5M17 5l3 3M17 19l-3-3"/></symbol>
+  <symbol id="ic-chev-d" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="ic-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="ic-grid2" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo"><span class="mk">48</span><span>Prép-Maths</span></div>
+    <div class="sb-group">Apprendre</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-home"/></svg><span>Tableau de bord</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-book"/></svg><span>Mes cours</span><span class="badge">3</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-route"/></svg><span>Mon parcours</span></a>
+      <a class="nav-item active"><svg class="icon"><use href="#ic-grid"/></svg><span>Catalogue</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-award"/></svg><span>Concours</span></a>
+    </nav>
+    <div class="sb-group">Ressources</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-file"/></svg><span>PDF & fiches</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-help"/></svg><span>Quiz</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-clock"/></svg><span>Mode examen</span><svg class="icon sm lockmini"><use href="#ic-lock"/></svg></a>
+    </nav>
+    <div class="sb-spacer"></div>
+    <a class="nav-item"><svg class="icon"><use href="#ic-settings"/></svg><span>Paramètres</span></a>
+    <div class="sb-user"><div class="av">YA</div><div class="nm"><b>Yasmine A.</b><span>Niveau 7 · Intermédiaire</span></div></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="search"><svg class="icon sm"><use href="#ic-search"/></svg><input id="searchInput" placeholder="Rechercher un cours, un chapitre…"><kbd>⌘K</kbd></div>
+      <div class="tb-actions">
+        <div class="iconbtn"><svg class="icon"><use href="#ic-bell"/></svg><span class="dot"></span></div>
+        <div class="tb-av"></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="pagehead">
+        <div>
+          <h1>Catalogue des cours</h1>
+          <div class="sub">Explore <b>48 cours</b> du Bac et des concours, filtrés par filière. <span class="mono" style="color:var(--accent-2)">Lqra dyalek kaml f blasa wahda.</span></div>
+        </div>
+        <div class="sort">
+          <div class="sel"><svg class="icon sm"><use href="#ic-sort"/></svg> Populaires <svg class="icon sm"><use href="#ic-chev-d"/></svg></div>
+          <div class="view-toggle"><span class="v on"><svg class="icon sm"><use href="#ic-grid2"/></svg></span><span class="v"><svg class="icon sm"><use href="#ic-list"/></svg></span></div>
+        </div>
+      </div>
+
+      <!-- main filters -->
+      <div class="filters" id="filters">
+        <button class="filter active" data-f="all">Tous <span class="ct">48</span></button>
+        <button class="filter cat-bac" data-f="sm">Bac Sciences Maths <span class="ct">14</span></button>
+        <button class="filter cat-bac" data-f="pc">Bac PC <span class="ct">11</span></button>
+        <button class="filter cat-bac" data-f="svt">Bac SVT <span class="ct">9</span></button>
+        <button class="filter cat-concours" data-f="med">Médecine <span class="ct">7</span></button>
+        <button class="filter cat-concours" data-f="ensa">ENSA / ENSAM <span class="ct">5</span></button>
+        <button class="filter cat-concours" data-f="encg">ENCG / TAFEM <span class="ct">2</span></button>
+      </div>
+      <!-- sub filters -->
+      <div class="subfilters">
+        <span class="lab">Difficulté</span>
+        <button class="chip2" data-d="1">Débutant</button>
+        <button class="chip2" data-d="2">Intermédiaire</button>
+        <button class="chip2" data-d="3">Avancé</button>
+        <span style="width:1px;height:22px;background:var(--line);margin:0 6px;"></span>
+        <span class="lab">État</span>
+        <button class="chip2" data-s="progress">En cours</button>
+        <button class="chip2" data-s="new">Nouveau</button>
+      </div>
+
+      <div class="result-count"><b id="rc">48</b> cours · filière : <b id="rf">Toutes</b></div>
+
+      <!-- grid -->
+      <div class="course-grid" id="grid">
+        <!-- SM -->
+        <article class="ccard" data-cat="sm" data-diff="2" data-state="progress">
+          <div class="cthumb"><span class="lvl sm">2ᵉ BAC · SM</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">lim</span></div>
+          <div class="cbody">
+            <h3>Limites & continuité</h3>
+            <p class="cdesc">Le socle de l'analyse, expliqué simplement avec la Méthode 48.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 14 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 16 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>En cours</span><span>64%</span></div><div class="bar"><i style="width:64%"></i></div></div><a class="btn btn-dark btn-sm">Continuer</a></div>
+          </div>
+        </article>
+
+        <article class="ccard" data-cat="sm" data-diff="3" data-state="new">
+          <div class="cthumb"><span class="lvl sm">2ᵉ BAC · SM</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">∮</span><span class="badge-new">Nouveau</span></div>
+          <div class="cbody">
+            <h3>Intégrales & primitives</h3>
+            <p class="cdesc">Du calcul d'aire aux techniques d'intégration par parties.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 12 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 13 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+
+        <article class="ccard" data-cat="sm" data-diff="2" data-state="done">
+          <div class="cthumb"><span class="lvl sm">2ᵉ BAC · SM</span><span class="fav on"><svg class="icon sm"><use href="#ic-bm-fill"/></svg></span><span class="glyph">d/dx</span></div>
+          <div class="cbody">
+            <h3>Dérivation</h3>
+            <p class="cdesc">Nombre dérivé, fonctions usuelles, tangentes et variations.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 10 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 11 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span style="color:var(--green)">Validé</span><span>100%</span></div><div class="bar green"><i style="width:100%"></i></div></div><a class="btn btn-ghost btn-sm">Revoir</a></div>
+          </div>
+        </article>
+
+        <!-- PC -->
+        <article class="ccard" data-cat="pc" data-diff="2" data-state="progress">
+          <div class="cthumb"><span class="lvl med" style="background:rgba(255,255,255,.16);color:#fff;">2ᵉ BAC · PC</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">Σ</span></div>
+          <div class="cbody">
+            <h3>Suites numériques</h3>
+            <p class="cdesc">Récurrence, convergence et raisonnement par récurrence.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 9 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 8 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>En cours</span><span>40%</span></div><div class="bar"><i style="width:40%"></i></div></div><a class="btn btn-dark btn-sm">Continuer</a></div>
+          </div>
+        </article>
+
+        <article class="ccard" data-cat="pc" data-diff="1" data-state="new">
+          <div class="cthumb"><span class="lvl med" style="background:rgba(255,255,255,.16);color:#fff;">2ᵉ BAC · PC</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">log</span></div>
+          <div class="cbody">
+            <h3>Fonction logarithme</h3>
+            <p class="cdesc">Propriétés, équations et études de fonctions ln.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 8 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 9 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+
+        <!-- SVT -->
+        <article class="ccard" data-cat="svt" data-diff="1" data-state="progress">
+          <div class="cthumb"><span class="lvl svt">2ᵉ BAC · SVT</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">P(x)</span></div>
+          <div class="cbody">
+            <h3>Probabilités</h3>
+            <p class="cdesc">Lois de probabilité, variables aléatoires et espérance.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 7 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 7 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>En cours</span><span>22%</span></div><div class="bar"><i style="width:22%"></i></div></div><a class="btn btn-dark btn-sm">Continuer</a></div>
+          </div>
+        </article>
+
+        <!-- Médecine -->
+        <article class="ccard" data-cat="med" data-diff="4" data-state="new">
+          <div class="cthumb"><span class="lvl med">MÉDECINE</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">QCM</span><span class="badge-new">Concours</span></div>
+          <div class="cbody">
+            <h3>Probabilités — QCM concours</h3>
+            <p class="cdesc">Le chapitre le plus tombé, en QCM chronométrés et corrigés.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 9 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 12 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+
+        <article class="ccard" data-cat="med" data-diff="3" data-state="progress">
+          <div class="cthumb"><span class="lvl med">MÉDECINE</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">∫f</span></div>
+          <div class="cbody">
+            <h3>Analyse pour le concours</h3>
+            <p class="cdesc">Méthodes rapides : limites, dérivées, intégrales en vitesse.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 13 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 15 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>En cours</span><span>15%</span></div><div class="bar"><i style="width:15%"></i></div></div><a class="btn btn-dark btn-sm">Continuer</a></div>
+          </div>
+        </article>
+
+        <!-- ENSA -->
+        <article class="ccard" data-cat="ensa" data-diff="3" data-state="new">
+          <div class="cthumb"><span class="lvl eng">ENSA / ENSAM</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">z</span><span class="badge-new">Concours</span></div>
+          <div class="cbody">
+            <h3>Nombres complexes — vitesse</h3>
+            <p class="cdesc">Méthodes rapides pour gagner du temps le jour J.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 11 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 9 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+
+        <article class="ccard" data-cat="ensa" data-diff="4" data-state="new">
+          <div class="cthumb"><span class="lvl eng">ENSA / ENSAM</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">∇</span></div>
+          <div class="cbody">
+            <h3>Logique & raisonnement</h3>
+            <p class="cdesc">Tests de logique et raisonnement type concours d'ingénieurs.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 10 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 6 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+
+        <!-- ENCG -->
+        <article class="ccard" data-cat="encg" data-diff="2" data-state="new">
+          <div class="cthumb"><span class="lvl eng">ENCG / TAFEM</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">%</span><span class="badge-new">Concours</span></div>
+          <div class="cbody">
+            <h3>Maths financières & logique</h3>
+            <p class="cdesc">Pourcentages, suites, logique numérique pour le TAFEM.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 8 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 7 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i class="on"></i><i></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+
+        <article class="ccard" data-cat="encg" data-diff="1" data-state="new">
+          <div class="cthumb"><span class="lvl eng">ENCG / TAFEM</span><span class="fav"><svg class="icon sm"><use href="#ic-bookmark"/></svg></span><span class="glyph">Σx</span></div>
+          <div class="cbody">
+            <h3>Statistiques descriptives</h3>
+            <p class="cdesc">Moyennes, écarts-types et lecture de graphiques.</p>
+            <div class="cmeta"><span class="mi"><svg class="icon sm"><use href="#ic-play"/></svg> 6 vidéos</span><span class="mi"><svg class="icon sm"><use href="#ic-file"/></svg> 5 PDF</span><span class="mi">Diff. <span class="diff"><i class="on"></i><i></i><i></i><i></i></span></span></div>
+            <div class="cfoot"><div class="prog"><div class="pl"><span>Non commencé</span><span>0%</span></div><div class="bar"><i style="width:0%"></i></div></div><a class="btn btn-primary btn-sm">Commencer</a></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="empty" id="empty">
+        <div style="font-size:40px;margin-bottom:10px;">🔍</div>
+        <h3 style="margin-bottom:6px;">Aucun cours ne correspond</h3>
+        <p>Essaie d'enlever un filtre ou de changer de filière.</p>
+      </div>
+
+      <!-- concours banner -->
+      <div class="cc-banner">
+        <div class="ci">
+          <div class="lbl">PRÉPA CONCOURS</div>
+          <h2>Tu vises Médecine, ENSA ou ENCG ?</h2>
+          <p>Débloque les parcours concours dédiés : QCM chronométrés, annales et fiches pièges, en plus de tout le programme du Bac.</p>
+        </div>
+        <a class="btn btn-primary">Voir les parcours concours <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "accent": "amber", "corners": "rounded" }/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_catalog_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  apply();
+
+  // ===== filtering =====
+  var curFilter='all', curDiff=null, curState=null, curSearch='';
+  var fnames={ all:'Toutes', sm:'Bac Sciences Maths', pc:'Bac PC', svt:'Bac SVT', med:'Médecine', ensa:'ENSA / ENSAM', encg:'ENCG / TAFEM' };
+  var cards=[].slice.call(document.querySelectorAll('.ccard'));
+  function run(){
+    var n=0;
+    cards.forEach(function(c){
+      var okF = curFilter==='all' || c.dataset.cat===curFilter;
+      var okD = !curDiff || c.dataset.diff===curDiff;
+      var okS = !curState || c.dataset.state===curState;
+      var okQ = !curSearch || c.querySelector('h3').textContent.toLowerCase().indexOf(curSearch)>-1;
+      var show = okF&&okD&&okS&&okQ;
+      c.style.display = show?'':'none'; if(show) n++;
+    });
+    document.getElementById('rc').textContent=n;
+    document.getElementById('rf').textContent=fnames[curFilter];
+    document.getElementById('empty').classList.toggle('show', n===0);
+    document.getElementById('grid').style.display = n===0?'none':'';
+  }
+  document.querySelectorAll('#filters .filter').forEach(function(f){ f.addEventListener('click', function(){
+    document.querySelectorAll('#filters .filter').forEach(function(x){ x.classList.remove('active'); }); f.classList.add('active');
+    curFilter=f.dataset.f; run();
+  }); });
+  document.querySelectorAll('.chip2[data-d]').forEach(function(c){ c.addEventListener('click', function(){
+    if(c.classList.contains('on')){ c.classList.remove('on'); curDiff=null; }
+    else { document.querySelectorAll('.chip2[data-d]').forEach(function(x){ x.classList.remove('on'); }); c.classList.add('on'); curDiff=c.dataset.d; }
+    run();
+  }); });
+  document.querySelectorAll('.chip2[data-s]').forEach(function(c){ c.addEventListener('click', function(){
+    if(c.classList.contains('on')){ c.classList.remove('on'); curState=null; }
+    else { document.querySelectorAll('.chip2[data-s]').forEach(function(x){ x.classList.remove('on'); }); c.classList.add('on'); curState=c.dataset.s; }
+    run();
+  }); });
+  document.getElementById('searchInput').addEventListener('input', function(e){ curSearch=e.target.value.trim().toLowerCase(); run(); });
+
+  // favorites
+  document.querySelectorAll('.fav').forEach(function(f){ f.addEventListener('click', function(e){ e.stopPropagation();
+    var on=f.classList.toggle('on'); var u=f.querySelector('use'); if(u) u.setAttribute('href', on?'#ic-bm-fill':'#ic-bookmark'); }); });
+
+  // view toggle (visual)
+  document.querySelectorAll('.view-toggle .v').forEach(function(v){ v.addEventListener('click', function(){ document.querySelectorAll('.view-toggle .v').forEach(function(x){ x.classList.remove('on'); }); v.classList.add('on'); }); });
+
+  // nav
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.addEventListener('click', function(){ if(n.querySelector('.lockmini'))return; document.querySelectorAll('.nav-item').forEach(function(x){ x.classList.remove('active'); }); n.classList.add('active'); }); });
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

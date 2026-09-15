@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Design tokens — extracted from the Prép-Maths48 mockups.
+   Font family variables (--font-display/body/mono) are injected
+   by next/font in app/layout.tsx.
+   ============================================================ */
+:root {
+  --bg: #f4f5f1;
+  --surface: #ffffff;
+  --surface-2: #fbfbf8;
+  --ink: #0f1e36;
+  --ink-2: #37445d;
+  --muted: #6b7789;
+  --line: #e6e7e0;
+  --line-2: #edeee8;
+  --navy: #0c1830;
+  --navy-2: #11233f;
+  --navy-3: #1b3357;
+  --accent: #f3a93a;
+  --accent-2: #e6981f;
+  --accent-ink: #3a2906;
+  --accent-soft: #fdedd2;
+  --cyan: #26c1d4;
+  --green: #33b482;
+  --red: #e0564b;
+  --r-lg: 18px;
+  --r-md: 14px;
+  --r-sm: 11px;
+  --shadow-sm: 0 1px 2px rgba(15, 30, 54, 0.06), 0 2px 6px rgba(15, 30, 54, 0.05);
+  --shadow-md: 0 12px 30px -14px rgba(15, 30, 54, 0.22), 0 4px 12px rgba(15, 30, 54, 0.06);
+  --shadow-lg: 0 40px 80px -30px rgba(12, 24, 48, 0.4), 0 16px 40px -20px rgba(12, 24, 48, 0.3);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), system-ui, sans-serif;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+}
+
+@layer components {
+  .wrap {
+    @apply mx-auto w-full max-w-wrap px-7;
+  }
+  .mono {
+    font-family: var(--font-mono), ui-monospace, monospace;
+  }
+
+  /* buttons */
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm border border-transparent px-[22px] py-[13px] text-base font-semibold transition;
+    font-family: var(--font-body), sans-serif;
+  }
+  .btn-primary {
+    @apply bg-accent text-accent-ink hover:bg-accent-2;
+    box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+  .btn-ghost {
+    @apply border-line bg-transparent text-ink hover:bg-surface;
+  }
+  .btn-dark {
+    @apply bg-navy text-white hover:bg-navy-2;
+  }
+  .btn-white {
+    @apply bg-white text-navy;
+  }
+  .btn-lg {
+    @apply px-7 py-4 text-[17px];
+  }
+  .btn-sm {
+    @apply px-[15px] py-[9px] text-sm;
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  /* eyebrow / pills / badges */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[12.5px] uppercase tracking-[0.16em] text-accent-2;
+    font-family: var(--font-mono), monospace;
+  }
+  .pill {
+    @apply inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-[13.5px] font-semibold text-ink-2;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-semibold;
+  }
+  .badge-premium {
+    @apply bg-accent-soft text-accent-2;
+  }
+  .badge-free {
+    @apply text-green;
+    background: color-mix(in srgb, var(--green) 14%, transparent);
+  }
+  .badge-new {
+    background: color-mix(in srgb, var(--cyan) 16%, transparent);
+    color: var(--cyan);
+  }
+  .badge-done {
+    @apply text-green;
+    background: color-mix(in srgb, var(--green) 16%, transparent);
+  }
+
+  /* card */
+  .card {
+    @apply rounded-md border border-line bg-surface;
+  }
+
+  /* form inputs */
+  .field-label {
+    @apply mb-1.5 block text-[13px] font-semibold text-ink-2;
+  }
+  .input-wrap {
+    @apply flex items-center gap-2.5 rounded-sm border-[1.5px] border-line bg-surface px-3 transition;
+  }
+  .input-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .input-wrap input,
+  .input-wrap select,
+  .input-wrap textarea {
+    @apply flex-1 border-0 bg-transparent py-3 text-[15px] text-ink outline-none;
+    font-family: var(--font-body), sans-serif;
+  }
+
+  /* progress bar */
+  .progress {
+    @apply h-[7px] overflow-hidden rounded-full bg-line;
+  }
+  .progress > i {
+    @apply block h-full rounded-full;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+}
+
+/* thin scrollbars in app shells */
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 8px;
+}

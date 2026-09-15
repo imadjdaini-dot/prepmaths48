@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Tarifs & abonnements</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f1; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482;
+  --r-lg:22px; --r-md:16px; --r-sm:11px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.2), 0 4px 12px rgba(15,30,54,.06);
+  --shadow-lg:0 40px 80px -30px rgba(12,24,48,.45), 0 16px 40px -20px rgba(12,24,48,.28);
+  --maxw:1140px;
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.08; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 26px; }
+.icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:15px; height:15px; }
+.btn{ display:inline-flex; align-items:center; gap:9px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:15.5px; cursor:pointer; padding:13px 22px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 18px -6px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:transparent; color:var(--ink); border-color:var(--line); } .btn-ghost:hover{ background:var(--surface); border-color:#d7d8d0; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); transform:translateY(-1px); }
+.btn-white{ background:#fff; color:var(--navy); } .btn-white:hover{ transform:translateY(-1px); }
+.btn-block{ width:100%; }
+.eyebrow{ font-family:var(--font-mono); font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-2); display:inline-flex; align-items:center; gap:9px; }
+.eyebrow.center{ justify-content:center; }
+
+/* nav */
+header.nav{ position:sticky; top:0; z-index:60; background:color-mix(in srgb,var(--bg) 84%, transparent); backdrop-filter:blur(14px); border-bottom:1px solid transparent; transition:.25s; }
+header.nav.scrolled{ border-bottom-color:var(--line); }
+.nav .bar{ display:flex; align-items:center; gap:30px; height:70px; }
+.logo{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:700; font-size:20px; }
+.logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--navy); color:#fff; padding:4px 9px; border-radius:9px; font-size:15px; position:relative; }
+.logo .mk::after{ content:""; position:absolute; right:4px; bottom:4px; width:5px; height:5px; border-radius:50%; background:var(--accent); }
+.navlinks{ display:flex; gap:26px; font-weight:500; color:var(--ink-2); font-size:15px; }
+.navlinks a:hover{ color:var(--ink); }
+.nav-cta{ margin-left:auto; display:flex; align-items:center; gap:14px; }
+.nav-cta .login{ font-weight:600; font-size:15px; }
+
+/* hero */
+.phero{ text-align:center; padding:60px 0 30px; position:relative; }
+.phero h1{ font-size:clamp(34px,4.6vw,52px); letter-spacing:-.03em; max-width:760px; margin:16px auto 0; }
+.phero h1 .hl{ position:relative; white-space:nowrap; }
+.phero h1 .hl::after{ content:""; position:absolute; left:-2px; right:-2px; bottom:.08em; height:.32em; background:var(--accent); opacity:.32; border-radius:3px; z-index:-1; }
+.phero p{ font-size:19px; color:var(--ink-2); max-width:560px; margin:18px auto 0; }
+
+/* billing toggle */
+.billing{ display:flex; align-items:center; justify-content:center; gap:14px; margin:32px 0 8px; }
+.billing .lab{ font-weight:600; font-size:15px; color:var(--muted); transition:.15s; }
+.billing .lab.on{ color:var(--ink); }
+.switch{ width:56px; height:30px; border-radius:30px; background:var(--navy); position:relative; cursor:pointer; transition:.2s; flex:0 0 auto; }
+.switch .knob{ position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:#fff; transition:.2s cubic-bezier(.4,0,.2,1); }
+body[data-billing="annual"] .switch .knob{ left:29px; }
+.save-badge{ font-family:var(--font-mono); font-size:11px; font-weight:700; background:color-mix(in srgb,var(--green) 16%,transparent); color:#1c8f63; padding:4px 10px; border-radius:20px; }
+
+/* pricing cards */
+.pricing-sec{ padding:30px 0 70px; }
+.price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; align-items:stretch; }
+.pcard{ border:1px solid var(--line); border-radius:var(--r-lg); padding:30px; background:var(--surface); display:flex; flex-direction:column; position:relative; }
+.pcard.feat{ background:var(--navy); color:#e9eef7; border-color:var(--navy); box-shadow:var(--shadow-lg); transform:translateY(-12px); }
+.pcard.feat h3{ color:#fff; }
+.ribbon{ position:absolute; top:-13px; left:50%; transform:translateX(-50%); background:var(--accent); color:var(--accent-ink); font-size:12.5px; font-weight:700; padding:6px 16px; border-radius:100px; box-shadow:var(--shadow-sm); display:inline-flex; align-items:center; gap:6px; }
+.ptag{ font-family:var(--font-mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.pcard.feat .ptag{ color:var(--accent); }
+.pcard h3{ font-size:24px; margin:8px 0 4px; }
+.ptarget{ font-size:14px; color:var(--muted); min-height:40px; } .pcard.feat .ptarget{ color:#9fb0c9; }
+.price{ display:flex; align-items:flex-end; gap:6px; margin:18px 0 4px; }
+.price .amt{ font-family:var(--font-display); font-weight:700; font-size:46px; letter-spacing:-.03em; line-height:1; }
+.price .cur{ font-family:var(--font-display); font-weight:600; font-size:18px; margin-bottom:4px; }
+.price .per{ font-size:14px; color:var(--muted); margin-bottom:6px; } .pcard.feat .price .per{ color:#9fb0c9; }
+.price-note{ font-size:13px; color:var(--muted); min-height:20px; } .pcard.feat .price-note{ color:#9fb0c9; }
+.price-note .strike{ text-decoration:line-through; opacity:.7; margin-right:6px; }
+.pcard .btn{ margin:22px 0; }
+.feats{ list-style:none; padding:0; margin:0; display:grid; gap:13px; }
+.feats li{ display:flex; gap:11px; align-items:flex-start; font-size:14.5px; }
+.feats .ck{ width:21px; height:21px; border-radius:6px; flex:0 0 auto; display:grid; place-items:center; margin-top:1px; background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); }
+.pcard.feat .ck{ background:color-mix(in srgb,var(--accent) 22%,transparent); color:var(--accent); }
+.feats .x{ width:21px; height:21px; border-radius:6px; flex:0 0 auto; display:grid; place-items:center; margin-top:1px; background:var(--line-2); color:var(--muted); }
+.feats li.off{ color:var(--muted); }
+.feats-h{ font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); margin:4px 0 2px; }
+.pcard.feat .feats-h{ color:#7e90ac; }
+
+/* comparison table */
+.compare{ padding:70px 0; border-top:1px solid var(--line); }
+.compare .head{ text-align:center; margin-bottom:40px; }
+.compare h2{ font-size:clamp(28px,3.4vw,38px); margin:14px 0 0; }
+.ctable{ width:100%; border-collapse:collapse; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); overflow:hidden; }
+.ctable th, .ctable td{ padding:15px 20px; text-align:center; border-bottom:1px solid var(--line-2); font-size:14.5px; }
+.ctable thead th{ background:var(--surface-2); font-family:var(--font-display); font-weight:600; font-size:15px; vertical-align:bottom; }
+.ctable thead th.feat{ background:var(--navy); color:#fff; position:relative; }
+.ctable thead th .pp{ font-family:var(--font-mono); font-size:11px; color:var(--muted); font-weight:400; display:block; margin-top:3px; }
+.ctable thead th.feat .pp{ color:var(--accent); }
+.ctable td:first-child, .ctable th:first-child{ text-align:left; font-weight:500; color:var(--ink-2); }
+.ctable tbody tr:last-child td{ border-bottom:0; }
+.ctable td.feat-col{ background:color-mix(in srgb,var(--navy) 3%, var(--surface)); font-weight:600; }
+.ctable .yes{ color:var(--green); } .ctable .no{ color:#c9ccc3; }
+.ctable .grp td{ background:var(--surface-2); font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); text-align:left; font-weight:400; padding:10px 20px; }
+.ctable .v-mono{ font-family:var(--font-mono); font-size:13px; }
+
+/* guarantees */
+.guarantees{ padding:0 0 70px; }
+.guar-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.guar{ display:flex; gap:15px; padding:24px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); }
+.guar .ic{ width:46px; height:46px; border-radius:13px; flex:0 0 auto; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent-2); }
+.guar h4{ font-size:16px; margin-bottom:5px; } .guar p{ margin:0; font-size:13.5px; color:var(--muted); }
+
+/* faq */
+.faq-sec{ padding:0 0 80px; }
+.faq-list{ max-width:780px; margin:34px auto 0; display:grid; gap:13px; }
+.faq{ border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); overflow:hidden; }
+.faq summary{ list-style:none; cursor:pointer; padding:19px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; font-weight:600; font-size:16.5px; }
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary .ico{ width:26px; height:26px; border-radius:8px; background:var(--line-2); display:grid; place-items:center; flex:0 0 auto; transition:.25s; font-size:18px; color:var(--ink-2); }
+.faq[open] summary .ico{ background:var(--accent); color:var(--accent-ink); transform:rotate(45deg); }
+.faq .ans{ padding:0 22px 20px; color:var(--muted); font-size:15px; max-width:660px; }
+
+/* cta */
+.cta{ padding:0 0 80px; }
+.cta-box{ background:var(--navy); border-radius:28px; padding:56px; text-align:center; position:relative; overflow:hidden; }
+.cta-box::before{ content:""; position:absolute; inset:0; background:radial-gradient(600px 300px at 50% 0%, color-mix(in srgb,var(--accent) 26%, transparent), transparent 60%); }
+.cta-box > *{ position:relative; z-index:1; }
+.cta-box h2{ color:#fff; font-size:clamp(28px,3.6vw,42px); max-width:620px; margin:0 auto 14px; }
+.cta-box p{ color:#aebbd0; font-size:17px; max-width:480px; margin:0 auto 28px; }
+.cta-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.cta-box .micro{ margin-top:16px; font-family:var(--font-mono); font-size:12.5px; color:#8094b0; }
+
+/* footer */
+footer.ft{ background:var(--navy); color:#9fb0c9; padding:54px 0 32px; }
+.ft-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:36px; }
+.ft .logo{ color:#fff; margin-bottom:14px; } .ft .logo .mk{ background:var(--accent); color:var(--accent-ink); }
+.ft p{ font-size:14px; max-width:240px; }
+.ft h5{ color:#fff; font-family:var(--font-body); font-size:13px; letter-spacing:.04em; margin:0 0 14px; text-transform:uppercase; }
+.ft ul{ list-style:none; padding:0; margin:0; display:grid; gap:10px; font-size:14px; }
+.ft ul a:hover{ color:#fff; }
+.ft-bottom{ display:flex; justify-content:space-between; gap:16px; margin-top:42px; padding-top:22px; border-top:1px solid rgba(255,255,255,.1); font-size:13px; flex-wrap:wrap; }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+/* reveal */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+.js-anim .reveal{ } .reveal.in{ opacity:1 !important; transform:none !important; }
+.reveal.d1{ transition-delay:.06s;} .reveal.d2{ transition-delay:.12s;} .reveal.d3{ transition-delay:.18s;}
+@media (prefers-reduced-motion: reduce){ .reveal{ opacity:1; transform:none; } }
+
+@media (max-width:920px){
+  .price-grid{ grid-template-columns:1fr; max-width:420px; margin:0 auto; }
+  .pcard.feat{ transform:none; order:-1; }
+  .guar-grid{ grid-template-columns:1fr; }
+  .navlinks{ display:none; }
+  .ft-grid{ grid-template-columns:1fr 1fr; gap:28px; }
+  .compare{ overflow-x:auto; } .ctable{ min-width:640px; }
+  .table-scroll{ overflow-x:auto; }
+}
+@media (max-width:560px){
+  .cta-box{ padding:38px 22px; }
+  .ft-grid{ grid-template-columns:1fr; }
+  #tweaks{ left:12px; right:12px; width:auto; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded" data-billing="monthly">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="ic-x" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+  <symbol id="ic-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-headset" viewBox="0 0 24 24"><path d="M5 13a7 7 0 0 1 14 0"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19a3 3 0 0 1-3 3h-2"/></symbol>
+</svg>
+
+<!-- nav -->
+<header class="nav" id="nav">
+  <div class="wrap bar">
+    <a class="logo" href="#"><span class="mk">48</span> Prép-Maths</a>
+    <nav class="navlinks"><a href="#">Cours</a><a href="#">Parcours</a><a href="#">Concours</a><a href="#" style="color:var(--ink);font-weight:600;">Tarifs</a></nav>
+    <div class="nav-cta"><a class="login" href="#">Connexion</a><a class="btn btn-primary" href="#">Commencer gratuitement</a></div>
+  </div>
+</header>
+
+<!-- hero -->
+<section class="phero">
+  <div class="wrap">
+    <span class="eyebrow center reveal">Tarifs simples & transparents</span>
+    <h1 class="reveal d1">Un investissement clair pour <span class="hl">ta réussite</span>.</h1>
+    <p class="reveal d2">Commence gratuitement. Passe au niveau supérieur quand tu es prêt. Sans engagement, annulable à tout moment.</p>
+    <div class="billing reveal d2">
+      <span class="lab on" id="labM">Mensuel</span>
+      <div class="switch" id="switch"><span class="knob"></span></div>
+      <span class="lab" id="labA">Annuel</span>
+      <span class="save-badge">−2 mois offerts</span>
+    </div>
+  </div>
+</section>
+
+<!-- pricing -->
+<section class="pricing-sec">
+  <div class="wrap">
+    <div class="price-grid">
+      <!-- free -->
+      <div class="pcard reveal">
+        <span class="ptag">Gratuit</span>
+        <h3>Découverte</h3>
+        <div class="ptarget">Pour tester la plateforme et la Méthode 48.</div>
+        <div class="price"><span class="amt">0</span><span class="cur">DH</span><span class="per">/ pour toujours</span></div>
+        <div class="price-note">Sans carte bancaire.</div>
+        <a class="btn btn-ghost btn-block" href="#">Créer un compte</a>
+        <div class="feats-h">Ce qui est inclus</div>
+        <ul class="feats">
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Quelques vidéos par filière</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> 2 PDF résumés offerts</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> 1 quiz par semaine</li>
+          <li class="off"><span class="x"><svg class="icon sm"><use href="#ic-x"/></svg></span> Parcours guidé complet</li>
+          <li class="off"><span class="x"><svg class="icon sm"><use href="#ic-x"/></svg></span> Préparation concours</li>
+        </ul>
+      </div>
+
+      <!-- premium -->
+      <div class="pcard feat reveal d1">
+        <span class="ribbon"><svg class="icon sm" style="stroke:none;fill:var(--accent-ink)"><use href="#ic-star"/></svg> Le plus choisi</span>
+        <span class="ptag">Bac Premium</span>
+        <h3>Réussir le Bac</h3>
+        <div class="ptarget">Tout le programme de 2ᵉ Bac, en parcours guidé complet.</div>
+        <div class="price"><span class="amt" data-m="99" data-a="82">99</span><span class="cur">DH</span><span class="per" id="perP">/ mois</span></div>
+        <div class="price-note" id="noteP">Soit 99 DH facturés chaque mois.</div>
+        <a class="btn btn-primary btn-block" href="#">Commencer maintenant</a>
+        <div class="feats-h">Tout le gratuit, plus :</div>
+        <ul class="feats">
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> <b>Toutes</b> les vidéos du Bac</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Tous les PDF (résumé, exos, corrigés)</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Quiz illimités + mode examen</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Parcours guidé & progression</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Badges, favoris & historique</li>
+        </ul>
+      </div>
+
+      <!-- concours -->
+      <div class="pcard reveal d2">
+        <span class="ptag">Bac + Concours</span>
+        <h3>Viser plus haut</h3>
+        <div class="ptarget">Le Bac complet + la prépa concours intégrale.</div>
+        <div class="price"><span class="amt" data-m="169" data-a="140">169</span><span class="cur">DH</span><span class="per" id="perC">/ mois</span></div>
+        <div class="price-note" id="noteC">Soit 169 DH facturés chaque mois.</div>
+        <a class="btn btn-dark btn-block" href="#">Tout débloquer</a>
+        <div class="feats-h">Tout Bac Premium, plus :</div>
+        <ul class="feats">
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Parcours <b>Médecine</b> & Santé</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Parcours <b>ENSA · ENSAM · ENCG</b></li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> QCM concours chronométrés</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Annales & fiches pièges</li>
+          <li><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Support prioritaire</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- comparison -->
+<section class="compare">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow center reveal">Comparatif détaillé</span>
+      <h2 class="reveal d1">Tout ce que comprend chaque offre</h2>
+    </div>
+    <div class="table-scroll reveal d1">
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th>Fonctionnalité</th>
+          <th>Découverte<span class="pp">Gratuit</span></th>
+          <th class="feat">Bac Premium<span class="pp">99 DH/mois</span></th>
+          <th>Bac + Concours<span class="pp">169 DH/mois</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="grp"><td colspan="4">Contenu de cours</td></tr>
+        <tr><td>Vidéos de cours</td><td class="v-mono">Limité</td><td class="feat-col v-mono">Tout le Bac</td><td class="v-mono">Bac + Concours</td></tr>
+        <tr><td>PDF par session (résumé, exos, corrigé)</td><td class="v-mono">2 offerts</td><td class="feat-col"><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td><td><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td></tr>
+        <tr><td>Fiches pièges concours</td><td><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td class="feat-col"><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td></tr>
+        <tr class="grp"><td colspan="4">Entraînement</td></tr>
+        <tr><td>Quiz de validation</td><td class="v-mono">1 / semaine</td><td class="feat-col v-mono">Illimités</td><td class="v-mono">Illimités</td></tr>
+        <tr><td>Mode examen chronométré</td><td><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td class="feat-col"><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td><td><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td></tr>
+        <tr><td>QCM concours (Médecine, ENSA…)</td><td><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td class="feat-col"><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td></tr>
+        <tr><td>Annales corrigées</td><td><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td class="feat-col v-mono">Bac</td><td class="v-mono">Bac + Concours</td></tr>
+        <tr class="grp"><td colspan="4">Suivi & expérience</td></tr>
+        <tr><td>Parcours guidé & progression</td><td><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td class="feat-col"><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td><td><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td></tr>
+        <tr><td>Badges, favoris & historique</td><td><span class="no"><svg class="icon sm"><use href="#ic-x"/></svg></span></td><td class="feat-col"><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td><td><span class="yes"><svg class="icon sm"><use href="#ic-check"/></svg></span></td></tr>
+        <tr><td>Support</td><td class="v-mono">Communauté</td><td class="feat-col v-mono">Email</td><td class="v-mono">Prioritaire</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- guarantees -->
+<section class="guarantees">
+  <div class="wrap">
+    <div class="guar-grid">
+      <div class="guar reveal"><span class="ic"><svg class="icon"><use href="#ic-x-circle"/></svg></span><div><h4>Sans engagement</h4><p>Annule en un clic, à tout moment. Aucune question.</p></div></div>
+      <div class="guar reveal d1"><span class="ic"><svg class="icon"><use href="#ic-shield"/></svg></span><div><h4>Satisfait ou remboursé</h4><p>14 jours pour te faire un avis. Remboursement intégral.</p></div></div>
+      <div class="guar reveal d2"><span class="ic"><svg class="icon"><use href="#ic-card"/></svg></span><div><h4>Paiement local</h4><p>Carte bancaire marocaine, virement ou cash. 100% sécurisé.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- faq -->
+<section class="faq-sec">
+  <div class="wrap">
+    <div style="text-align:center;"><span class="eyebrow center reveal">Questions sur les tarifs</span></div>
+    <div class="faq-list">
+      <details class="faq reveal" open><summary>Puis-je changer d'offre à tout moment ? <span class="ico">+</span></summary><div class="ans">Oui. Tu peux passer de Bac Premium à Bac + Concours (ou inversement) quand tu veux — le tarif est ajusté automatiquement au prorata.</div></details>
+      <details class="faq reveal"><summary>Y a-t-il un tarif étudiant ou de groupe ? <span class="ico">+</span></summary><div class="ans">Des tarifs préférentiels existent pour les lycées et les centres de soutien qui inscrivent plusieurs élèves. Contacte-nous pour un devis adapté.</div></details>
+      <details class="faq reveal"><summary>Comment fonctionne le paiement annuel ? <span class="ico">+</span></summary><div class="ans">En choisissant l'annuel, tu bénéficies de 2 mois offerts : tu paies 10 mois pour 12. Le montant est débité une fois par an.</div></details>
+      <details class="faq reveal"><summary>Quels moyens de paiement acceptez-vous ? <span class="ico">+</span></summary><div class="ans">Carte bancaire marocaine et internationale, virement, et paiement cash via nos partenaires. Toutes les transactions sont sécurisées.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- cta -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <h2>Commence gratuitement, aujourd'hui.</h2>
+      <p>Crée ton compte en 2 minutes et teste la Méthode 48 sans payer.</p>
+      <div class="cta-row"><a class="btn btn-primary" href="#">Commencer gratuitement →</a><a class="btn btn-white" href="#">Parler à un conseiller</a></div>
+      <div class="micro">Sans carte bancaire · Annulable à tout moment</div>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <a class="logo" href="#"><span class="mk">48</span> Prép-Maths</a>
+        <p>La plateforme marocaine pour réussir le Bac et préparer les concours post-bac.</p>
+      </div>
+      <div><h5>Plateforme</h5><ul><li><a href="#">Cours</a></li><li><a href="#">Parcours guidé</a></li><li><a href="#">Tarifs</a></li></ul></div>
+      <div><h5>Concours</h5><ul><li><a href="#">Médecine</a></li><li><a href="#">ENSA / ENSAM</a></li><li><a href="#">ENCG / TAFEM</a></li></ul></div>
+      <div><h5>Aide</h5><ul><li><a href="#">Centre d'aide</a></li><li><a href="#">Nous contacter</a></li><li><a href="#">Conditions</a></li></ul></div>
+    </div>
+    <div class="ft-bottom"><span>© 2026 Prép-Maths48 — Fait au Maroc 🇲🇦</span><span class="mono" style="color:#7e90ac;">prepmaths48.ma</span></div>
+  </div>
+</footer>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Facturation</label><div class="seg" data-key="billing"><button data-val="monthly" class="on">Mensuel</button><button data-val="annual">Annuel</button></div></div>
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "billing":"monthly", "accent": "amber", "corners": "rounded" }/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_pricing_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+
+  function applyBilling(b){
+    document.body.setAttribute('data-billing', b);
+    var annual = b==='annual';
+    document.getElementById('labM').classList.toggle('on', !annual);
+    document.getElementById('labA').classList.toggle('on', annual);
+    document.querySelectorAll('.price .amt[data-m]').forEach(function(a){ a.textContent = annual ? a.dataset.a : a.dataset.m; });
+    ['perP','perC'].forEach(function(id){ document.getElementById(id).textContent = annual ? '/ mois' : '/ mois'; });
+    document.getElementById('noteP').innerHTML = annual ? '<span class="strike">99 DH</span> facturé 984 DH/an' : 'Soit 99 DH facturés chaque mois.';
+    document.getElementById('noteC').innerHTML = annual ? '<span class="strike">169 DH</span> facturé 1 680 DH/an' : 'Soit 169 DH facturés chaque mois.';
+  }
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    applyBilling(state.billing);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  apply();
+
+  // billing switch
+  document.getElementById('switch').addEventListener('click', function(){ setKey('billing', state.billing==='annual'?'monthly':'annual'); });
+  document.getElementById('labM').addEventListener('click', function(){ setKey('billing','monthly'); });
+  document.getElementById('labA').addEventListener('click', function(){ setKey('billing','annual'); });
+
+  // nav scroll
+  var nav=document.getElementById('nav');
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY>8); }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  // reveal (rect-based + failsafe)
+  document.documentElement.classList.add('js-anim');
+  var reveals=[].slice.call(document.querySelectorAll('.reveal'));
+  function checkReveal(){ var vh=window.innerHeight||800; for(var i=reveals.length-1;i>=0;i--){ var r=reveals[i].getBoundingClientRect(); if(r.top<vh*0.92 && r.bottom>-40){ reveals[i].classList.add('in'); reveals.splice(i,1); } } }
+  window.addEventListener('scroll', checkReveal, {passive:true}); window.addEventListener('resize', checkReveal);
+  checkReveal(); requestAnimationFrame(checkReveal); setTimeout(checkReveal,120);
+  setTimeout(function(){ document.querySelectorAll('.reveal').forEach(function(e){ e.classList.add('in'); }); }, 1500);
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

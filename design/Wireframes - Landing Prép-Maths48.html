@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframes — Landing Prép-Maths48</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Patrick+Hand&family=Patrick+Hand+SC&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f3ee;
+    --ink:#27313f;
+    --ink-soft:#737d8b;
+    --line:#27313f;
+    --navy:#1d2a3a;
+    --accent:#e2913a;     /* amber par défaut, togglable cyan */
+    --accent-soft:#f6e3c8;
+    --green:#3f9d6a;
+    --bar:#d7d5cc;
+    --bar-2:#cfcdc3;
+    --box:#e7e5dc;
+    --note:#fff6cf;
+    --shadow:6px 6px 0 rgba(39,49,63,.12);
+  }
+  body.accent-cyan{ --accent:#2aa6b5; --accent-soft:#cdeef1; }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Patrick Hand', ui-rounded, sans-serif;
+    font-size:17px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    /* subtle paper grid */
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:linear-gradient(rgba(39,49,63,.035) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(39,49,63,.035) 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+
+  /* ---------- TOOLBAR ---------- */
+  .toolbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy); color:#f4f3ee;
+    border-bottom:3px solid #0e1722;
+    padding:10px 18px;
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  }
+  .brand{ font-family:'Patrick Hand SC',sans-serif; font-size:22px; letter-spacing:.5px; display:flex; align-items:center; gap:9px; }
+  .brand .mk{ background:var(--accent); color:#1d2a3a; font-family:'Space Mono',monospace; font-weight:700;
+    padding:1px 7px; border-radius:6px; font-size:15px; }
+  .tabs{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tab{
+    font-family:'Patrick Hand',sans-serif; font-size:15.5px; color:#cdd3db;
+    background:transparent; border:2px solid #46566a; border-radius:11px 4px 11px 4px;
+    padding:6px 13px; cursor:pointer; transition:.12s; display:flex; gap:8px; align-items:center;
+  }
+  .tab .n{ font-family:'Space Mono',monospace; font-size:12px; background:#33455a; color:#cdd3db; border-radius:5px; padding:0 6px; }
+  .tab:hover{ border-color:#7f8ea3; color:#fff; }
+  .tab.active{ background:var(--paper); color:var(--navy); border-color:var(--paper); }
+  .tab.active .n{ background:var(--accent); color:#1d2a3a; }
+  .toolbar .spacer{ flex:1; }
+  .toggles{ display:flex; gap:14px; align-items:center; font-size:14px; color:#cdd3db; }
+  .toggles label{ display:flex; gap:7px; align-items:center; cursor:pointer; user-select:none; }
+  .toggles input{ accent-color:var(--accent); width:15px; height:15px; }
+  .toolbar .meta{ font-family:'Space Mono',monospace; font-size:11px; color:#7f8ea3; }
+
+  .caption{
+    position:relative; z-index:1;
+    max-width:1180px; margin:18px auto 0; padding:0 24px;
+    font-family:'Caveat',cursive; font-size:23px; color:var(--ink-soft);
+    display:flex; align-items:baseline; gap:12px;
+  }
+  .caption b{ color:var(--ink); font-family:'Patrick Hand SC',sans-serif; font-size:19px; }
+
+  /* ---------- PAGE FRAMES ---------- */
+  .stage{ position:relative; z-index:1; padding:22px 24px 80px; }
+  .page{ display:none; }
+  .page.active{ display:block; }
+  .browser{
+    max-width:1180px; margin:0 auto;
+    background:#fbfaf6; border:3px solid var(--line);
+    border-radius:18px; overflow:hidden; box-shadow:10px 12px 0 rgba(39,49,63,.10);
+  }
+  .chrome{ background:#eceae2; border-bottom:2px solid var(--line); padding:9px 14px; display:flex; align-items:center; gap:8px; }
+  .chrome .dot{ width:11px; height:11px; border-radius:50%; border:1.5px solid var(--line); }
+  .chrome .url{ flex:1; margin-left:10px; background:#fbfaf6; border:1.5px solid var(--line); border-radius:8px;
+    font-family:'Space Mono',monospace; font-size:12px; color:var(--ink-soft); padding:3px 12px; }
+  .canvas{ }
+
+  /* ---------- PRIMITIVES ---------- */
+  .sk{ border:2px solid var(--line); border-radius:14px 5px 14px 5px; }
+  .bar{ height:11px; background:var(--bar); border-radius:6px; }
+  .bar.t{ height:9px; }
+  .bar.w90{ width:90%; } .bar.w80{ width:80%; } .bar.w70{ width:70%; }
+  .bar.w60{ width:60%; } .bar.w50{ width:50%; } .bar.w40{ width:40%; }
+  .bar.w30{ width:30%; } .bar.w25{ width:25%; }
+  .lines{ display:flex; flex-direction:column; gap:8px; }
+  .img{
+    background:
+      repeating-linear-gradient(135deg,rgba(39,49,63,.07) 0 8px,transparent 8px 16px),
+      var(--box);
+    border:2px solid var(--line); border-radius:14px 5px 14px 5px;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    color:var(--ink-soft); font-family:'Space Mono',monospace; font-size:11.5px;
+    padding:10px; min-height:60px;
+  }
+  .img.solid{ background:var(--box); }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; justify-content:center;
+    border:2px solid var(--line); border-radius:11px 4px 11px 4px;
+    padding:9px 18px; font-family:'Patrick Hand',sans-serif; font-size:16px; background:#fbfaf6; color:var(--ink);
+  }
+  .btn.acc{ background:var(--accent); border-color:var(--line); color:#1d2a3a; box-shadow:3px 3px 0 var(--line); }
+  .btn.ghost{ background:transparent; }
+  .btn.sm{ padding:6px 12px; font-size:14px; }
+  .chip{ display:inline-flex; align-items:center; gap:6px; border:2px solid var(--line);
+    border-radius:20px; padding:4px 13px; font-size:14px; background:#fbfaf6; }
+  .chip.on{ background:var(--navy); color:#f4f3ee; }
+  .chip.acc{ background:var(--accent-soft); }
+  .pill{ font-family:'Space Mono',monospace; font-size:11px; border:1.5px solid var(--line);
+    border-radius:20px; padding:1px 9px; display:inline-block; }
+  .eyebrow{ font-family:'Space Mono',monospace; font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--accent); }
+  .eyebrow.ink{ color:var(--ink-soft); }
+  h1.hl{ font-family:'Patrick Hand SC',sans-serif; font-size:46px; line-height:1.06; margin:0; letter-spacing:.5px; }
+  h2.st{ font-family:'Patrick Hand SC',sans-serif; font-size:30px; margin:0; letter-spacing:.4px; }
+  .sub{ font-size:19px; color:var(--ink-soft); }
+  .dim{ color:var(--ink-soft); }
+
+  /* dashed section guide */
+  .sec{ padding:46px 44px; border-bottom:2px dashed #c9c7bd; position:relative; }
+  .sec:last-child{ border-bottom:0; }
+  .sec-tag{ position:absolute; top:8px; right:12px; font-family:'Space Mono',monospace; font-size:10px;
+    color:#b3b1a6; letter-spacing:1px; }
+  .navbar{ display:flex; align-items:center; gap:22px; padding:16px 44px; border-bottom:2px solid var(--line); background:#fbfaf6; }
+  .navbar .logo{ font-family:'Patrick Hand SC',sans-serif; font-size:21px; display:flex; gap:8px; align-items:center; }
+  .navbar .mk{ background:var(--accent); color:#1d2a3a; font-family:'Space Mono',monospace; font-weight:700; padding:0 7px; border-radius:6px; font-size:14px;}
+  .navlinks{ display:flex; gap:18px; color:var(--ink-soft); font-size:15px; }
+  .row{ display:flex; gap:18px; }
+  .between{ justify-content:space-between; align-items:center; }
+  .center{ align-items:center; }
+  .grid{ display:grid; gap:18px; }
+  .footer{ background:var(--navy); color:#cdd3db; padding:40px 44px; }
+  .footer .bar{ background:#3a4a5e; }
+
+  /* sticky note annotation */
+  .note{
+    position:relative; z-index:3;
+    background:var(--note); border:2px solid #d9c97a; border-radius:3px;
+    font-family:'Caveat',cursive; font-size:18.5px; line-height:1.25; color:#5b5326;
+    padding:9px 13px; box-shadow:3px 4px 0 rgba(39,49,63,.13);
+    max-width:270px; transform:rotate(-1.4deg);
+  }
+  .note.r{ transform:rotate(1.6deg); }
+  .note b{ font-family:'Patrick Hand',sans-serif; font-size:15px; color:#3f3a14; display:block; margin-bottom:2px; }
+  .note-wrap{ display:flex; justify-content:center; padding:0 44px; margin-top:-6px; }
+  .annot-float{ position:absolute; z-index:4; }
+  body.no-notes .note, body.no-notes .note-wrap{ display:none !important; }
+
+  /* timeline */
+  .tl{ display:grid; grid-template-columns:repeat(4,1fr); gap:0; position:relative; }
+  .tl .step{ padding:0 16px; position:relative; }
+  .tl .node{ width:42px; height:42px; border-radius:50%; border:2px solid var(--line); background:var(--accent-soft);
+    display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-weight:700; margin-bottom:14px; }
+  .tl::before{ content:""; position:absolute; left:30px; right:30px; top:21px; height:2px; background:var(--line); z-index:0; }
+
+  /* path (variant B) */
+  .path{ position:relative; padding-left:40px; }
+  .path::before{ content:""; position:absolute; left:14px; top:8px; bottom:8px; width:3px;
+    background:repeating-linear-gradient(var(--line) 0 8px,transparent 8px 16px); }
+  .pnode{ position:relative; margin-bottom:22px; }
+  .pnode .dot{ position:absolute; left:-40px; top:4px; width:30px; height:30px; border-radius:50%;
+    border:2px solid var(--line); background:var(--accent); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#1d2a3a; }
+
+  /* bento */
+  .bento{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:120px; gap:16px; }
+  .bento .cell{ padding:16px; display:flex; flex-direction:column; gap:10px; }
+  .span2{ grid-column:span 2; } .row2{ grid-row:span 2; }
+
+  /* netflix rows */
+  .rail{ display:flex; gap:16px; overflow:hidden; padding-bottom:4px; }
+  .rail .ccard{ flex:0 0 210px; }
+  .thumb{ height:118px; }
+
+  /* faq */
+  .faq-item{ border:2px solid var(--line); border-radius:12px 4px 12px 4px; padding:13px 16px; display:flex; justify-content:space-between; align-items:center; gap:14px; background:#fbfaf6; }
+
+  .stat-num{ font-family:'Patrick Hand SC',sans-serif; font-size:42px; color:var(--ink); }
+  .stat-num .u{ color:var(--accent); }
+
+  .price{ padding:22px; display:flex; flex-direction:column; gap:14px; }
+  .price.feat{ background:var(--navy); color:#e7eaef; border-color:var(--navy); }
+  .price.feat .bar{ background:#3a4a5e; }
+  .price.feat .btn{ background:var(--accent); border-color:var(--accent); }
+
+  .legend{ max-width:1180px; margin:26px auto 0; padding:14px 22px; font-family:'Space Mono',monospace;
+    font-size:11.5px; color:var(--ink-soft); display:flex; gap:24px; flex-wrap:wrap; align-items:center; }
+  .legend .sw{ display:inline-flex; gap:8px; align-items:center; }
+  .legend .b{ width:30px; height:11px; border-radius:5px; background:var(--bar); }
+  .legend .i{ width:24px; height:16px; border:1.5px solid var(--line); border-radius:4px;
+    background:repeating-linear-gradient(135deg,rgba(39,49,63,.07) 0 5px,transparent 5px 10px),var(--box); }
+  .legend .a{ width:24px; height:16px; border-radius:4px; background:var(--accent); }
+</style>
+</head>
+<body>
+
+<!-- ============ TOOLBAR ============ -->
+<div class="toolbar">
+  <div class="brand"><span class="mk">48</span> Prép-Maths — Wireframes</div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-go="A"><span class="n">A</span> Compte à rebours</button>
+    <button class="tab" data-go="B"><span class="n">B</span> Parcours guidé</button>
+    <button class="tab" data-go="C"><span class="n">C</span> Éditorial centré</button>
+    <button class="tab" data-go="D"><span class="n">D</span> Contenu d'abord</button>
+  </div>
+  <div class="spacer"></div>
+  <div class="toggles">
+    <label><input type="checkbox" id="tg-notes" checked> annotations</label>
+    <label><input type="checkbox" id="tg-accent"> accent cyan</label>
+  </div>
+</div>
+
+<div class="caption" id="caption"></div>
+
+<!-- ============ STAGE ============ -->
+<div class="stage">
+
+  <!-- ============================================================ -->
+  <!-- VARIANT A — COMPTE À REBOURS -->
+  <!-- ============================================================ -->
+  <section class="page active" data-variant="A">
+    <div class="browser">
+      <div class="chrome">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="url">prepmaths48.ma</span>
+      </div>
+      <div class="canvas">
+
+        <!-- navbar -->
+        <div class="navbar between">
+          <div class="row center" style="gap:30px;">
+            <div class="logo"><span class="mk">48</span>Prép-Maths</div>
+            <div class="navlinks"><span>Cours</span><span>Méthode 48</span><span>Concours</span><span>Tarifs</span></div>
+          </div>
+          <div class="row center" style="gap:12px;">
+            <span class="dim">Connexion</span>
+            <span class="btn acc sm">Commencer gratuitement</span>
+          </div>
+        </div>
+
+        <!-- HERO -->
+        <div class="sec" style="display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center;">
+          <span class="sec-tag">HERO · gauche texte / droite minuteur</span>
+          <div class="lines" style="gap:16px;">
+            <span class="pill">2ᵉ Bac · Médecine · ENSA · ENCG</span>
+            <h1 class="hl">Maîtrise les maths du Bac<br>et prépare les concours.<br>Méthode claire, rapide, structurée.</h1>
+            <div class="sub" style="max-width:440px;">Vidéos courtes, PDF pratiques, quiz et exercices corrigés — parcours guidés pour les élèves marocains.</div>
+            <div class="row" style="gap:12px; margin-top:6px;">
+              <span class="btn acc">Commencer gratuitement →</span>
+              <span class="btn ghost">▷ Explorer les cours</span>
+            </div>
+            <div class="row" style="gap:22px; margin-top:6px; align-items:center;">
+              <span class="dim" style="font-size:14px;">★★★★★ 4,9</span>
+              <span class="dim" style="font-size:14px;">+12 000 élèves · داكشي اللي خصك</span>
+            </div>
+          </div>
+          <!-- countdown widget mock -->
+          <div class="sk" style="padding:22px; background:var(--navy); color:#e7eaef; border-color:var(--navy); position:relative;">
+            <div class="eyebrow" style="color:var(--accent);">CHRONO MÉTHODE 48</div>
+            <div class="row" style="gap:12px; margin:14px 0; justify-content:space-between;">
+              <div class="sk" style="flex:1; text-align:center; padding:14px 0; background:#16212e; border-color:#3a4a5e;"><div style="font-family:'Patrick Hand SC'; font-size:34px;">48</div><div style="font-size:12px; color:#9aa6b4;">heures</div></div>
+              <div class="sk" style="flex:1; text-align:center; padding:14px 0; background:#16212e; border-color:#3a4a5e;"><div style="font-family:'Patrick Hand SC'; font-size:34px;">12</div><div style="font-size:12px; color:#9aa6b4;">modules</div></div>
+              <div class="sk" style="flex:1; text-align:center; padding:14px 0; background:#16212e; border-color:#3a4a5e;"><div style="font-family:'Patrick Hand SC'; font-size:34px;">94%</div><div style="font-size:12px; color:#9aa6b4;">réussite</div></div>
+            </div>
+            <div class="img" style="height:120px; background:#16212e; border-color:#3a4a5e; color:#9aa6b4;">[ aperçu lecteur vidéo + progression ]</div>
+            <div class="lines" style="margin-top:14px;">
+              <span class="bar w70" style="background:#3a4a5e;"></span>
+              <span class="bar w50" style="background:#3a4a5e;"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-wrap"><div class="note r"><b>Pourquoi cette piste</b>Le « 48 » devient un compte à rebours concret. Urgence + promesse mesurable dès le 1ᵉʳ écran.</div></div>
+
+        <!-- trust strip -->
+        <div class="sec" style="padding:24px 44px; display:flex; gap:18px; align-items:center; justify-content:center; flex-wrap:wrap;">
+          <span class="sec-tag">BANDEAU CONFIANCE</span>
+          <span class="dim" style="font-family:'Space Mono';font-size:11px;">ILS PRÉPARENT AVEC NOUS</span>
+          <span class="img solid" style="width:120px;height:34px;">logo lycée</span>
+          <span class="img solid" style="width:120px;height:34px;">logo lycée</span>
+          <span class="img solid" style="width:120px;height:34px;">prépa</span>
+          <span class="img solid" style="width:120px;height:34px;">centre</span>
+        </div>
+
+        <!-- méthode 48 timeline -->
+        <div class="sec">
+          <span class="sec-tag">MÉTHODE 48 · timeline horizontale</span>
+          <div style="text-align:center; margin-bottom:30px;">
+            <div class="eyebrow">LA MÉTHODE 48</div>
+            <h2 class="st">48 heures, 4 temps pour verrouiller un chapitre</h2>
+          </div>
+          <div class="tl">
+            <div class="step"><div class="node">01</div><div style="font-family:'Patrick Hand SC';font-size:18px;">Comprendre</div><div class="lines" style="margin-top:8px;"><span class="bar w90"></span><span class="bar w70"></span></div></div>
+            <div class="step"><div class="node">02</div><div style="font-family:'Patrick Hand SC';font-size:18px;">S'entraîner</div><div class="lines" style="margin-top:8px;"><span class="bar w80"></span><span class="bar w60"></span></div></div>
+            <div class="step"><div class="node">03</div><div style="font-family:'Patrick Hand SC';font-size:18px;">Corriger</div><div class="lines" style="margin-top:8px;"><span class="bar w90"></span><span class="bar w50"></span></div></div>
+            <div class="step"><div class="node">04</div><div style="font-family:'Patrick Hand SC';font-size:18px;">Valider (quiz)</div><div class="lines" style="margin-top:8px;"><span class="bar w70"></span><span class="bar w60"></span></div></div>
+          </div>
+        </div>
+
+        <!-- pourquoi : feature rows -->
+        <div class="sec">
+          <span class="sec-tag">POURQUOI · lignes alternées</span>
+          <div style="margin-bottom:26px;"><div class="eyebrow">POURQUOI PRÉP-MATHS48</div><h2 class="st">Conçu pour réussir, pas pour s'éparpiller</h2></div>
+          <div class="grid" style="gap:22px;">
+            <div class="row" style="gap:26px; align-items:center;">
+              <div class="img" style="flex:0 0 240px; height:120px;">[ illustration · vidéos courtes ]</div>
+              <div class="lines" style="flex:1;"><div style="font-family:'Patrick Hand SC';font-size:20px;">Vidéos courtes & ciblées</div><span class="bar w90"></span><span class="bar w70"></span></div>
+            </div>
+            <div class="row" style="gap:26px; align-items:center; flex-direction:row-reverse;">
+              <div class="img" style="flex:0 0 240px; height:120px;">[ illustration · PDF premium ]</div>
+              <div class="lines" style="flex:1;"><div style="font-family:'Patrick Hand SC';font-size:20px;">Résumés, exercices, corrigés</div><span class="bar w90"></span><span class="bar w60"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- cours grid -->
+        <div class="sec">
+          <span class="sec-tag">COURS DISPONIBLES · filtres + grille</span>
+          <div class="between" style="margin-bottom:18px;"><div><div class="eyebrow">CATALOGUE</div><h2 class="st">Cours disponibles</h2></div><span class="btn ghost sm">Voir tout →</span></div>
+          <div class="row" style="gap:10px; margin-bottom:18px; flex-wrap:wrap;">
+            <span class="chip on">Bac Sciences Maths</span><span class="chip">Bac PC</span><span class="chip">Bac SVT</span><span class="chip acc">Médecine</span><span class="chip">ENSA/ENSAM</span><span class="chip">ENCG</span>
+          </div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="sk" style="padding:0; overflow:hidden;"><div class="img" style="border:0;border-bottom:2px solid var(--line);border-radius:0;height:110px;">[ vignette cours ]</div><div style="padding:14px;"><span class="pill">2ᵉ Bac SM</span><div style="font-family:'Patrick Hand SC';font-size:18px;margin:8px 0 6px;">Limites & continuité</div><div class="dim" style="font-size:13px;">14 vidéos · 4 PDF · ●●●○</div><span class="bar w60" style="margin-top:10px;display:block;"></span></div></div>
+            <div class="sk" style="padding:0; overflow:hidden;"><div class="img" style="border:0;border-bottom:2px solid var(--line);border-radius:0;height:110px;">[ vignette cours ]</div><div style="padding:14px;"><span class="pill">Médecine</span><div style="font-family:'Patrick Hand SC';font-size:18px;margin:8px 0 6px;">Probabilités concours</div><div class="dim" style="font-size:13px;">9 vidéos · 6 PDF · ●●●●</div><span class="bar w40" style="margin-top:10px;display:block;"></span></div></div>
+            <div class="sk" style="padding:0; overflow:hidden;"><div class="img" style="border:0;border-bottom:2px solid var(--line);border-radius:0;height:110px;">[ vignette cours ]</div><div style="padding:14px;"><span class="pill">ENSA</span><div style="font-family:'Patrick Hand SC';font-size:18px;margin:8px 0 6px;">Complexes — vitesse</div><div class="dim" style="font-size:13px;">11 vidéos · 3 PDF · ●●○○</div><span class="bar w80" style="margin-top:10px;display:block;"></span></div></div>
+          </div>
+        </div>
+
+        <!-- concours split -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">PRÉPA CONCOURS · split 2 colonnes</span>
+          <div style="text-align:center;margin-bottom:24px;"><div class="eyebrow">APRÈS LE BAC</div><h2 class="st">Préparation concours, à parts égales</h2></div>
+          <div class="row" style="gap:20px;">
+            <div class="sk" style="flex:1;padding:22px;background:#fbfaf6;"><div style="font-family:'Patrick Hand SC';font-size:22px;">Médecine & Santé</div><div class="dim" style="margin:6px 0 12px;">Concours communs · QCM chronométrés</div><span class="bar w90" style="display:block;margin-bottom:8px;"></span><span class="bar w70" style="display:block;"></span><span class="btn sm" style="margin-top:14px;">Découvrir</span></div>
+            <div class="sk" style="flex:1;padding:22px;background:#fbfaf6;"><div style="font-family:'Patrick Hand SC';font-size:22px;">Écoles d'ingénieurs & commerce</div><div class="dim" style="margin:6px 0 12px;">ENSA · ENSAM · ENCG · TAFEM</div><span class="bar w90" style="display:block;margin-bottom:8px;"></span><span class="bar w60" style="display:block;"></span><span class="btn sm" style="margin-top:14px;">Découvrir</span></div>
+          </div>
+        </div>
+
+        <!-- témoignages -->
+        <div class="sec">
+          <span class="sec-tag">TÉMOIGNAGES · cartes citations</span>
+          <div style="margin-bottom:22px;"><div class="eyebrow">ILS ONT RÉUSSI</div><h2 class="st">Témoignages d'élèves</h2></div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="sk" style="padding:18px;"><div style="font-size:30px;line-height:.5;color:var(--accent);">“</div><div class="lines" style="margin:6px 0 14px;"><span class="bar w90"></span><span class="bar w80"></span><span class="bar w50"></span></div><div class="row center" style="gap:10px;"><span class="img solid" style="width:34px;height:34px;border-radius:50%;"></span><div style="font-size:13px;"><b>Yasmine</b><br><span class="dim">Bac SM · Médecine</span></div></div></div>
+            <div class="sk" style="padding:18px;"><div style="font-size:30px;line-height:.5;color:var(--accent);">“</div><div class="lines" style="margin:6px 0 14px;"><span class="bar w80"></span><span class="bar w90"></span><span class="bar w40"></span></div><div class="row center" style="gap:10px;"><span class="img solid" style="width:34px;height:34px;border-radius:50%;"></span><div style="font-size:13px;"><b>Anas</b><br><span class="dim">Bac PC · ENSA</span></div></div></div>
+            <div class="sk" style="padding:18px;"><div style="font-size:30px;line-height:.5;color:var(--accent);">“</div><div class="lines" style="margin:6px 0 14px;"><span class="bar w90"></span><span class="bar w60"></span><span class="bar w70"></span></div><div class="row center" style="gap:10px;"><span class="img solid" style="width:34px;height:34px;border-radius:50%;"></span><div style="font-size:13px;"><b>Salma</b><br><span class="dim">Bac SVT · ENCG</span></div></div></div>
+          </div>
+        </div>
+
+        <!-- pricing -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">TARIFS · 3 offres</span>
+          <div style="text-align:center;margin-bottom:24px;"><div class="eyebrow">OFFRES</div><h2 class="st">Choisis ton parcours</h2></div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);align-items:start;">
+            <div class="sk price"><div class="eyebrow ink">GRATUIT</div><div class="stat-num">0 <span style="font-size:16px;" class="dim">DH</span></div><div class="lines"><span class="bar w80"></span><span class="bar w60"></span><span class="bar w70"></span></div><span class="btn">Créer un compte</span></div>
+            <div class="sk price feat"><div class="row between"><div class="eyebrow" style="color:var(--accent);">BAC PREMIUM</div><span class="pill" style="border-color:var(--accent);color:var(--accent);">populaire</span></div><div class="stat-num" style="color:#fff;">99 <span style="font-size:16px;color:#9aa6b4;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span><span class="bar w80"></span></div><span class="btn acc">Commencer</span></div>
+            <div class="sk price"><div class="eyebrow ink">BAC + CONCOURS</div><div class="stat-num">169 <span style="font-size:16px;" class="dim">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w80"></span><span class="bar w60"></span></div><span class="btn">Tout débloquer</span></div>
+          </div>
+        </div>
+
+        <!-- faq -->
+        <div class="sec">
+          <span class="sec-tag">FAQ · accordéon</span>
+          <div style="margin-bottom:18px;"><div class="eyebrow">QUESTIONS</div><h2 class="st">FAQ</h2></div>
+          <div class="lines" style="gap:12px;">
+            <div class="faq-item"><span>Les vidéos sont-elles téléchargeables&nbsp;?</span><span class="dim">＋</span></div>
+            <div class="faq-item"><span>Puis-je préparer plusieurs concours&nbsp;?</span><span class="dim">＋</span></div>
+            <div class="faq-item"><span>Comment fonctionne l'offre gratuite&nbsp;?</span><span class="dim">＋</span></div>
+          </div>
+        </div>
+
+        <!-- footer -->
+        <div class="footer">
+          <div class="row between" style="align-items:flex-start;">
+            <div style="flex:1;"><div class="logo" style="color:#fff;margin-bottom:12px;"><span class="mk">48</span>Prép-Maths</div><div class="lines" style="max-width:240px;"><span class="bar w90"></span><span class="bar w60"></span></div></div>
+            <div class="row" style="gap:50px;flex:1;justify-content:flex-end;">
+              <div class="lines"><b style="color:#fff;">Plateforme</b><span class="bar w50" style="width:80px;"></span><span class="bar w50" style="width:70px;"></span><span class="bar w50" style="width:90px;"></span></div>
+              <div class="lines"><b style="color:#fff;">Concours</b><span class="bar w50" style="width:80px;"></span><span class="bar w50" style="width:60px;"></span><span class="bar w50" style="width:90px;"></span></div>
+              <div class="lines"><b style="color:#fff;">Aide</b><span class="bar w50" style="width:70px;"></span><span class="bar w50" style="width:90px;"></span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VARIANT B — PARCOURS GUIDÉ -->
+  <!-- ============================================================ -->
+  <section class="page" data-variant="B">
+    <div class="browser">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">prepmaths48.ma</span></div>
+      <div class="canvas">
+
+        <div class="navbar between">
+          <div class="row center" style="gap:30px;">
+            <div class="logo"><span class="mk">48</span>Prép-Maths</div>
+            <div class="navlinks"><span>Cours</span><span>Parcours</span><span>Concours</span><span>Tarifs</span></div>
+          </div>
+          <div class="row center" style="gap:12px;"><span class="dim">Connexion</span><span class="btn acc sm">Commencer gratuitement</span></div>
+        </div>
+
+        <!-- HERO split product-led -->
+        <div class="sec" style="display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:center;background:#efeee7;">
+          <span class="sec-tag">HERO · texte + aperçu produit</span>
+          <div class="lines" style="gap:16px;">
+            <span class="pill">Parcours guidé 2ᵉ Bac → Concours</span>
+            <h1 class="hl">Un chemin clair,<br>étape par étape,<br>jusqu'à la réussite.</h1>
+            <div class="sub" style="max-width:420px;">On te dit quoi faire, dans quel ordre. Vidéos, PDF, quiz — tu avances, on suit ta progression.</div>
+            <div class="row" style="gap:12px;"><span class="btn acc">Commencer gratuitement →</span><span class="btn ghost">▷ Voir les cours</span></div>
+          </div>
+          <div style="position:relative;">
+            <div class="img" style="height:300px;">[ aperçu plateforme — dashboard élève + lecteur ]</div>
+            <div class="sk annot-float" style="bottom:-18px;left:-18px;background:#fbfaf6;padding:10px 14px;box-shadow:var(--shadow);">
+              <div class="row center" style="gap:10px;"><span class="img solid" style="width:34px;height:34px;border-radius:50%;"></span><div style="font-size:13px;"><b>Progression</b><br><span class="dim">68% du parcours</span></div></div>
+            </div>
+            <div class="sk annot-float" style="top:-16px;right:-14px;background:var(--accent);padding:8px 12px;border-color:var(--line);box-shadow:var(--shadow);font-size:14px;">+1 badge débloqué 🏅</div>
+          </div>
+        </div>
+
+        <div class="note-wrap"><div class="note"><b>Pourquoi cette piste</b>Vend le produit, pas la promesse. Le hero montre l'app + le côté « guidé » Duolingo : aucune décision pour l'élève.</div></div>
+
+        <!-- logos -->
+        <div class="sec" style="padding:22px 44px;display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;">
+          <span class="dim" style="font-family:'Space Mono';font-size:11px;">+12 000 ÉLÈVES MAROCAINS</span>
+          <span class="img solid" style="width:110px;height:30px;">logo</span><span class="img solid" style="width:110px;height:30px;">logo</span><span class="img solid" style="width:110px;height:30px;">logo</span>
+        </div>
+
+        <!-- VERTICAL PATH -->
+        <div class="sec">
+          <span class="sec-tag">PARCOURS · chemin vertical type Duolingo</span>
+          <div style="margin-bottom:30px;"><div class="eyebrow">TON PARCOURS</div><h2 class="st">De la 2ᵉ Bac au concours, en 48 jalons</h2></div>
+          <div class="path">
+            <div class="pnode"><span class="dot">1</span><div class="sk" style="padding:14px 16px;"><div class="between"><div style="font-family:'Patrick Hand SC';font-size:18px;">Bases & révisions Bac</div><span class="pill" style="color:var(--green);border-color:var(--green);">terminé</span></div><span class="bar w70" style="display:block;margin-top:8px;"></span></div></div>
+            <div class="pnode"><span class="dot">2</span><div class="sk" style="padding:14px 16px;"><div class="between"><div style="font-family:'Patrick Hand SC';font-size:18px;">Chapitres clés + quiz</div><span class="pill acc" style="border-color:var(--accent);">en cours</span></div><span class="bar w40" style="display:block;margin-top:8px;"></span></div></div>
+            <div class="pnode"><span class="dot">3</span><div class="sk" style="padding:14px 16px;opacity:.7;"><div class="between"><div style="font-family:'Patrick Hand SC';font-size:18px;">Annales Bac chronométrées</div><span class="pill">à venir</span></div></div></div>
+            <div class="pnode"><span class="dot">4</span><div class="sk" style="padding:14px 16px;opacity:.55;"><div class="between"><div style="font-family:'Patrick Hand SC';font-size:18px;">Spécial concours (Médecine / ENSA…)</div><span class="pill">à venir</span></div></div></div>
+          </div>
+        </div>
+
+        <!-- bento why -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">POURQUOI · bento asymétrique</span>
+          <div style="margin-bottom:24px;"><div class="eyebrow">POURQUOI</div><h2 class="st">Tout ce qu'il faut, au bon moment</h2></div>
+          <div class="bento">
+            <div class="sk cell span2 row2" style="background:var(--navy);color:#e7eaef;border-color:var(--navy);"><div class="eyebrow" style="color:var(--accent);">SUIVI</div><div style="font-family:'Patrick Hand SC';font-size:24px;">Progression & badges</div><div class="img" style="flex:1;background:#16212e;border-color:#3a4a5e;color:#9aa6b4;">[ graphe progression ]</div></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Vidéos courtes</div><span class="bar w70"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Quiz par module</div><span class="bar w60"></span></div>
+            <div class="sk cell span2"><div style="font-family:'Patrick Hand SC';font-size:18px;">PDF: résumé · exos · correction · pièges</div><span class="bar w80"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Mode examen</div><span class="bar w50"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Favoris</div><span class="bar w50"></span></div>
+          </div>
+        </div>
+
+        <!-- cours rail -->
+        <div class="sec">
+          <span class="sec-tag">COURS · rail horizontal par filière</span>
+          <div class="between" style="margin-bottom:16px;"><div><div class="eyebrow">CATALOGUE</div><h2 class="st">Cours par filière</h2></div><div class="row" style="gap:8px;"><span class="chip on">Bac SM</span><span class="chip">PC</span><span class="chip">SVT</span><span class="chip acc">Concours</span></div></div>
+          <div class="rail">
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-bottom:2px solid var(--line);border-radius:0;">[ vignette ]</div><div style="padding:12px;"><div style="font-family:'Patrick Hand SC';font-size:16px;">Dérivation</div><div class="dim" style="font-size:12px;">12 vidéos · 3 PDF</div></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-bottom:2px solid var(--line);border-radius:0;">[ vignette ]</div><div style="padding:12px;"><div style="font-family:'Patrick Hand SC';font-size:16px;">Intégrales</div><div class="dim" style="font-size:12px;">10 vidéos · 4 PDF</div></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-bottom:2px solid var(--line);border-radius:0;">[ vignette ]</div><div style="padding:12px;"><div style="font-family:'Patrick Hand SC';font-size:16px;">Suites</div><div class="dim" style="font-size:12px;">8 vidéos · 2 PDF</div></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;opacity:.6;"><div class="img thumb" style="border:0;border-bottom:2px solid var(--line);border-radius:0;">[ vignette ]</div><div style="padding:12px;"><div style="font-family:'Patrick Hand SC';font-size:16px;">Complexes</div><div class="dim" style="font-size:12px;">→ suite du rail</div></div></div>
+          </div>
+        </div>
+
+        <!-- concours -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">CONCOURS · bandeau 2 voies</span>
+          <div class="row" style="gap:20px;">
+            <div class="sk" style="flex:1;padding:22px;background:#fbfaf6;"><div style="font-family:'Patrick Hand SC';font-size:21px;">Médecine & Santé</div><span class="bar w80" style="display:block;margin:10px 0;"></span><span class="btn sm">Voir le parcours</span></div>
+            <div class="sk" style="flex:1;padding:22px;background:#fbfaf6;"><div style="font-family:'Patrick Hand SC';font-size:21px;">Ingénieurs & Commerce</div><span class="bar w70" style="display:block;margin:10px 0;"></span><span class="btn sm">Voir le parcours</span></div>
+          </div>
+        </div>
+
+        <!-- testimonial big -->
+        <div class="sec">
+          <span class="sec-tag">TÉMOIGNAGE · 1 grand + petits</span>
+          <div class="row" style="gap:22px;align-items:stretch;">
+            <div class="sk" style="flex:1.4;padding:26px;"><div style="font-size:40px;line-height:.4;color:var(--accent);">“</div><div style="font-family:'Caveat';font-size:26px;line-height:1.25;margin:10px 0;color:var(--ink);">Le parcours guidé m'a évité de me disperser. J'avançais sans me poser de questions.</div><div class="row center" style="gap:10px;"><span class="img solid" style="width:40px;height:40px;border-radius:50%;"></span><div style="font-size:13px;"><b>Imane</b> · Bac SM → Médecine Casa</div></div></div>
+            <div class="grid" style="flex:1;gap:14px;">
+              <div class="sk" style="padding:16px;"><div class="lines"><span class="bar w90"></span><span class="bar w60"></span></div></div>
+              <div class="sk" style="padding:16px;"><div class="lines"><span class="bar w80"></span><span class="bar w70"></span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- pricing -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">TARIFS · 3 offres</span>
+          <div style="text-align:center;margin-bottom:24px;"><div class="eyebrow">OFFRES</div><h2 class="st">3 offres simples</h2></div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);align-items:start;">
+            <div class="sk price"><div class="eyebrow ink">GRATUIT</div><div class="stat-num">0 <span class="dim" style="font-size:16px;">DH</span></div><div class="lines"><span class="bar w80"></span><span class="bar w60"></span></div><span class="btn">Créer un compte</span></div>
+            <div class="sk price feat"><div class="eyebrow" style="color:var(--accent);">BAC PREMIUM</div><div class="stat-num" style="color:#fff;">99 <span style="font-size:16px;color:#9aa6b4;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><span class="btn acc">Commencer</span></div>
+            <div class="sk price"><div class="eyebrow ink">BAC + CONCOURS</div><div class="stat-num">169 <span class="dim" style="font-size:16px;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><span class="btn">Tout débloquer</span></div>
+          </div>
+        </div>
+
+        <!-- faq + footer -->
+        <div class="sec">
+          <span class="sec-tag">FAQ</span>
+          <div class="lines" style="gap:12px;"><div class="faq-item"><span>Comment je sais quoi réviser&nbsp;?</span><span class="dim">＋</span></div><div class="faq-item"><span>Le parcours s'adapte-t-il à mon niveau&nbsp;?</span><span class="dim">＋</span></div></div>
+        </div>
+        <div class="footer">
+          <div class="row between" style="align-items:flex-start;"><div class="logo" style="color:#fff;"><span class="mk">48</span>Prép-Maths</div><div class="row" style="gap:50px;"><div class="lines"><b style="color:#fff;">Plateforme</b><span class="bar" style="width:80px;background:#3a4a5e;"></span><span class="bar" style="width:70px;background:#3a4a5e;"></span></div><div class="lines"><b style="color:#fff;">Aide</b><span class="bar" style="width:70px;background:#3a4a5e;"></span><span class="bar" style="width:90px;background:#3a4a5e;"></span></div></div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VARIANT C — ÉDITORIAL CENTRÉ -->
+  <!-- ============================================================ -->
+  <section class="page" data-variant="C">
+    <div class="browser">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">prepmaths48.ma</span></div>
+      <div class="canvas">
+
+        <!-- slim centered navbar -->
+        <div class="navbar" style="justify-content:center;gap:34px;">
+          <div class="navlinks"><span>Cours</span><span>Méthode</span></div>
+          <div class="logo"><span class="mk">48</span>Prép-Maths</div>
+          <div class="navlinks"><span>Concours</span><span>Connexion</span></div>
+        </div>
+
+        <!-- centered hero -->
+        <div class="sec" style="text-align:center;padding-top:56px;">
+          <span class="sec-tag">HERO · centré, type massive</span>
+          <div class="eyebrow" style="margin-bottom:14px;">2ᵉ BAC · MÉDECINE · ENSA · ENSAM · ENCG</div>
+          <h1 class="hl" style="font-size:60px;max-width:820px;margin:0 auto;">Maîtrise les maths du Bac.<br>Prépare les concours.<br>En <span style="color:var(--accent);">48</span>.</h1>
+          <div class="sub" style="max-width:560px;margin:20px auto 0;">Vidéos courtes, PDF pratiques, quiz et exercices corrigés. Une méthode claire et structurée pour les élèves marocains.</div>
+          <div class="row" style="gap:14px;justify-content:center;margin-top:26px;"><span class="btn acc">Commencer gratuitement →</span><span class="btn ghost">▷ Explorer les cours</span></div>
+          <div class="img" style="max-width:880px;height:300px;margin:42px auto 0;">[ aperçu plateforme — large bande produit ]</div>
+        </div>
+
+        <div class="note-wrap"><div class="note r"><b>Pourquoi cette piste</b>Sobriété maximale (Linear / Notion). Le « 48 » est une signature typographique. Confiance par l'épure, pas par l'abondance.</div></div>
+
+        <!-- big stat band -->
+        <div class="sec" style="background:var(--navy);color:#e7eaef;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;">
+          <span class="sec-tag" style="color:#54657a;">BANDEAU CHIFFRES</span>
+          <div><div class="stat-num" style="color:#fff;"><span class="u">48</span>h</div><div class="dim" style="color:#9aa6b4;font-size:14px;">par chapitre</div></div>
+          <div><div class="stat-num" style="color:#fff;">12k</div><div class="dim" style="color:#9aa6b4;font-size:14px;">élèves</div></div>
+          <div><div class="stat-num" style="color:#fff;">600+</div><div class="dim" style="color:#9aa6b4;font-size:14px;">vidéos</div></div>
+          <div><div class="stat-num" style="color:#fff;">94%</div><div class="dim" style="color:#9aa6b4;font-size:14px;">réussite</div></div>
+        </div>
+
+        <!-- méthode 4 phases -->
+        <div class="sec">
+          <span class="sec-tag">MÉTHODE 48 · 4 cartes-phases</span>
+          <div style="text-align:center;margin-bottom:28px;"><div class="eyebrow">LA MÉTHODE 48</div><h2 class="st">Quatre phases, zéro dispersion</h2></div>
+          <div class="grid" style="grid-template-columns:repeat(4,1fr);">
+            <div class="sk" style="padding:20px;"><div class="pill">01</div><div style="font-family:'Patrick Hand SC';font-size:19px;margin:10px 0 8px;">Comprendre</div><span class="bar w90" style="display:block;margin-bottom:6px;"></span><span class="bar w60" style="display:block;"></span></div>
+            <div class="sk" style="padding:20px;"><div class="pill">02</div><div style="font-family:'Patrick Hand SC';font-size:19px;margin:10px 0 8px;">S'entraîner</div><span class="bar w80" style="display:block;margin-bottom:6px;"></span><span class="bar w60" style="display:block;"></span></div>
+            <div class="sk" style="padding:20px;"><div class="pill">03</div><div style="font-family:'Patrick Hand SC';font-size:19px;margin:10px 0 8px;">Corriger</div><span class="bar w90" style="display:block;margin-bottom:6px;"></span><span class="bar w50" style="display:block;"></span></div>
+            <div class="sk" style="padding:20px;"><div class="pill">04</div><div style="font-family:'Patrick Hand SC';font-size:19px;margin:10px 0 8px;">Valider</div><span class="bar w70" style="display:block;margin-bottom:6px;"></span><span class="bar w60" style="display:block;"></span></div>
+          </div>
+        </div>
+
+        <!-- two-track toggle -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">DEUX VOIES · toggle Bac / Concours</span>
+          <div style="text-align:center;margin-bottom:22px;"><div class="eyebrow">DEUX OBJECTIFS, UNE PLATEFORME</div><h2 class="st">Bac &amp; Concours, à parts égales</h2></div>
+          <div class="row" style="gap:10px;justify-content:center;margin-bottom:22px;"><span class="chip on">🎓 Réussir le Bac</span><span class="chip">🏛 Préparer les concours</span></div>
+          <div class="row" style="gap:20px;">
+            <div class="sk" style="flex:1;padding:0;overflow:hidden;"><div class="img" style="border:0;border-bottom:2px solid var(--line);border-radius:0;height:140px;">[ aperçu cours Bac ]</div><div style="padding:18px;"><div style="font-family:'Patrick Hand SC';font-size:19px;">Programme 2ᵉ Bac complet</div><span class="bar w80" style="display:block;margin-top:8px;"></span></div></div>
+            <div class="sk" style="flex:1;padding:0;overflow:hidden;"><div class="img" style="border:0;border-bottom:2px solid var(--line);border-radius:0;height:140px;">[ aperçu prépa concours ]</div><div style="padding:18px;"><div style="font-family:'Patrick Hand SC';font-size:19px;">Médecine · ENSA · ENCG…</div><span class="bar w70" style="display:block;margin-top:8px;"></span></div></div>
+          </div>
+        </div>
+
+        <!-- pourquoi bento minimal -->
+        <div class="sec">
+          <span class="sec-tag">POURQUOI · bento épuré</span>
+          <div style="text-align:center;margin-bottom:24px;"><div class="eyebrow">POURQUOI PRÉP-MATHS48</div><h2 class="st">Pensé pour la performance</h2></div>
+          <div class="bento" style="grid-auto-rows:130px;">
+            <div class="sk cell span2"><div style="font-family:'Patrick Hand SC';font-size:20px;">Vidéos courtes, droit au but</div><span class="bar w70"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Quiz</div><span class="bar w50"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Badges</div><span class="bar w50"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">PDF premium</div><span class="bar w60"></span></div>
+            <div class="sk cell span2"><div style="font-family:'Patrick Hand SC';font-size:20px;">Pièges concours & erreurs fréquentes</div><span class="bar w80"></span></div>
+            <div class="sk cell"><div style="font-family:'Patrick Hand SC';font-size:18px;">Mode examen</div><span class="bar w50"></span></div>
+          </div>
+        </div>
+
+        <!-- testimonials marquee -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">TÉMOIGNAGES · marquee défilant</span>
+          <div style="text-align:center;margin-bottom:22px;"><div class="eyebrow">ILS ONT RÉUSSI</div></div>
+          <div class="rail">
+            <div class="sk" style="flex:0 0 280px;padding:16px;"><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><div class="dim" style="font-size:12px;margin-top:10px;">— Yasmine, Médecine</div></div>
+            <div class="sk" style="flex:0 0 280px;padding:16px;"><div class="lines"><span class="bar w80"></span><span class="bar w80"></span></div><div class="dim" style="font-size:12px;margin-top:10px;">— Anas, ENSA</div></div>
+            <div class="sk" style="flex:0 0 280px;padding:16px;"><div class="lines"><span class="bar w90"></span><span class="bar w50"></span></div><div class="dim" style="font-size:12px;margin-top:10px;">— Salma, ENCG</div></div>
+            <div class="sk" style="flex:0 0 280px;padding:16px;opacity:.6;"><div class="lines"><span class="bar w80"></span><span class="bar w60"></span></div><div class="dim" style="font-size:12px;margin-top:10px;">→ défile…</div></div>
+          </div>
+        </div>
+
+        <!-- pricing -->
+        <div class="sec">
+          <span class="sec-tag">TARIFS</span>
+          <div style="text-align:center;margin-bottom:24px;"><div class="eyebrow">OFFRES</div><h2 class="st">Tarifs transparents</h2></div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);align-items:start;">
+            <div class="sk price"><div class="eyebrow ink">GRATUIT</div><div class="stat-num">0 <span class="dim" style="font-size:16px;">DH</span></div><div class="lines"><span class="bar w80"></span><span class="bar w60"></span></div><span class="btn">Créer un compte</span></div>
+            <div class="sk price feat"><div class="eyebrow" style="color:var(--accent);">BAC PREMIUM</div><div class="stat-num" style="color:#fff;">99 <span style="font-size:16px;color:#9aa6b4;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><span class="btn acc">Commencer</span></div>
+            <div class="sk price"><div class="eyebrow ink">BAC + CONCOURS</div><div class="stat-num">169 <span class="dim" style="font-size:16px;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><span class="btn">Tout débloquer</span></div>
+          </div>
+        </div>
+
+        <!-- faq -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">FAQ</span>
+          <div class="lines" style="gap:12px;max-width:760px;margin:0 auto;"><div class="faq-item"><span>Les vidéos sont-elles protégées&nbsp;?</span><span class="dim">＋</span></div><div class="faq-item"><span>Puis-je changer d'offre&nbsp;?</span><span class="dim">＋</span></div></div>
+        </div>
+
+        <!-- footer -->
+        <div class="footer" style="text-align:center;">
+          <div class="logo" style="color:#fff;justify-content:center;margin-bottom:14px;"><span class="mk">48</span>Prép-Maths</div>
+          <div class="navlinks" style="justify-content:center;color:#9aa6b4;"><span>Cours</span><span>Concours</span><span>Tarifs</span><span>Aide</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- VARIANT D — CONTENU D'ABORD -->
+  <!-- ============================================================ -->
+  <section class="page" data-variant="D">
+    <div class="browser">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">prepmaths48.ma</span></div>
+      <div class="canvas">
+
+        <div class="navbar between" style="background:var(--navy);border-color:#0e1722;">
+          <div class="row center" style="gap:30px;"><div class="logo" style="color:#fff;"><span class="mk">48</span>Prép-Maths</div><div class="navlinks" style="color:#9aa6b4;"><span>Cours</span><span>Concours</span><span>Méthode</span><span>Tarifs</span></div></div>
+          <div class="row center" style="gap:12px;"><span style="color:#9aa6b4;">Connexion</span><span class="btn acc sm">Commencer gratuitement</span></div>
+        </div>
+
+        <!-- HERO dark, content backdrop -->
+        <div class="sec" style="background:var(--navy);color:#e7eaef;text-align:center;position:relative;overflow:hidden;padding:64px 44px;">
+          <span class="sec-tag" style="color:#54657a;">HERO · bandeau sombre sur grille de cours</span>
+          <!-- blurred thumb grid backdrop -->
+          <div style="position:absolute;inset:0;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding:18px;opacity:.16;filter:blur(1px);">
+            <div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div>
+            <div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div><div class="img" style="height:90px;"></div>
+          </div>
+          <div style="position:relative;z-index:2;">
+            <span class="pill" style="border-color:var(--accent);color:var(--accent);">+600 vidéos · Bac & Concours</span>
+            <h1 class="hl" style="color:#fff;font-size:50px;max-width:760px;margin:18px auto 0;">Tout le contenu pour réussir,<br>au même endroit.</h1>
+            <div class="sub" style="color:#aeb8c4;max-width:520px;margin:16px auto 0;">Vidéos, PDF, quiz et annales pour le Bac et les concours marocains. Crée ton compte, commence en 2 minutes.</div>
+            <div class="row" style="gap:14px;justify-content:center;margin-top:24px;"><span class="btn acc">Commencer gratuitement →</span><span class="btn ghost" style="color:#fff;border-color:#46566a;">▷ Voir une démo</span></div>
+          </div>
+        </div>
+
+        <div class="note-wrap"><div class="note"><b>Pourquoi cette piste</b>Logique Netflix : on montre l'abondance de contenu tout de suite. Les rails de cours remplacent le long discours marketing.</div></div>
+
+        <!-- content rails -->
+        <div class="sec">
+          <span class="sec-tag">CATALOGUE · rails type Netflix</span>
+          <div class="between" style="margin-bottom:14px;"><h2 class="st">Continue ta préparation</h2><span class="dim" style="font-size:13px;">‹ ›</span></div>
+          <div class="rail" style="margin-bottom:30px;">
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">Limites</div><span class="bar w50" style="display:block;margin-top:6px;"></span></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">Dérivées</div><span class="bar w70" style="display:block;margin-top:6px;"></span></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">Suites</div><span class="bar w30" style="display:block;margin-top:6px;"></span></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;opacity:.6;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">→ suite</div></div></div>
+          </div>
+          <div class="between" style="margin-bottom:14px;"><h2 class="st">Spécial concours Médecine</h2><span class="dim" style="font-size:13px;">‹ ›</span></div>
+          <div class="rail">
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">QCM probas</div></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">Annales 2024</div></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">Chrono 30min</div></div></div>
+            <div class="sk ccard" style="padding:0;overflow:hidden;opacity:.6;"><div class="img thumb" style="border:0;border-radius:0;border-bottom:2px solid var(--line);">[ vignette ]</div><div style="padding:10px;"><div style="font-family:'Patrick Hand SC';font-size:15px;">→ suite</div></div></div>
+          </div>
+        </div>
+
+        <!-- méthode ribbon -->
+        <div class="sec" style="background:#efeee7;display:flex;gap:30px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+          <span class="sec-tag">MÉTHODE 48 · ruban compact</span>
+          <div style="flex:1;min-width:260px;"><div class="eyebrow">LA MÉTHODE 48</div><h2 class="st">Chaque chapitre tient en 48h, 4 étapes</h2></div>
+          <div class="row" style="gap:10px;flex:1;min-width:300px;justify-content:flex-end;flex-wrap:wrap;">
+            <span class="chip acc">01 Comprendre</span><span class="chip acc">02 S'entraîner</span><span class="chip acc">03 Corriger</span><span class="chip acc">04 Valider</span>
+          </div>
+        </div>
+
+        <!-- why -->
+        <div class="sec">
+          <span class="sec-tag">POURQUOI · 3 colonnes</span>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="sk" style="padding:18px;"><div class="img solid" style="width:42px;height:42px;border-radius:10px;margin-bottom:10px;"></div><div style="font-family:'Patrick Hand SC';font-size:19px;">Vidéos sécurisées</div><div class="lines" style="margin-top:8px;"><span class="bar w90"></span><span class="bar w60"></span></div></div>
+            <div class="sk" style="padding:18px;"><div class="img solid" style="width:42px;height:42px;border-radius:10px;margin-bottom:10px;"></div><div style="font-family:'Patrick Hand SC';font-size:19px;">PDF par session</div><div class="lines" style="margin-top:8px;"><span class="bar w80"></span><span class="bar w70"></span></div></div>
+            <div class="sk" style="padding:18px;"><div class="img solid" style="width:42px;height:42px;border-radius:10px;margin-bottom:10px;"></div><div style="font-family:'Patrick Hand SC';font-size:19px;">Quiz + progression</div><div class="lines" style="margin-top:8px;"><span class="bar w90"></span><span class="bar w50"></span></div></div>
+          </div>
+        </div>
+
+        <!-- testimonials -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">TÉMOIGNAGES</span>
+          <div class="rail">
+            <div class="sk" style="flex:0 0 300px;padding:16px;"><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><div class="dim" style="font-size:12px;margin-top:8px;">— Yasmine, Médecine</div></div>
+            <div class="sk" style="flex:0 0 300px;padding:16px;"><div class="lines"><span class="bar w80"></span><span class="bar w80"></span></div><div class="dim" style="font-size:12px;margin-top:8px;">— Anas, ENSA</div></div>
+            <div class="sk" style="flex:0 0 300px;padding:16px;"><div class="lines"><span class="bar w90"></span><span class="bar w50"></span></div><div class="dim" style="font-size:12px;margin-top:8px;">— Salma, ENCG</div></div>
+          </div>
+        </div>
+
+        <!-- pricing -->
+        <div class="sec">
+          <span class="sec-tag">TARIFS</span>
+          <div style="text-align:center;margin-bottom:24px;"><div class="eyebrow">OFFRES</div><h2 class="st">Débloque tout le contenu</h2></div>
+          <div class="grid" style="grid-template-columns:repeat(3,1fr);align-items:start;">
+            <div class="sk price"><div class="eyebrow ink">GRATUIT</div><div class="stat-num">0 <span class="dim" style="font-size:16px;">DH</span></div><div class="lines"><span class="bar w80"></span><span class="bar w60"></span></div><span class="btn">Créer un compte</span></div>
+            <div class="sk price feat"><div class="eyebrow" style="color:var(--accent);">BAC PREMIUM</div><div class="stat-num" style="color:#fff;">99 <span style="font-size:16px;color:#9aa6b4;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><span class="btn acc">Commencer</span></div>
+            <div class="sk price"><div class="eyebrow ink">BAC + CONCOURS</div><div class="stat-num">169 <span class="dim" style="font-size:16px;">DH/mois</span></div><div class="lines"><span class="bar w90"></span><span class="bar w70"></span></div><span class="btn">Tout débloquer</span></div>
+          </div>
+        </div>
+
+        <!-- faq + footer -->
+        <div class="sec" style="background:#efeee7;">
+          <span class="sec-tag">FAQ</span>
+          <div class="lines" style="gap:12px;"><div class="faq-item"><span>Les vidéos sont-elles téléchargeables&nbsp;?</span><span class="dim">＋</span></div><div class="faq-item"><span>Combien de cours dans l'offre gratuite&nbsp;?</span><span class="dim">＋</span></div></div>
+        </div>
+        <div class="footer">
+          <div class="row between" style="align-items:flex-start;"><div class="logo" style="color:#fff;"><span class="mk">48</span>Prép-Maths</div><div class="row" style="gap:50px;"><div class="lines"><b style="color:#fff;">Plateforme</b><span class="bar" style="width:80px;background:#3a4a5e;"></span><span class="bar" style="width:70px;background:#3a4a5e;"></span></div><div class="lines"><b style="color:#fff;">Concours</b><span class="bar" style="width:70px;background:#3a4a5e;"></span><span class="bar" style="width:90px;background:#3a4a5e;"></span></div></div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- legend -->
+<div class="legend">
+  <span class="sw"><span class="b"></span> texte placeholder</span>
+  <span class="sw"><span class="i"></span> image / vidéo à fournir</span>
+  <span class="sw"><span class="a"></span> accent / CTA</span>
+  <span>· wireframes lo-fi — structure & hiérarchie, pas le visuel final ·</span>
+</div>
+
+<script>
+  var captions = {
+    A:'<b>Piste A — Compte à rebours.</b> Le "48" devient une promesse mesurable (48h / module). Hero asymétrique : argumentaire à gauche, minuteur-produit à droite. Urgence + crédibilité.',
+    B:'<b>Piste B — Parcours guidé.</b> Vend le produit et le côté "guidé" (Duolingo). Hero split avec aperçu app, puis un chemin vertical Bac→Concours. Pour l\'élève qui ne sait pas par où commencer.',
+    C:'<b>Piste C — Éditorial centré.</b> Sobriété Linear/Notion. Le "48" est une signature typographique. Hero centré, bandeau de chiffres, beaucoup d\'air. Confiance par l\'épure.',
+    D:'<b>Piste D — Contenu d\'abord.</b> Logique Netflix : on montre l\'abondance de cours immédiatement via des rails. Idéal si la richesse du catalogue est le principal argument.'
+  };
+  var tabs = document.querySelectorAll('.tab');
+  var pages = document.querySelectorAll('.page');
+  var caption = document.getElementById('caption');
+  function go(v){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.go===v); });
+    pages.forEach(function(p){ p.classList.toggle('active', p.dataset.variant===v); });
+    caption.innerHTML = captions[v];
+    window.scrollTo({top:0});
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ go(t.dataset.go); }); });
+  document.getElementById('tg-notes').addEventListener('change', function(e){
+    document.body.classList.toggle('no-notes', !e.target.checked);
+  });
+  document.getElementById('tg-accent').addEventListener('change', function(e){
+    document.body.classList.toggle('accent-cyan', e.target.checked);
+  });
+  go('A');
+</script>
+</body>
+</html>

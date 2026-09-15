@@ -1,0 +1,327 @@
+// Prép-Maths48 — schéma de base de données
+// Voir README pour la configuration PostgreSQL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------
+// Enums
+// ----------------------------------------------------------------
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+// Niveaux proposés. « Concours » regroupe la préparation post-bac.
+enum Level {
+  TRONC_COMMUN
+  BAC_1
+  BAC_2
+  CONCOURS
+}
+
+// Branches par niveau (voir TRACKS_BY_LEVEL dans src/types) :
+//  - Tronc commun : aucune
+//  - 1 Bac / 2 Bac : SM, S_EX
+//  - Concours : MEDECINE, ENSA
+enum Track {
+  SM // Sciences Mathématiques
+  S_EX // Sciences Expérimentales
+  MEDECINE // Concours Médecine
+  ENSA // Concours ENSA
+}
+
+enum CourseKind {
+  COURS // Programme 2ème année bac
+  CONCOURS // Préparation concours, par leçons de maths
+}
+
+enum VideoProvider {
+  LOCAL
+  BUNNY
+  CLOUDFLARE
+  VIMEO
+  YOUTUBE
+}
+
+enum ResourceType {
+  PDF
+  DOC
+  IMAGE
+  OTHER
+}
+
+enum Difficulty {
+  FACILE
+  MOYEN
+  DIFFICILE
+}
+
+enum SubscriptionPlan {
+  GRATUIT
+  COURS // Accès aux cours du programme 2ème année bac
+  CONCOURS // Accès aux leçons de préparation concours
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  REJECTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// ----------------------------------------------------------------
+// Utilisateurs
+// ----------------------------------------------------------------
+model User {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  role         Role       @default(STUDENT)
+  level        Level?
+  track        Track? // branche (ou concours) — cohérente avec level
+  city         String?
+  school       String?
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  subscriptions    Subscription[]
+  payments         Payment[]
+  lessonProgress   LessonProgress[]
+  courseProgress   CourseProgress[]
+  quizAttempts     QuizAttempt[]
+  notes            Note[]
+}
+
+// ----------------------------------------------------------------
+// Contenu pédagogique
+// ----------------------------------------------------------------
+model Course {
+  id               String      @id @default(cuid())
+  title            String
+  slug             String      @unique
+  description      String      @db.Text
+  shortDescription String?
+  thumbnailUrl     String?
+  level            Level?
+  track            Track? // null = toutes les branches du niveau
+  kind             CourseKind  @default(COURS) // dérivé de level (CONCOURS ↔ CONCOURS)
+  isPublished      Boolean     @default(false)
+  isPremium        Boolean     @default(true)
+  order            Int         @default(0)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  chapters       Chapter[]
+  resources      Resource[]
+  quizzes        Quiz[]
+  courseProgress CourseProgress[]
+}
+
+model Chapter {
+  id          String   @id @default(cuid())
+  courseId    String
+  title       String
+  description String?
+  order       Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+}
+
+model Lesson {
+  id            String        @id @default(cuid())
+  chapterId     String
+  title         String
+  description   String?       @db.Text
+  videoUrl      String?
+  videoProvider VideoProvider @default(LOCAL)
+  duration      Int           @default(0) // secondes
+  order         Int           @default(0)
+  isFreePreview Boolean       @default(false)
+  isPublished   Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  chapter   Chapter          @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  resources Resource[]
+  quizzes   Quiz[]
+  progress  LessonProgress[]
+  notes     Note[]
+}
+
+model Resource {
+  id            String       @id @default(cuid())
+  lessonId      String?
+  courseId      String?
+  title         String
+  fileUrl       String
+  fileType      ResourceType @default(PDF)
+  allowDownload Boolean      @default(false)
+  isPublished   Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  lesson Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  course Course? @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id          String   @id @default(cuid())
+  lessonId    String?
+  courseId    String?
+  title       String
+  description String?
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lesson    Lesson?       @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  course    Course?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  questions Question[]
+  attempts  QuizAttempt[]
+}
+
+model Question {
+  id            String     @id @default(cuid())
+  quizId        String
+  statement     String     @db.Text
+  optionA       String
+  optionB       String
+  optionC       String?
+  optionD       String?
+  optionE       String?
+  correctAnswer String // "A" | "B" | "C" | "D" | "E"
+  explanation   String?    @db.Text
+  tip           String?
+  difficulty    Difficulty @default(MOYEN)
+  order         Int        @default(0)
+
+  quiz    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+}
+
+// ----------------------------------------------------------------
+// Progression & quiz
+// ----------------------------------------------------------------
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  userId         String
+  quizId         String
+  score          Int      @default(0) // pourcentage 0-100
+  totalQuestions Int      @default(0)
+  correctAnswers Int      @default(0)
+  wrongAnswers   Int      @default(0)
+  duration       Int      @default(0) // secondes
+  createdAt      DateTime @default(now())
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quiz    Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  answers QuizAnswer[]
+}
+
+model QuizAnswer {
+  id             String  @id @default(cuid())
+  attemptId      String
+  questionId     String
+  selectedAnswer String?
+  isCorrect      Boolean @default(false)
+
+  attempt  QuizAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model LessonProgress {
+  id             String    @id @default(cuid())
+  userId         String
+  lessonId       String
+  isCompleted    Boolean   @default(false)
+  watchedSeconds Int       @default(0)
+  completedAt    DateTime?
+  updatedAt      DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model CourseProgress {
+  id               String   @id @default(cuid())
+  userId           String
+  courseId         String
+  progressPercent  Int      @default(0)
+  completedLessons Int      @default(0)
+  totalLessons     Int      @default(0)
+  updatedAt        DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+// ----------------------------------------------------------------
+// Abonnements & paiements
+// ----------------------------------------------------------------
+model Subscription {
+  id              String             @id @default(cuid())
+  userId          String
+  plan            SubscriptionPlan
+  status          SubscriptionStatus @default(PENDING)
+  startDate       DateTime?
+  endDate         DateTime?
+  paymentProvider String? // "manual" | "stripe" | ...
+  proofUrl        String? // preuve de paiement manuel
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  userId      String
+  amount      Int // en centimes (MAD)
+  currency    String        @default("MAD")
+  status      PaymentStatus @default(PENDING)
+  provider    String        @default("manual")
+  providerRef String?
+  plan        SubscriptionPlan?
+  createdAt   DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}

@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm -v)",
+      "Bash(npx -v)",
+      "Bash(npm install *)",
+      "Bash(cd /c/Users/abdelkader/Desktop/maths48 && ls node_modules 2>/dev/null | wc -l; echo \"---\"; tail -8 \"C:/Users/ABDELK~1/AppData/Local/Temp/claude/c--Users-abdelkader-Desktop-maths48/974ffd55-876a-4ebd-92ca-a466b62f16a0/tasks/bdi3zarwf.output\" 2>/dev/null)",
+      "Read(//c/c/Users/abdelkader/Desktop/maths48/**)",
+      "Bash(npx prisma *)",
+      "Bash(node scripts/make-demo-pdf.mjs)",
+      "Bash(ls \"C:/Users/abdelkader/.claude/projects/c--Users-abdelkader-Desktop-maths48/memory/\" 2>/dev/null && echo \"---\" && cat \"C:/Users/abdelkader/.claude/projects/c--Users-abdelkader-Desktop-maths48/memory/MEMORY.md\" 2>/dev/null || echo \"no memory dir/file yet\")",
+      "Read(//c/Users/abdelkader/.claude/projects/c--Users-abdelkader-Desktop-maths48/**)",
+      "Bash(netstat -ano)",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"login: HTTP %{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(npx tsx *)",
+      "Bash(curl -s -o /dev/null -w \"dashboard: HTTP %{http_code}\\\\n\" -L http://localhost:3000/dashboard)",
+      "Bash(xargs grep -l -i -E 'concours|tarif|pricing|offre|abonnement|plan|premium|medecine|ensa|encg')",
+      "PowerShell(npx prisma db push --force-reset --accept-data-loss)",
+      "PowerShell(npm run db:seed)",
+      "PowerShell(npm run build)",
+      "PowerShell(npm run dev)"
+    ]
+  }
+}

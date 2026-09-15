@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Connexion / Inscription</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f2ed; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482;
+  --r-lg:18px; --r-md:14px; --r-sm:11px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --shadow-lg:0 40px 80px -30px rgba(12,24,48,.4);
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15.5px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.12; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:16px; height:16px; }
+
+.wrap{ min-height:100vh; display:grid; grid-template-columns:1.05fr 1fr; }
+
+/* ===== brand panel ===== */
+.brand{ background:linear-gradient(160deg,var(--navy),var(--navy-2)); color:#e9eef7; position:relative; overflow:hidden; display:flex; flex-direction:column; padding:44px 56px; }
+.brand::after{ content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(680px 340px at 82% 8%, color-mix(in srgb,var(--accent) 26%, transparent), transparent 60%),
+            radial-gradient(520px 320px at 5% 110%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 60%); }
+.brand .grain{ position:absolute; inset:0; opacity:.05; background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px); background-size:44px 44px; mask-image:radial-gradient(80% 70% at 60% 10%,#000,transparent); }
+.brand > *{ position:relative; z-index:1; }
+.brand .logo{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:700; font-size:20px; color:#fff; }
+.brand .logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--accent); color:var(--accent-ink); padding:4px 9px; border-radius:9px; font-size:15px; }
+.brand-mid{ margin-top:auto; margin-bottom:auto; padding:40px 0; }
+.brand .eyebrow{ font-family:var(--font-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); display:inline-flex; align-items:center; gap:9px; margin-bottom:20px; }
+.brand .eyebrow::before{ content:""; width:24px; height:1.5px; background:currentColor; }
+.brand h1{ color:#fff; font-size:38px; letter-spacing:-.03em; max-width:440px; }
+.brand h1 .hl{ position:relative; white-space:nowrap; }
+.brand h1 .hl::after{ content:""; position:absolute; left:-2px; right:-2px; bottom:.07em; height:.32em; background:var(--accent); opacity:.4; border-radius:3px; z-index:-1; }
+.brand .lead{ color:#9fb0c9; font-size:16.5px; max-width:400px; margin-top:18px; }
+.proof{ display:grid; gap:14px; margin-top:34px; max-width:420px; }
+.proof .pi{ display:flex; align-items:center; gap:13px; }
+.proof .pi .pic{ width:38px; height:38px; border-radius:11px; flex:0 0 auto; display:grid; place-items:center; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); color:var(--accent); }
+.proof .pi .pt{ font-size:14.5px; color:#cdd8e8; } .proof .pi .pt b{ color:#fff; }
+.brand-foot{ display:flex; align-items:center; gap:14px; }
+.brand-foot .avatars{ display:flex; } .brand-foot .avatars span{ width:34px; height:34px; border-radius:50%; border:2.5px solid var(--navy); margin-left:-9px; background:linear-gradient(135deg,#41597d,#26456f); display:grid; place-items:center; font-family:var(--font-mono); font-size:10px; font-weight:700; color:#cdd8e8; }
+.brand-foot .avatars span:first-child{ margin-left:0; }
+.brand-foot .bt{ font-size:13.5px; color:#9fb0c9; } .brand-foot .bt b{ color:#fff; } .brand-foot .stars{ color:var(--accent); }
+
+/* ===== form panel ===== */
+.formside{ display:flex; align-items:center; justify-content:center; padding:40px 32px; position:relative; }
+.lang{ position:absolute; top:26px; right:32px; display:flex; align-items:center; gap:7px; font-size:13px; color:var(--muted); cursor:pointer; padding:7px 12px; border:1px solid var(--line); border-radius:9px; background:var(--surface); }
+.card{ width:100%; max-width:404px; }
+.card .mobile-logo{ display:none; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:19px; margin-bottom:26px; }
+.card .mobile-logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--accent); color:var(--accent-ink); padding:3px 8px; border-radius:8px; font-size:14px; }
+
+.tabs{ display:flex; background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:4px; margin-bottom:26px; }
+.tab{ flex:1; text-align:center; padding:10px; font-weight:600; font-size:14.5px; color:var(--muted); border-radius:9px; cursor:pointer; transition:.16s; }
+.tab.active{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm); }
+
+.card h2{ font-size:26px; margin-bottom:7px; }
+.card .sub{ color:var(--muted); margin-bottom:24px; font-size:15px; }
+
+.gbtn{ width:100%; display:flex; align-items:center; justify-content:center; gap:11px; padding:13px; border:1px solid var(--line); border-radius:var(--r-sm); background:var(--surface); font-family:var(--font-body); font-weight:600; font-size:15px; color:var(--ink); cursor:pointer; transition:.16s; }
+.gbtn:hover{ border-color:#cfd0c8; background:var(--surface-2); }
+.gbtn svg{ width:19px; height:19px; }
+.divider{ display:flex; align-items:center; gap:14px; margin:20px 0; color:var(--muted); font-size:12.5px; font-family:var(--font-mono); }
+.divider::before,.divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+.field{ margin-bottom:15px; }
+.field label{ display:block; font-size:13px; font-weight:600; color:var(--ink-2); margin-bottom:7px; }
+.input{ display:flex; align-items:center; gap:10px; border:1.5px solid var(--line); border-radius:var(--r-sm); background:var(--surface); padding:0 13px; transition:.15s; }
+.input:focus-within{ border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%, transparent); }
+.input svg{ color:var(--muted); }
+.input input{ flex:1; border:0; outline:none; background:none; font-family:var(--font-body); font-size:15px; color:var(--ink); padding:12px 0; }
+.input .toggle-pw{ cursor:pointer; color:var(--muted); }
+.input .toggle-pw:hover{ color:var(--ink); }
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.field.signup-only{ display:none; }
+body[data-mode="signup"] .field.signup-only{ display:block; }
+body[data-mode="signup"] .field.login-only{ display:none; }
+
+/* niveau select chips */
+.chips{ display:flex; gap:8px; flex-wrap:wrap; }
+.chip{ font-size:13px; font-weight:600; padding:8px 13px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface); color:var(--ink-2); cursor:pointer; transition:.14s; }
+.chip:hover{ border-color:#cfd0c8; } .chip.on{ background:var(--accent-soft); color:var(--accent-2); border-color:color-mix(in srgb,var(--accent) 35%,var(--line)); }
+
+.formrow{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:6px 0 20px; }
+.check{ display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--ink-2); cursor:pointer; }
+.check input{ width:17px; height:17px; accent-color:var(--accent); }
+.link-accent{ font-size:13.5px; font-weight:600; color:var(--accent-2); cursor:pointer; }
+
+.submit{ width:100%; padding:14px; border:0; border-radius:var(--r-sm); background:var(--accent); color:var(--accent-ink); font-family:var(--font-body); font-weight:700; font-size:15.5px; cursor:pointer; transition:.16s; display:flex; align-items:center; justify-content:center; gap:9px; box-shadow:0 8px 20px -8px color-mix(in srgb,var(--accent) 75%, transparent); }
+.submit:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.swap{ text-align:center; margin-top:22px; font-size:14px; color:var(--muted); }
+.swap b{ color:var(--accent-2); font-weight:600; cursor:pointer; }
+.secure-line{ display:flex; align-items:center; gap:8px; justify-content:center; margin-top:22px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted); }
+.pw-strength{ display:none; gap:5px; margin-top:9px; }
+body[data-mode="signup"] .pw-strength{ display:flex; }
+.pw-strength i{ flex:1; height:4px; border-radius:3px; background:var(--line); transition:.2s; }
+.pw-strength i.on{ background:var(--green); }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:900px){
+  .wrap{ grid-template-columns:1fr; }
+  .brand{ display:none; }
+  .card .mobile-logo{ display:flex; }
+  .lang{ top:18px; right:18px; }
+}
+@media (max-width:480px){
+  .formside{ padding:30px 18px; }
+  .row2{ grid-template-columns:1fr; }
+  #tweaks{ left:12px; right:12px; width:auto; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded" data-mode="login">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ic-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M9.9 5.2A9.5 9.5 0 0 1 12 5c6 0 10 7 10 7a17 17 0 0 1-3.2 3.8M6.5 7.5A17 17 0 0 0 2 12s4 7 10 7a9.5 9.5 0 0 0 3-.5"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="ic-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.5L7.5 21l4.5-2.5L16.5 21 15 13.5"/></symbol>
+  <symbol id="ic-route" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5"/></symbol>
+  <symbol id="ic-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="ic-secure" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+</svg>
+
+<div class="wrap">
+  <!-- brand -->
+  <div class="brand">
+    <div class="grain"></div>
+    <div class="logo"><span class="mk">48</span> Prép-Maths</div>
+    <div class="brand-mid">
+      <span class="eyebrow">Bac &amp; Concours · Maroc</span>
+      <h1>Ta réussite commence par un <span class="hl">premier pas</span>.</h1>
+      <p class="lead">Rejoins +12 000 élèves marocains qui préparent le Bac et les concours avec une méthode claire et un parcours guidé.</p>
+      <div class="proof">
+        <div class="pi"><span class="pic"><svg class="icon sm"><use href="#ic-play"/></svg></span><div class="pt"><b>600+ vidéos courtes</b> & PDF par session</div></div>
+        <div class="pi"><span class="pic"><svg class="icon sm"><use href="#ic-route"/></svg></span><div class="pt"><b>Parcours guidé</b> du chapitre au concours</div></div>
+        <div class="pi"><span class="pic"><svg class="icon sm"><use href="#ic-award"/></svg></span><div class="pt"><b>94% de réussite</b> chez les élèves assidus</div></div>
+      </div>
+    </div>
+    <div class="brand-foot">
+      <div class="avatars"><span>YA</span><span>AN</span><span>SA</span><span>IM</span><span>+</span></div>
+      <div class="bt"><span class="stars">★★★★★</span> <b>4,9/5</b> · « داكشي اللي خصني باش نجحت »</div>
+    </div>
+  </div>
+
+  <!-- form -->
+  <div class="formside">
+    <div class="lang"><svg class="icon sm"><use href="#ic-globe"/></svg> FR <svg class="icon sm" style="width:13px"><use href="#ic-arrow"/></svg></div>
+    <div class="card">
+      <div class="mobile-logo"><span class="mk">48</span> Prép-Maths</div>
+
+      <div class="tabs">
+        <div class="tab active" data-mode="login">Connexion</div>
+        <div class="tab" data-mode="signup">Inscription</div>
+      </div>
+
+      <h2 id="title">Bon retour 👋</h2>
+      <p class="sub" id="subtitle">Connecte-toi pour reprendre ton parcours.</p>
+
+      <button class="gbtn">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#4285F4" d="M22.5 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-2 3.2-4.9 3.2-7.8z"/><path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.6-2.7c-1 .7-2.3 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H2.3v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M6 14.3a6.6 6.6 0 0 1 0-4.2V7.3H2.3a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.5c1.6 0 3 .5 4.1 1.6l3.1-3.1A11 11 0 0 0 2.3 7.3L6 10.1c.9-2.6 3.2-4.6 6-4.6z"/></svg>
+        Continuer avec Google
+      </button>
+
+      <div class="divider">OU AVEC TON EMAIL</div>
+
+      <form id="authForm" onsubmit="return false;">
+        <div class="row2 field signup-only">
+          <div>
+            <label>Prénom</label>
+            <div class="input"><svg class="icon sm"><use href="#ic-user"/></svg><input type="text" placeholder="Yasmine"></div>
+          </div>
+          <div>
+            <label>Nom</label>
+            <div class="input"><input type="text" placeholder="Alaoui" style="padding-left:2px;"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Adresse email</label>
+          <div class="input"><svg class="icon sm"><use href="#ic-mail"/></svg><input type="email" placeholder="ton.email@exemple.ma"></div>
+        </div>
+
+        <div class="field signup-only">
+          <label>Tu prépares…</label>
+          <div class="chips" id="levelChips">
+            <span class="chip on">2ᵉ Bac SM</span>
+            <span class="chip">Bac PC</span>
+            <span class="chip">Bac SVT</span>
+            <span class="chip">Concours</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Mot de passe</label>
+          <div class="input"><svg class="icon sm"><use href="#ic-lock"/></svg><input type="password" id="pw" placeholder="••••••••"><span class="toggle-pw" id="togglePw"><svg class="icon sm"><use href="#ic-eye"/></svg></span></div>
+          <div class="pw-strength" id="pwStrength"><i></i><i></i><i></i><i></i></div>
+        </div>
+
+        <div class="formrow">
+          <label class="check"><input type="checkbox" id="remember"> <span id="checkLabel">Se souvenir de moi</span></label>
+          <span class="link-accent login-only">Mot de passe oublié ?</span>
+        </div>
+
+        <button class="submit" type="submit"><span id="submitText">Se connecter</span> <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg></button>
+      </form>
+
+      <div class="swap" id="swap">Pas encore de compte ? <b data-go="signup">Inscris-toi gratuitement</b></div>
+      <div class="secure-line"><svg class="icon sm"><use href="#ic-secure"/></svg> Connexion sécurisée · tes données restent privées</div>
+    </div>
+  </div>
+</div>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Mode</label><div class="seg" data-key="mode"><button data-val="login" class="on">Connexion</button><button data-val="signup">Inscription</button></div></div>
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "mode": "login",
+  "accent": "amber",
+  "corners": "rounded"
+}/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_auth_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+
+  function applyMode(m){
+    document.body.setAttribute('data-mode', m);
+    document.querySelectorAll('.tabs .tab').forEach(function(t){ t.classList.toggle('active', t.dataset.mode===m); });
+    var signup = m==='signup';
+    document.getElementById('title').textContent = signup ? 'Crée ton compte' : 'Bon retour 👋';
+    document.getElementById('subtitle').textContent = signup ? 'Gratuit, sans carte bancaire. Commence en 2 minutes.' : 'Connecte-toi pour reprendre ton parcours.';
+    document.getElementById('submitText').textContent = signup ? 'Créer mon compte gratuit' : 'Se connecter';
+    document.getElementById('checkLabel').textContent = signup ? "J'accepte les conditions d'utilisation" : 'Se souvenir de moi';
+    document.getElementById('swap').innerHTML = signup ? 'Déjà inscrit ? <b data-go="login">Connecte-toi</b>' : 'Pas encore de compte ? <b data-go="signup">Inscris-toi gratuitement</b>';
+    bindSwap();
+  }
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    applyMode(state.mode);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+
+  // tabs
+  document.querySelectorAll('.tabs .tab').forEach(function(t){ t.addEventListener('click', function(){ setKey('mode', t.dataset.mode); }); });
+  // swap link
+  function bindSwap(){ document.querySelectorAll('#swap b[data-go]').forEach(function(b){ b.addEventListener('click', function(){ setKey('mode', b.dataset.go); }); }); }
+
+  // password toggle
+  var pw=document.getElementById('pw'), tg=document.getElementById('togglePw');
+  tg.addEventListener('click', function(){ var show=pw.type==='password'; pw.type=show?'text':'password';
+    tg.querySelector('use').setAttribute('href', show?'#ic-eye-off':'#ic-eye'); });
+  // password strength
+  pw.addEventListener('input', function(){ var v=pw.value, s=0; if(v.length>=6)s++; if(v.length>=10)s++; if(/[0-9]/.test(v))s++; if(/[^a-zA-Z0-9]/.test(v))s++;
+    var bars=document.querySelectorAll('#pwStrength i'); bars.forEach(function(b,i){ b.classList.toggle('on', i<s); }); });
+  // level chips
+  document.querySelectorAll('#levelChips .chip').forEach(function(c){ c.addEventListener('click', function(){ document.querySelectorAll('#levelChips .chip').forEach(function(x){ x.classList.remove('on'); }); c.classList.add('on'); }); });
+
+  apply();
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

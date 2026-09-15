@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef0ea; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482; --green-soft:#dcf2e8; --red:#cf5b54; --red-soft:#f7e0de;
+  --r-lg:20px; --r-md:15px; --r-sm:11px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --shadow-lg:0 40px 80px -30px rgba(12,24,48,.4), 0 16px 40px -20px rgba(12,24,48,.25);
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.14; letter-spacing:-.02em; margin:0; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:16px; height:16px; } .icon.lg{ width:24px; height:24px; }
+.btn{ display:inline-flex; align-items:center; gap:9px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:15.5px; cursor:pointer; padding:13px 22px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn:disabled{ opacity:.45; cursor:not-allowed; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 16px -7px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:not(:disabled):hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); } .btn-ghost:hover{ border-color:#d2d3cb; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); }
+.btn-light{ background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.22); } .btn-light:hover{ background:rgba(255,255,255,.2); }
+.btn-lg{ padding:15px 28px; font-size:16.5px; }
+
+/* ===== focus topbar ===== */
+.topbar{ position:sticky; top:0; z-index:40; background:var(--navy); color:#cdd8e8; }
+.topbar .row{ display:flex; align-items:center; gap:16px; padding:13px 24px; max-width:980px; margin:0 auto; }
+.topbar .quit{ display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:14px; color:#e9eef7; padding:7px 13px; border-radius:10px; border:1px solid rgba(255,255,255,.16); cursor:pointer; }
+.topbar .quit:hover{ background:rgba(255,255,255,.08); }
+.topbar .qname{ font-size:14px; color:#8497b2; }
+.topbar .qname b{ color:#fff; }
+.topbar .right{ margin-left:auto; display:flex; align-items:center; gap:14px; }
+.timer{ display:inline-flex; align-items:center; gap:8px; font-family:var(--font-mono); font-weight:700; font-size:15px; color:#fff; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); padding:7px 13px; border-radius:10px; }
+.timer.warn{ color:#ffd9a0; border-color:rgba(243,169,58,.5); background:rgba(243,169,58,.12); }
+.timer .ic{ color:var(--accent); }
+/* progress segments */
+.qprogress{ max-width:980px; margin:0 auto; padding:14px 24px 0; display:flex; gap:6px; }
+.qseg{ flex:1; height:6px; border-radius:6px; background:var(--line); overflow:hidden; transition:.3s; }
+.qseg.done{ background:var(--green); } .qseg.wrong{ background:var(--red); } .qseg.current{ background:var(--accent); }
+
+/* ===== stage ===== */
+.stage{ max-width:980px; margin:0 auto; padding:30px 24px 70px; }
+
+/* question screen */
+.qmeta{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
+.qmeta .qn{ font-family:var(--font-mono); font-size:13px; color:var(--muted); }
+.qmeta .qn b{ color:var(--ink); font-size:15px; }
+.qmeta .tags{ display:flex; gap:8px; }
+.qmeta .tg{ font-family:var(--font-mono); font-size:11px; padding:4px 10px; border-radius:7px; background:var(--surface); border:1px solid var(--line); color:var(--ink-2); }
+.qmeta .tg.acc{ background:var(--accent-soft); color:var(--accent-2); border-color:color-mix(in srgb,var(--accent) 30%,var(--line)); }
+
+.qcard{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-md); overflow:hidden; }
+.qhead{ padding:30px 32px 24px; border-bottom:1px solid var(--line-2); }
+.qhead .qlabel{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--accent-2); text-transform:uppercase; margin-bottom:12px; }
+.qhead h2{ font-size:24px; line-height:1.3; }
+.qhead .formula{ font-family:var(--font-mono); font-size:17px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin-top:16px; display:inline-block; color:var(--ink); }
+.qhint{ font-size:13.5px; color:var(--muted); margin-top:12px; display:flex; align-items:center; gap:8px; }
+
+.options{ padding:22px 32px 26px; display:grid; gap:12px; }
+.opt{ display:flex; align-items:center; gap:15px; padding:16px 18px; border:1.5px solid var(--line); border-radius:var(--r-md); cursor:pointer; transition:.14s; background:var(--surface); text-align:left; font-family:var(--font-body); font-size:16px; color:var(--ink); width:100%; }
+.opt:hover{ border-color:#cdd0c4; background:var(--surface-2); }
+.opt .key{ width:34px; height:34px; border-radius:9px; flex:0 0 auto; display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:14px; background:var(--line-2); color:var(--ink-2); transition:.14s; }
+.opt .txt{ flex:1; }
+.opt .mk{ width:24px; height:24px; flex:0 0 auto; display:grid; place-items:center; opacity:0; transition:.14s; }
+.opt.selected{ border-color:var(--accent); background:var(--accent-soft); }
+.opt.selected .key{ background:var(--accent); color:var(--accent-ink); }
+/* answered states */
+.answered .opt{ cursor:default; }
+.answered .opt:hover{ background:var(--surface); border-color:var(--line); }
+.opt.correct{ border-color:var(--green); background:var(--green-soft); }
+.opt.correct .key{ background:var(--green); color:#fff; }
+.opt.correct .mk{ opacity:1; color:var(--green); }
+.answered .opt.correct:hover{ background:var(--green-soft); border-color:var(--green); }
+.opt.incorrect{ border-color:var(--red); background:var(--red-soft); }
+.opt.incorrect .key{ background:var(--red); color:#fff; }
+.opt.incorrect .mk{ opacity:1; color:var(--red); }
+.answered .opt.incorrect:hover{ background:var(--red-soft); border-color:var(--red); }
+.opt.dim{ opacity:.5; }
+
+/* explanation */
+.explain{ margin:0 32px 28px; border-radius:var(--r-md); padding:20px 22px; display:none; }
+.explain.show{ display:block; animation:slideIn .3s ease; }
+@keyframes slideIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+.explain.good{ background:var(--green-soft); border:1px solid color-mix(in srgb,var(--green) 35%,var(--line)); }
+.explain.bad{ background:var(--red-soft); border:1px solid color-mix(in srgb,var(--red) 30%,var(--line)); }
+.explain .eh{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:600; font-size:16.5px; margin-bottom:8px; }
+.explain.good .eh{ color:#1c8f63; } .explain.bad .eh{ color:#b8453e; }
+.explain p{ margin:0; color:var(--ink-2); font-size:14.5px; }
+.explain .formula{ font-family:var(--font-mono); font-size:13.5px; background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin-top:10px; display:inline-block; }
+
+.qfoot{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:0 4px; margin-top:22px; }
+.qfoot .left{ display:flex; align-items:center; gap:12px; }
+.flag{ display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--muted); cursor:pointer; padding:8px 12px; border-radius:9px; }
+.flag:hover{ color:var(--ink); background:var(--surface); }
+.flag.on{ color:var(--accent-2); }
+.score-live{ font-family:var(--font-mono); font-size:13px; color:var(--muted); }
+.score-live b{ color:var(--green); }
+
+/* ===== results screen ===== */
+.results{ display:none; }
+.results.show{ display:block; animation:slideIn .4s ease; }
+.res-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-lg); overflow:hidden; }
+.res-top{ background:linear-gradient(140deg,var(--navy),var(--navy-2)); color:#e9eef7; padding:42px 36px; text-align:center; position:relative; overflow:hidden; }
+.res-top::after{ content:""; position:absolute; inset:0; background:radial-gradient(500px 240px at 50% -10%, color-mix(in srgb,var(--accent) 24%, transparent), transparent 60%); }
+.res-top > *{ position:relative; z-index:1; }
+.res-emoji{ font-size:46px; margin-bottom:6px; }
+.res-ring{ width:168px; height:168px; border-radius:50%; margin:8px auto 18px; position:relative; display:grid; place-items:center;
+  background:conic-gradient(var(--accent) 0 var(--deg,288deg), rgba(255,255,255,.14) var(--deg,288deg) 360deg); }
+.res-ring::after{ content:""; width:130px; height:130px; border-radius:50%; background:var(--navy); }
+.res-ring .rv{ position:absolute; text-align:center; }
+.res-ring .rv b{ font-family:var(--font-display); font-weight:700; font-size:44px; color:#fff; display:block; line-height:1; }
+.res-ring .rv span{ font-size:13px; color:#9fb0c9; }
+.res-top h1{ color:#fff; font-size:27px; margin-bottom:6px; }
+.res-top p{ color:#9fb0c9; margin:0; font-size:15.5px; }
+.res-stats{ display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid var(--line-2); }
+.res-stat{ padding:22px; text-align:center; border-right:1px solid var(--line-2); }
+.res-stat:last-child{ border-right:0; }
+.res-stat .v{ font-family:var(--font-display); font-weight:700; font-size:26px; }
+.res-stat .v.good{ color:var(--green); } .res-stat .v.bad{ color:var(--red); }
+.res-stat .l{ font-size:13px; color:var(--muted); margin-top:3px; }
+.res-body{ padding:28px 32px 30px; }
+.reco{ display:flex; gap:16px; padding:20px; border-radius:var(--r-md); background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line)); margin-bottom:18px; }
+.reco .ic{ width:46px; height:46px; border-radius:13px; flex:0 0 auto; display:grid; place-items:center; background:var(--accent); color:var(--accent-ink); }
+.reco h3{ font-size:17px; margin-bottom:5px; }
+.reco p{ margin:0; color:var(--ink-2); font-size:14.5px; }
+.review-list{ display:grid; gap:10px; margin-bottom:24px; }
+.review-list .rl-h{ font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+.rev{ display:flex; align-items:center; gap:13px; padding:13px 15px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface-2); cursor:pointer; transition:.14s; }
+.rev:hover{ border-color:#d4d5cc; }
+.rev .st{ width:28px; height:28px; border-radius:8px; flex:0 0 auto; display:grid; place-items:center; }
+.rev .st.ok{ background:var(--green-soft); color:#1c8f63; } .rev .st.ko{ background:var(--red-soft); color:var(--red); }
+.rev .ri{ flex:1; min-width:0; } .rev .ri h4{ font-size:14.5px; font-family:var(--font-display); font-weight:600; }
+.rev .ri span{ font-size:12.5px; color:var(--muted); }
+.rev .go{ color:var(--muted); }
+.res-actions{ display:flex; gap:12px; flex-wrap:wrap; }
+.res-actions .btn{ flex:1; min-width:160px; }
+.unlock{ display:flex; align-items:center; gap:9px; justify-content:center; font-size:13.5px; color:#1c8f63; font-weight:600; margin-top:16px; }
+
+/* start overlay */
+.start-screen{ display:none; }
+.start-screen.show{ display:block; }
+.start-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); box-shadow:var(--shadow-md); padding:40px 36px; text-align:center; max-width:560px; margin:20px auto 0; }
+.start-card .badge{ width:74px; height:74px; border-radius:20px; margin:0 auto 18px; display:grid; place-items:center; background:var(--accent-soft); color:var(--accent-2); }
+.start-card h1{ font-size:27px; margin-bottom:8px; }
+.start-card .desc{ color:var(--muted); margin-bottom:24px; }
+.start-meta{ display:flex; justify-content:center; gap:0; border:1px solid var(--line); border-radius:var(--r-md); overflow:hidden; margin-bottom:26px; }
+.start-meta .sm{ flex:1; padding:16px; border-right:1px solid var(--line-2); }
+.start-meta .sm:last-child{ border-right:0; }
+.start-meta .sm .v{ font-family:var(--font-display); font-weight:700; font-size:20px; }
+.start-meta .sm .l{ font-size:12.5px; color:var(--muted); }
+.start-note{ font-size:13px; color:var(--muted); margin-top:18px; display:flex; align-items:center; gap:8px; justify-content:center; }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:640px){
+  .topbar .qname{ display:none; }
+  .qhead{ padding:24px 20px 20px; } .qhead h2{ font-size:20px; }
+  .options{ padding:18px 20px 22px; } .explain{ margin:0 20px 22px; }
+  .res-stats{ grid-template-columns:1fr; } .res-stat{ border-right:0; border-bottom:1px solid var(--line-2); }
+  .stage{ padding:22px 16px 60px; }
+  #tweaks{ left:12px; right:12px; width:auto; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="ic-x2" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+  <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M6 21V4M6 4h11l-2 4 2 4H6"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="ic-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.6.6-1 1.2-1 2H9c0-.8-.4-1.4-1-2A6 6 0 0 1 12 3z"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-replay" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v4h4"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.7 2.3-2.7 4"/><path d="M12 17.5h.01"/></symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></symbol>
+</svg>
+
+<!-- topbar -->
+<div class="topbar">
+  <div class="row">
+    <div class="quit"><svg class="icon sm"><use href="#ic-x"/></svg> Quitter</div>
+    <div class="qname">Quiz · <b>Limites &amp; continuité</b></div>
+    <div class="right">
+      <div class="timer" id="timer"><span class="ic"><svg class="icon sm" style="stroke:var(--accent)"><use href="#ic-clock"/></svg></span> <span id="timeText">12:00</span></div>
+    </div>
+  </div>
+  <div class="qprogress" id="qprogress"></div>
+</div>
+
+<div class="stage">
+
+  <!-- ===== START SCREEN ===== -->
+  <div class="start-screen show" id="startScreen">
+    <div class="start-card">
+      <div class="badge"><svg class="icon lg" style="stroke:var(--accent-2)"><use href="#ic-help"/></svg></div>
+      <h1>Quiz — Limites &amp; continuité</h1>
+      <p class="desc">Valide ce que tu viens d'apprendre. Une explication s'affiche après chaque réponse.</p>
+      <div class="start-meta">
+        <div class="sm"><div class="v">5</div><div class="l">questions</div></div>
+        <div class="sm"><div class="v">12:00</div><div class="l">chronomètre</div></div>
+        <div class="sm"><div class="v">70%</div><div class="l">pour valider</div></div>
+      </div>
+      <button class="btn btn-primary btn-lg" id="startBtn" style="width:100%;"><svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-play"/></svg> Commencer le quiz</button>
+      <div class="start-note"><svg class="icon sm"><use href="#ic-unlock"/></svg> Réussir débloque la session suivante du parcours.</div>
+    </div>
+  </div>
+
+  <!-- ===== QUESTION SCREEN ===== -->
+  <div id="quizScreen" style="display:none;">
+    <div class="qmeta">
+      <div class="qn">Question <b id="qCur">1</b> / 5</div>
+      <div class="tags">
+        <span class="tg acc" id="qTopic">Limites</span>
+        <span class="tg" id="qDiff">Intermédiaire</span>
+      </div>
+    </div>
+
+    <div class="qcard" id="qcard">
+      <div class="qhead">
+        <div class="qlabel" id="qLabel">QCM · une seule bonne réponse</div>
+        <h2 id="qText">Question…</h2>
+        <div class="formula" id="qFormula" style="display:none;"></div>
+        <div class="qhint" id="qHint" style="display:none;"></div>
+      </div>
+      <div class="options" id="options"></div>
+      <div class="explain" id="explain">
+        <div class="eh" id="explainHead"></div>
+        <p id="explainText"></p>
+      </div>
+    </div>
+
+    <div class="qfoot">
+      <div class="left">
+        <div class="flag" id="flagBtn"><svg class="icon sm"><use href="#ic-flag"/></svg> Signaler</div>
+        <span class="score-live">Score : <b id="scoreLive">0</b>/5</span>
+      </div>
+      <button class="btn btn-primary" id="nextBtn" disabled>Valider <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <div class="results" id="resultsScreen">
+    <div class="res-card">
+      <div class="res-top">
+        <div class="res-emoji" id="resEmoji">🎉</div>
+        <div class="res-ring" id="resRing"><div class="rv"><b id="resPct">80%</b><span>de réussite</span></div></div>
+        <h1 id="resTitle">Bien joué !</h1>
+        <p id="resSubtitle">Tu as validé ce quiz.</p>
+      </div>
+      <div class="res-stats">
+        <div class="res-stat"><div class="v good" id="resGood">4</div><div class="l">bonnes réponses</div></div>
+        <div class="res-stat"><div class="v bad" id="resBad">1</div><div class="l">erreurs</div></div>
+        <div class="res-stat"><div class="v" id="resTime">3:24</div><div class="l">temps</div></div>
+      </div>
+      <div class="res-body">
+        <div class="reco" id="recoBox">
+          <span class="ic"><svg class="icon lg" style="stroke:var(--accent-ink)"><use href="#ic-target"/></svg></span>
+          <div>
+            <h3 id="recoTitle">Recommandation de révision</h3>
+            <p id="recoText">Revois la composition des limites avant de passer à la suite.</p>
+          </div>
+        </div>
+        <div class="review-list" id="reviewList">
+          <div class="rl-h">Détail de tes réponses</div>
+        </div>
+        <div class="res-actions">
+          <button class="btn btn-ghost" id="retryBtn"><svg class="icon sm"><use href="#ic-replay"/></svg> Refaire le quiz</button>
+          <button class="btn btn-primary" id="continueBtn">Continuer le parcours <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg></button>
+        </div>
+        <div class="unlock" id="unlockNote"><svg class="icon sm" style="stroke:#1c8f63"><use href="#ic-unlock"/></svg> Session suivante débloquée !</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+    <div class="tk-row"><label>Chronomètre</label><div class="seg" data-key="timer"><button data-val="on" class="on">Activé</button><button data-val="off">Désactivé</button></div></div>
+  </div>
+</aside>
+
+<script>
+var QUESTIONS = [
+  { topic:'Limites', diff:'Intermédiaire', label:'QCM · une seule bonne réponse',
+    text:'Quelle est la limite de la fonction quand x tend vers +∞ ?',
+    formula:'f(x) = (3x² + 5x) / (x² − 1)',
+    options:['0','3','+∞','1'], correct:1,
+    why:'On compare les termes de plus haut degré : 3x²/x² = 3. Les autres termes deviennent négligeables.' },
+  { topic:'Continuité', diff:'Débutant', label:'QCM · une seule bonne réponse',
+    text:'Une fonction est continue en a si et seulement si :',
+    options:['f(a) existe','lim f(x) = f(a) quand x→a','f est dérivable en a','f(a) = 0'], correct:1,
+    why:'La continuité en a exige que la limite de f en a existe ET soit égale à f(a). La dérivabilité est une condition plus forte.' },
+  { topic:'Composition', diff:'Avancé', label:'QCM · une seule bonne réponse',
+    text:'Pour composer les limites lim f(g(x)) = f(lim g(x)), il faut que :',
+    options:['g soit positive','f soit continue en ℓ = lim g','f soit croissante','x soit positif'], correct:1,
+    why:'Le théorème de composition s\'applique seulement si f est continue (ou admet une limite) au point ℓ = lim g(x). C\'est le piège classique du concours.' },
+  { topic:'Formes ind.', diff:'Intermédiaire', label:'QCM · une seule bonne réponse',
+    text:'Laquelle de ces expressions est une forme indéterminée ?',
+    options:['1 + ∞','∞ − ∞','0 × 5','3 / 0'], correct:1,
+    why:'« ∞ − ∞ » est indéterminée : le résultat dépend des fonctions. Il faut lever l\'indétermination (factorisation, conjugué…).' },
+  { topic:'Asymptotes', diff:'Intermédiaire', label:'QCM · une seule bonne réponse',
+    text:'Si lim f(x) = 2 quand x → +∞, alors la courbe admet :',
+    options:['une asymptote verticale x = 2','une asymptote horizontale y = 2','aucune asymptote','une asymptote oblique'], correct:1,
+    why:'Une limite finie ℓ en ±∞ donne une asymptote horizontale d\'équation y = ℓ, donc y = 2 ici.' }
+];
+
+(function(){
+  // ---- tweaks ----
+  var TW = { accent:'amber', corners:'rounded', timer:'on' };
+  var LS='pm48_quiz_tweaks';
+  try{ Object.assign(TW, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  function applyTW(){
+    document.body.setAttribute('data-accent', TW.accent);
+    document.body.setAttribute('data-corners', TW.corners);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===TW[k]); }); });
+    document.getElementById('timer').style.display = TW.timer==='off' ? 'none':'';
+  }
+  function setTW(k,v){ TW[k]=v; try{ localStorage.setItem(LS, JSON.stringify(TW)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} applyTW();
+    if(k==='timer'){ if(v==='off'){ stopTimer(); } }
+  }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setTW(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  applyTW();
+
+  // ---- state ----
+  var idx=0, score=0, answered=false, picked=-1, results=[], startTime=0;
+  var KEYS=['A','B','C','D'];
+  var startScreen=document.getElementById('startScreen'),
+      quizScreen=document.getElementById('quizScreen'),
+      resultsScreen=document.getElementById('resultsScreen');
+
+  // ---- progress segments ----
+  var prog=document.getElementById('qprogress');
+  QUESTIONS.forEach(function(){ var s=document.createElement('div'); s.className='qseg'; prog.appendChild(s); });
+  function paintProgress(){
+    [].forEach.call(prog.children, function(seg,i){
+      seg.className='qseg';
+      if(results[i]==='good') seg.classList.add('done');
+      else if(results[i]==='bad') seg.classList.add('wrong');
+      else if(i===idx && quizScreen.style.display!=='none') seg.classList.add('current');
+    });
+  }
+
+  // ---- timer ----
+  var tLeft=12*60, tInt=null;
+  function fmt(s){ s=Math.max(0,s); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  function tick(){ tLeft--; document.getElementById('timeText').textContent=fmt(tLeft);
+    if(tLeft<=60) document.getElementById('timer').classList.add('warn');
+    if(tLeft<=0){ stopTimer(); finish(); } }
+  function startTimer(){ if(TW.timer==='off') return; stopTimer(); tInt=setInterval(tick,1000); }
+  function stopTimer(){ if(tInt){ clearInterval(tInt); tInt=null; } }
+
+  // ---- render question ----
+  function render(){
+    var q=QUESTIONS[idx]; answered=false; picked=-1;
+    document.getElementById('qCur').textContent=idx+1;
+    document.getElementById('qTopic').textContent=q.topic;
+    document.getElementById('qDiff').textContent=q.diff;
+    document.getElementById('qLabel').textContent=q.label;
+    document.getElementById('qText').textContent=q.text;
+    var f=document.getElementById('qFormula');
+    if(q.formula){ f.style.display='inline-block'; f.textContent=q.formula; } else f.style.display='none';
+    var opts=document.getElementById('options'); opts.innerHTML='';
+    document.getElementById('qcard').classList.remove('answered');
+    document.getElementById('explain').className='explain';
+    q.options.forEach(function(o,i){
+      var b=document.createElement('button'); b.className='opt'; b.dataset.i=i;
+      b.innerHTML='<span class="key">'+KEYS[i]+'</span><span class="txt">'+o+'</span><span class="mk"></span>';
+      b.addEventListener('click', function(){ pick(i); });
+      opts.appendChild(b);
+    });
+    var nb=document.getElementById('nextBtn');
+    nb.disabled=true; nb.innerHTML='Valider <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg>';
+    document.getElementById('flagBtn').classList.remove('on');
+    paintProgress();
+  }
+  function pick(i){
+    if(answered) return; picked=i;
+    [].forEach.call(document.querySelectorAll('.opt'), function(o){ o.classList.toggle('selected', +o.dataset.i===i); });
+    document.getElementById('nextBtn').disabled=false;
+  }
+  function reveal(){
+    var q=QUESTIONS[idx]; answered=true;
+    document.getElementById('qcard').classList.add('answered');
+    var good = picked===q.correct;
+    if(good){ score++; results[idx]='good'; } else results[idx]='bad';
+    document.getElementById('scoreLive').textContent=score;
+    [].forEach.call(document.querySelectorAll('.opt'), function(o){
+      var i=+o.dataset.i; o.classList.remove('selected');
+      if(i===q.correct){ o.classList.add('correct'); o.querySelector('.mk').innerHTML='<svg class="icon sm" style="stroke:var(--green)"><use href="#ic-check"/></svg>'; }
+      else if(i===picked){ o.classList.add('incorrect'); o.querySelector('.mk').innerHTML='<svg class="icon sm" style="stroke:var(--red)"><use href="#ic-x2"/></svg>'; }
+      else o.classList.add('dim');
+    });
+    var ex=document.getElementById('explain');
+    ex.className='explain show '+(good?'good':'bad');
+    document.getElementById('explainHead').innerHTML = (good
+      ? '<svg class="icon sm" style="stroke:#1c8f63"><use href="#ic-check"/></svg> Bonne réponse !'
+      : '<svg class="icon sm" style="stroke:var(--red)"><use href="#ic-x2"/></svg> Pas tout à fait');
+    document.getElementById('explainText').innerHTML = q.why;
+    var nb=document.getElementById('nextBtn');
+    nb.innerHTML = (idx===QUESTIONS.length-1)
+      ? 'Voir mon score <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg>'
+      : 'Question suivante <svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-arrow"/></svg>';
+    paintProgress();
+  }
+  document.getElementById('nextBtn').addEventListener('click', function(){
+    if(!answered){ reveal(); return; }
+    if(idx===QUESTIONS.length-1){ finish(); }
+    else { idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+  });
+  document.getElementById('flagBtn').addEventListener('click', function(){ this.classList.toggle('on'); });
+
+  // ---- finish ----
+  function finish(){
+    stopTimer();
+    quizScreen.style.display='none'; startScreen.classList.remove('show');
+    var total=QUESTIONS.length, pct=Math.round(score/total*100), pass=pct>=70;
+    var elapsed=Math.max(1, Math.round((Date.now()-startTime)/1000));
+    document.getElementById('resPct').textContent=pct+'%';
+    document.getElementById('resRing').style.setProperty('--deg', (pct*3.6)+'deg');
+    document.getElementById('resRing').style.background='conic-gradient('+(pass?'var(--green)':'var(--accent)')+' 0 '+(pct*3.6)+'deg, rgba(255,255,255,.14) '+(pct*3.6)+'deg 360deg)';
+    document.getElementById('resGood').textContent=score;
+    document.getElementById('resBad').textContent=total-score;
+    document.getElementById('resTime').textContent=fmt(elapsed);
+    document.getElementById('resEmoji').textContent = pct>=90?'🏆':(pass?'🎉':'💪');
+    document.getElementById('resTitle').textContent = pct>=90?'Excellent !':(pass?'Bien joué !':'Presque !');
+    document.getElementById('resSubtitle').textContent = pass?'Tu as validé ce quiz.':'Il te faut 70% pour valider. Retente après révision.';
+    document.getElementById('unlockNote').style.display = pass?'flex':'none';
+
+    // reco based on first wrong topic
+    var wrongIdx = results.indexOf('bad');
+    var reco=document.getElementById('recoBox');
+    if(wrongIdx===-1){
+      document.getElementById('recoTitle').textContent='Sans faute, bravo 🎯';
+      document.getElementById('recoText').textContent='Tu maîtrises ce chapitre. Passe à la session suivante du parcours.';
+    } else {
+      document.getElementById('recoTitle').textContent='À revoir en priorité : '+QUESTIONS[wrongIdx].topic;
+      document.getElementById('recoText').textContent='Reprends la vidéo sur « '+QUESTIONS[wrongIdx].topic+' » et la fiche pièges associée avant de continuer.';
+    }
+
+    // review list
+    var rl=document.getElementById('reviewList'); rl.innerHTML='<div class="rl-h">Détail de tes réponses</div>';
+    QUESTIONS.forEach(function(q,i){
+      var ok=results[i]==='good';
+      var r=document.createElement('div'); r.className='rev';
+      r.innerHTML='<span class="st '+(ok?'ok':'ko')+'"><svg class="icon sm">'+(ok?'<use href="#ic-check"/>':'<use href="#ic-x2"/>')+'</svg></span>'
+        +'<div class="ri"><h4>Q'+(i+1)+' · '+q.topic+'</h4><span>'+(ok?'Bonne réponse':'Bonne réponse : '+KEYS[q.correct]+' — '+q.options[q.correct])+'</span></div>'
+        +'<svg class="icon go"><use href="#ic-chev"/></svg>';
+      rl.appendChild(r);
+    });
+    paintProgress();
+    resultsScreen.classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  // ---- controls ----
+  function begin(){
+    startScreen.classList.remove('show'); resultsScreen.classList.remove('show');
+    quizScreen.style.display='block';
+    idx=0; score=0; results=[]; startTime=Date.now();
+    document.getElementById('scoreLive').textContent='0';
+    document.getElementById('timer').classList.remove('warn');
+    tLeft=12*60; document.getElementById('timeText').textContent=fmt(tLeft);
+    render(); startTimer();
+  }
+  document.getElementById('startBtn').addEventListener('click', begin);
+  document.getElementById('retryBtn').addEventListener('click', begin);
+  document.getElementById('continueBtn').addEventListener('click', function(){
+    resultsScreen.classList.remove('show'); startScreen.classList.add('show');
+  });
+  document.querySelector('.quit').addEventListener('click', function(){
+    stopTimer(); quizScreen.style.display='none'; resultsScreen.classList.remove('show'); startScreen.classList.add('show');
+  });
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

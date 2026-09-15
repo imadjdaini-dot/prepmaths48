@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Administration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f2ed; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482; --green-soft:#dcf2e8; --red:#cf5b54; --red-soft:#f7e0de; --purple:#7c6bd6;
+  --r-lg:18px; --r-md:13px; --r-sm:10px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --sidebar-w:246px;
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:14.5px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.14; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:19px; height:19px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:15px; height:15px; } .icon.lg{ width:23px; height:23px; }
+.btn{ display:inline-flex; align-items:center; gap:8px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:13.5px; cursor:pointer; padding:10px 16px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 16px -7px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); } .btn-ghost:hover{ border-color:#d2d3cb; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); }
+.btn-sm{ padding:7px 12px; font-size:12.5px; }
+.tag{ font-family:var(--font-mono); font-size:10px; letter-spacing:.03em; padding:3px 8px; border-radius:6px; }
+.tag.green{ background:var(--green-soft); color:#1c8f63; } .tag.amber{ background:var(--accent-soft); color:var(--accent-2); }
+.tag.grey{ background:var(--line-2); color:var(--muted); } .tag.red{ background:var(--red-soft); color:var(--red); }
+.tag.cyan{ background:color-mix(in srgb,var(--cyan) 16%,transparent); color:#1796a6; }
+
+/* layout */
+.app{ display:grid; grid-template-columns:var(--sidebar-w) 1fr; min-height:100vh; }
+.sidebar{ background:var(--navy); color:#aebbd0; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; padding:18px 14px; }
+.sb-logo{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:18px; color:#fff; padding:6px 8px 4px; }
+.sb-logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--accent); color:var(--accent-ink); padding:4px 8px; border-radius:8px; font-size:13px; }
+.sb-admin{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.12em; color:var(--accent); background:rgba(243,169,58,.12); border:1px solid rgba(243,169,58,.25); padding:3px 8px; border-radius:6px; margin:10px 8px 4px; display:inline-block; align-self:flex-start; }
+.sb-group{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:#5d6f8a; padding:14px 10px 7px; }
+.nav-item{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:9px; font-weight:500; font-size:13.5px; cursor:pointer; transition:.14s; position:relative; color:inherit; }
+.nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+.nav-item.active{ background:rgba(255,255,255,.09); color:#fff; }
+.nav-item.active::before{ content:""; position:absolute; left:-14px; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:var(--accent); }
+.nav-item .badge{ margin-left:auto; font-family:var(--font-mono); font-size:9.5px; background:var(--accent); color:var(--accent-ink); padding:1px 6px; border-radius:20px; }
+.nav-item .badge.alert{ background:var(--red); color:#fff; }
+.sb-spacer{ flex:1; }
+.sb-user{ display:flex; align-items:center; gap:10px; padding:11px; border-radius:12px; background:rgba(255,255,255,.05); margin-top:8px; }
+.sb-user .av{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; color:var(--accent-ink); font-size:12px; flex:0 0 auto; }
+.sb-user .nm{ font-size:12.5px; line-height:1.2; min-width:0; }
+.sb-user .nm b{ color:#fff; display:block; font-family:var(--font-body); }
+.sb-user .nm span{ font-size:11px; color:#7e90ac; }
+
+.main{ min-width:0; display:flex; flex-direction:column; }
+.topbar{ position:sticky; top:0; z-index:30; background:color-mix(in srgb,var(--bg) 86%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; padding:12px 26px; }
+.topbar h1{ font-size:19px; }
+.search{ margin-left:14px; flex:1; max-width:360px; display:flex; align-items:center; gap:9px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 13px; color:var(--muted); font-size:13.5px; }
+.search input{ border:0; background:none; outline:none; flex:1; font-family:var(--font-body); font-size:13.5px; color:var(--ink); }
+.tb-actions{ margin-left:auto; display:flex; align-items:center; gap:9px; }
+.iconbtn{ width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; color:var(--ink-2); cursor:pointer; transition:.14s; position:relative; }
+.iconbtn:hover{ border-color:#d2d3cb; color:var(--ink); }
+.iconbtn .dot{ position:absolute; top:8px; right:9px; width:7px; height:7px; border-radius:50%; background:var(--red); border:2px solid var(--surface); }
+
+.content{ padding:24px 26px; max-width:1380px; width:100%; margin:0 auto; }
+.section-title{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 16px; flex-wrap:wrap; }
+.section-title h2{ font-size:18px; } .section-title .link{ font-size:13px; font-weight:600; color:var(--accent-2); display:inline-flex; align-items:center; gap:5px; }
+
+/* KPI */
+.kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px; }
+.kpi{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); padding:18px; }
+.kpi .top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.kpi .ic{ width:36px; height:36px; border-radius:10px; display:grid; place-items:center; }
+.kpi .trend{ font-family:var(--font-mono); font-size:11px; font-weight:700; display:inline-flex; align-items:center; gap:3px; padding:3px 7px; border-radius:6px; }
+.kpi .trend.up{ background:var(--green-soft); color:#1c8f63; } .kpi .trend.down{ background:var(--red-soft); color:var(--red); }
+.kpi .v{ font-family:var(--font-display); font-weight:700; font-size:28px; letter-spacing:-.02em; }
+.kpi .l{ font-size:13px; color:var(--muted); margin-top:2px; }
+.kpi .spark{ margin-top:12px; height:34px; display:flex; align-items:flex-end; gap:3px; }
+.kpi .spark i{ flex:1; background:var(--line-2); border-radius:3px 3px 0 0; }
+.kpi .spark i.on{ background:color-mix(in srgb,var(--accent) 55%,transparent); }
+
+/* grid 2 */
+.grid-2{ display:grid; grid-template-columns:1fr 360px; gap:20px; align-items:start; }
+.col{ display:grid; gap:20px; min-width:0; }
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); }
+.card-pad{ padding:20px; }
+.card-h{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line-2); }
+.card-h h3{ font-size:16px; } .card-h .sub{ font-size:12px; color:var(--muted); }
+
+/* chart */
+.chart{ padding:20px; }
+.chart .legend{ display:flex; gap:18px; margin-bottom:16px; }
+.chart .lg{ display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-2); }
+.chart .lg i{ width:10px; height:10px; border-radius:3px; }
+.bars{ display:flex; align-items:flex-end; gap:12px; height:180px; padding-top:10px; }
+.bars .grp{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; height:100%; justify-content:flex-end; }
+.bars .stack{ width:100%; max-width:46px; display:flex; flex-direction:column-reverse; gap:3px; }
+.bars .stack b{ display:block; border-radius:4px; }
+.bars .stack .v1{ background:var(--accent); } .bars .stack .v2{ background:var(--cyan); }
+.bars .lbl{ font-family:var(--font-mono); font-size:10.5px; color:var(--muted); }
+
+/* table */
+.table{ width:100%; border-collapse:collapse; }
+.table th{ text-align:left; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); font-weight:400; padding:11px 20px; border-bottom:1px solid var(--line-2); }
+.table td{ padding:13px 20px; border-bottom:1px solid var(--line-2); font-size:13.5px; vertical-align:middle; }
+.table tr:last-child td{ border-bottom:0; }
+.table tbody tr{ transition:.12s; } .table tbody tr:hover{ background:var(--surface-2); }
+.course-cell{ display:flex; align-items:center; gap:12px; }
+.course-cell .cv{ width:42px; height:32px; border-radius:7px; flex:0 0 auto; background:linear-gradient(135deg,var(--navy-2),var(--navy-3)); position:relative; overflow:hidden; }
+.course-cell .cv .g{ position:absolute; right:3px; bottom:0; font-family:var(--font-mono); font-size:13px; font-weight:700; color:rgba(255,255,255,.25); }
+.course-cell .ci b{ font-family:var(--font-display); font-weight:600; font-size:13.5px; display:block; }
+.course-cell .ci span{ font-size:11.5px; color:var(--muted); }
+.mini-stat{ display:flex; align-items:center; gap:6px; color:var(--ink-2); }
+.rowbar{ width:78px; }
+.rowbar .b{ height:6px; border-radius:5px; background:var(--line); overflow:hidden; } .rowbar .b i{ display:block; height:100%; border-radius:5px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+.rowbar span{ font-family:var(--font-mono); font-size:10px; color:var(--muted); display:block; margin-top:3px; }
+.act-btns{ display:flex; gap:6px; }
+.act{ width:30px; height:30px; border-radius:8px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; color:var(--muted); cursor:pointer; transition:.13s; }
+.act:hover{ color:var(--ink); border-color:#d2d3cb; } .act.danger:hover{ color:var(--red); border-color:color-mix(in srgb,var(--red) 40%,var(--line)); }
+
+/* quick add */
+.quick-add{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.qa{ display:flex; flex-direction:column; gap:9px; padding:16px; border:1px dashed var(--line); border-radius:var(--r-md); background:var(--surface-2); cursor:pointer; transition:.15s; }
+.qa:hover{ border-color:var(--accent); background:var(--accent-soft); transform:translateY(-2px); }
+.qa .ic{ width:38px; height:38px; border-radius:10px; display:grid; place-items:center; background:var(--surface); border:1px solid var(--line); color:var(--accent-2); }
+.qa b{ font-family:var(--font-display); font-size:14px; } .qa span{ font-size:11.5px; color:var(--muted); }
+
+/* students */
+.student{ display:flex; align-items:center; gap:11px; padding:11px 0; border-bottom:1px solid var(--line-2); }
+.student:last-child{ border-bottom:0; }
+.student .av{ width:36px; height:36px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:11px; color:#fff; }
+.student .si{ flex:1; min-width:0; } .student .si b{ font-size:13.5px; font-family:var(--font-display); font-weight:600; display:block; }
+.student .si span{ font-size:11.5px; color:var(--muted); }
+.student .when{ font-family:var(--font-mono); font-size:10.5px; color:var(--muted); }
+
+/* subscription donut */
+.donut-wrap{ display:flex; align-items:center; gap:20px; }
+.donut{ width:130px; height:130px; border-radius:50%; flex:0 0 auto; position:relative;
+  background:conic-gradient(var(--accent) 0 200deg, var(--cyan) 200deg 300deg, var(--line) 300deg 360deg); }
+.donut::after{ content:""; position:absolute; inset:26px; border-radius:50%; background:var(--surface); }
+.donut .c{ position:absolute; inset:0; display:grid; place-items:center; text-align:center; }
+.donut .c b{ font-family:var(--font-display); font-weight:700; font-size:22px; } .donut .c span{ font-size:10.5px; color:var(--muted); }
+.legend2{ flex:1; display:grid; gap:11px; }
+.legend2 .li{ display:flex; align-items:center; gap:9px; font-size:13px; }
+.legend2 .li i{ width:10px; height:10px; border-radius:3px; flex:0 0 auto; }
+.legend2 .li .nm{ flex:1; color:var(--ink-2); } .legend2 .li .vv{ font-family:var(--font-display); font-weight:600; }
+
+/* alerts list */
+.alert-item{ display:flex; gap:11px; padding:11px 0; border-bottom:1px solid var(--line-2); align-items:flex-start; }
+.alert-item:last-child{ border-bottom:0; }
+.alert-item .ic{ width:30px; height:30px; border-radius:9px; flex:0 0 auto; display:grid; place-items:center; }
+.alert-item p{ margin:0; font-size:13px; color:var(--ink-2); } .alert-item p b{ color:var(--ink); }
+.alert-item .when{ font-family:var(--font-mono); font-size:10px; color:var(--muted); margin-top:3px; display:block; }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:1140px){ .grid-2{ grid-template-columns:1fr; } .kpis{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:960px){
+  :root{ --sidebar-w:70px; }
+  .sb-logo span,.sb-admin,.sb-group,.nav-item span,.nav-item .badge,.sb-user .nm{ display:none; }
+  .sb-logo,.nav-item,.sb-user{ justify-content:center; }
+  .quick-add{ grid-template-columns:repeat(2,1fr); }
+}
+@media (max-width:760px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ position:fixed; bottom:0; top:auto; left:0; right:0; height:auto; flex-direction:row; z-index:50; padding:8px; gap:4px; overflow-x:auto; }
+  .sb-logo,.sb-admin,.sb-group,.sb-spacer,.sb-user{ display:none; }
+  .sidebar .nav-list{ display:flex; gap:4px; }
+  .nav-item{ flex-direction:column; gap:3px; font-size:9.5px; padding:7px 9px; } .nav-item span{ display:block; } .nav-item.active::before{ display:none; }
+  .search{ display:none; }
+  .kpis{ grid-template-columns:1fr 1fr; } .quick-add{ grid-template-columns:1fr 1fr; }
+  .content{ padding:16px 14px 90px; }
+  .table-scroll{ overflow-x:auto; }
+  #tweaks{ left:12px; right:12px; width:auto; bottom:80px; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-dash" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="9" rx="1.5"/><rect x="13" y="4" width="7" height="5" rx="1.5"/><rect x="13" y="12" width="7" height="8" rx="1.5"/><rect x="4" y="16" width="7" height="4" rx="1.5"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3z"/><path d="M5 4v16"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.7 2.3-2.7 4"/><path d="M12 17.5h.01"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6M17.5 19a5.5 5.5 0 0 0-2.3-4.5"/></symbol>
+  <symbol id="ic-card" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="ic-chart" viewBox="0 0 24 24"><path d="M5 19V10M12 19V5M19 19v-6"/><path d="M3 21h18"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18 6l-1.8 1.8M7.8 16.2L6 18M18 18l-1.8-1.8M7.8 7.8L6 6"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M14 5l5 5L9 20H4v-5z"/></symbol>
+  <symbol id="ic-trash" viewBox="0 0 24 24"><path d="M5 7h14M9 7V5h6v2M7 7l1 13h8l1-13"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ic-up" viewBox="0 0 24 24"><path d="M5 12l7-7 7 7M12 5v14"/></symbol>
+  <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v5M12 18h.01"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-cash" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></symbol>
+</svg>
+
+<div class="app">
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="sb-logo"><span class="mk">48</span><span>Prép-Maths</span></div>
+    <span class="sb-admin">ESPACE ADMIN</span>
+    <div class="sb-group">Pilotage</div>
+    <nav class="nav-list">
+      <a class="nav-item active"><svg class="icon"><use href="#ic-dash"/></svg><span>Vue d'ensemble</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-chart"/></svg><span>Statistiques</span></a>
+    </nav>
+    <div class="sb-group">Contenu</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-book"/></svg><span>Cours</span><span class="badge">48</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-play"/></svg><span>Vidéos</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-file"/></svg><span>PDF & fiches</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-help"/></svg><span>Quiz</span></a>
+    </nav>
+    <div class="sb-group">Gestion</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-users"/></svg><span>Élèves</span><span class="badge">12 480</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-card"/></svg><span>Abonnements</span><span class="badge alert">3</span></a>
+    </nav>
+    <div class="sb-spacer"></div>
+    <a class="nav-item"><svg class="icon"><use href="#ic-settings"/></svg><span>Paramètres</span></a>
+    <div class="sb-user"><div class="av">AD</div><div class="nm"><b>Karim E.</b><span>Administrateur</span></div></div>
+  </aside>
+
+  <!-- main -->
+  <div class="main">
+    <div class="topbar">
+      <h1>Vue d'ensemble</h1>
+      <div class="search"><svg class="icon sm"><use href="#ic-search"/></svg><input placeholder="Rechercher cours, élève, abonnement…"></div>
+      <div class="tb-actions">
+        <div class="iconbtn"><svg class="icon"><use href="#ic-bell"/></svg><span class="dot"></span></div>
+        <button class="btn btn-primary"><svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-plus"/></svg> Ajouter un cours</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- KPIs -->
+      <div class="kpis">
+        <div class="kpi">
+          <div class="top"><span class="ic" style="background:var(--accent-soft);color:var(--accent-2)"><svg class="icon"><use href="#ic-users"/></svg></span><span class="trend up"><svg class="icon sm" style="width:11px;height:11px;stroke:#1c8f63"><use href="#ic-up"/></svg> 8,2%</span></div>
+          <div class="v">12 480</div><div class="l">Élèves inscrits</div>
+          <div class="spark"><i style="height:40%"></i><i style="height:55%"></i><i style="height:48%"></i><i style="height:62%"></i><i style="height:70%"></i><i class="on" style="height:78%"></i><i class="on" style="height:92%"></i></div>
+        </div>
+        <div class="kpi">
+          <div class="top"><span class="ic" style="background:var(--green-soft);color:#1c8f63"><svg class="icon"><use href="#ic-cash"/></svg></span><span class="trend up"><svg class="icon sm" style="width:11px;height:11px;stroke:#1c8f63"><use href="#ic-up"/></svg> 12,5%</span></div>
+          <div class="v">486k <span style="font-size:15px;color:var(--muted);font-family:var(--font-body)">DH</span></div><div class="l">Revenu mensuel (MRR)</div>
+          <div class="spark"><i style="height:35%"></i><i style="height:42%"></i><i style="height:50%"></i><i style="height:58%"></i><i style="height:66%"></i><i class="on" style="height:80%"></i><i class="on" style="height:88%"></i></div>
+        </div>
+        <div class="kpi">
+          <div class="top"><span class="ic" style="background:color-mix(in srgb,var(--cyan) 16%,transparent);color:#1796a6"><svg class="icon"><use href="#ic-play"/></svg></span><span class="trend up"><svg class="icon sm" style="width:11px;height:11px;stroke:#1c8f63"><use href="#ic-up"/></svg> 3,1%</span></div>
+          <div class="v">68%</div><div class="l">Taux de complétion moyen</div>
+          <div class="spark"><i style="height:60%"></i><i style="height:55%"></i><i style="height:62%"></i><i style="height:58%"></i><i style="height:64%"></i><i class="on" style="height:66%"></i><i class="on" style="height:72%"></i></div>
+        </div>
+        <div class="kpi">
+          <div class="top"><span class="ic" style="background:var(--accent-soft);color:var(--accent-2)"><svg class="icon"><use href="#ic-book"/></svg></span><span class="trend down"><svg class="icon sm" style="width:11px;height:11px;stroke:var(--red);transform:rotate(180deg)"><use href="#ic-up"/></svg> 2 brouillons</span></div>
+          <div class="v">48</div><div class="l">Cours publiés</div>
+          <div class="spark"><i style="height:50%"></i><i style="height:52%"></i><i style="height:60%"></i><i style="height:64%"></i><i style="height:70%"></i><i class="on" style="height:74%"></i><i class="on" style="height:82%"></i></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- left col -->
+        <div class="col">
+          <!-- chart -->
+          <div class="card">
+            <div class="card-h"><div><h3>Activité de la plateforme</h3><div class="sub">Vidéos vues & quiz passés · 7 derniers jours</div></div><div class="btn btn-ghost btn-sm">7 jours <svg class="icon sm"><use href="#ic-chev"/></svg></div></div>
+            <div class="chart">
+              <div class="legend"><span class="lg"><i style="background:var(--accent)"></i> Vidéos vues</span><span class="lg"><i style="background:var(--cyan)"></i> Quiz passés</span></div>
+              <div class="bars">
+                <div class="grp"><div class="stack"><b class="v1" style="height:78px"></b><b class="v2" style="height:34px"></b></div><span class="lbl">Lun</span></div>
+                <div class="grp"><div class="stack"><b class="v1" style="height:92px"></b><b class="v2" style="height:40px"></b></div><span class="lbl">Mar</span></div>
+                <div class="grp"><div class="stack"><b class="v1" style="height:70px"></b><b class="v2" style="height:30px"></b></div><span class="lbl">Mer</span></div>
+                <div class="grp"><div class="stack"><b class="v1" style="height:108px"></b><b class="v2" style="height:48px"></b></div><span class="lbl">Jeu</span></div>
+                <div class="grp"><div class="stack"><b class="v1" style="height:120px"></b><b class="v2" style="height:54px"></b></div><span class="lbl">Ven</span></div>
+                <div class="grp"><div class="stack"><b class="v1" style="height:96px"></b><b class="v2" style="height:42px"></b></div><span class="lbl">Sam</span></div>
+                <div class="grp"><div class="stack"><b class="v1" style="height:64px"></b><b class="v2" style="height:28px"></b></div><span class="lbl">Dim</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- quick add -->
+          <div class="card card-pad">
+            <div class="section-title" style="margin-bottom:14px;"><h2 style="font-size:16px;">Ajouter du contenu</h2></div>
+            <div class="quick-add">
+              <div class="qa"><span class="ic"><svg class="icon"><use href="#ic-book"/></svg></span><b>Cours</b><span>Nouveau chapitre</span></div>
+              <div class="qa"><span class="ic"><svg class="icon"><use href="#ic-play"/></svg></span><b>Vidéo</b><span>Upload sécurisé</span></div>
+              <div class="qa"><span class="ic"><svg class="icon"><use href="#ic-file"/></svg></span><b>PDF</b><span>Résumé, exos…</span></div>
+              <div class="qa"><span class="ic"><svg class="icon"><use href="#ic-help"/></svg></span><b>Quiz</b><span>QCM + correction</span></div>
+            </div>
+          </div>
+
+          <!-- courses table -->
+          <div class="card">
+            <div class="card-h"><div><h3>Cours récents</h3><div class="sub">48 cours · 2 en brouillon</div></div><a class="link">Gérer tous les cours <svg class="icon sm"><use href="#ic-arrow"/></svg></a></div>
+            <div class="table-scroll">
+            <table class="table">
+              <thead><tr><th>Cours</th><th>Filière</th><th>Contenu</th><th>Inscrits</th><th>Complétion</th><th>État</th><th></th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="course-cell"><div class="cv"><span class="g">lim</span></div><div class="ci"><b>Limites & continuité</b><span>MAJ il y a 2 j</span></div></div></td>
+                  <td><span class="tag cyan">Bac SM</span></td>
+                  <td><span class="mini-stat mono" style="font-size:12px;">14 ▸ · 16 ▤</span></td>
+                  <td class="mono">3 240</td>
+                  <td><div class="rowbar"><div class="b"><i style="width:68%"></i></div><span>68%</span></div></td>
+                  <td><span class="tag green">Publié</span></td>
+                  <td><div class="act-btns"><span class="act"><svg class="icon sm"><use href="#ic-eye"/></svg></span><span class="act"><svg class="icon sm"><use href="#ic-edit"/></svg></span><span class="act danger"><svg class="icon sm"><use href="#ic-trash"/></svg></span></div></td>
+                </tr>
+                <tr>
+                  <td><div class="course-cell"><div class="cv"><span class="g">∮</span></div><div class="ci"><b>Intégrales & primitives</b><span>MAJ aujourd'hui</span></div></div></td>
+                  <td><span class="tag cyan">Bac SM</span></td>
+                  <td><span class="mini-stat mono" style="font-size:12px;">12 ▸ · 13 ▤</span></td>
+                  <td class="mono">1 890</td>
+                  <td><div class="rowbar"><div class="b"><i style="width:42%"></i></div><span>42%</span></div></td>
+                  <td><span class="tag green">Publié</span></td>
+                  <td><div class="act-btns"><span class="act"><svg class="icon sm"><use href="#ic-eye"/></svg></span><span class="act"><svg class="icon sm"><use href="#ic-edit"/></svg></span><span class="act danger"><svg class="icon sm"><use href="#ic-trash"/></svg></span></div></td>
+                </tr>
+                <tr>
+                  <td><div class="course-cell"><div class="cv"><span class="g">QCM</span></div><div class="ci"><b>Probabilités — concours</b><span>MAJ il y a 5 j</span></div></div></td>
+                  <td><span class="tag amber">Médecine</span></td>
+                  <td><span class="mini-stat mono" style="font-size:12px;">9 ▸ · 12 ▤</span></td>
+                  <td class="mono">2 560</td>
+                  <td><div class="rowbar"><div class="b"><i style="width:55%"></i></div><span>55%</span></div></td>
+                  <td><span class="tag green">Publié</span></td>
+                  <td><div class="act-btns"><span class="act"><svg class="icon sm"><use href="#ic-eye"/></svg></span><span class="act"><svg class="icon sm"><use href="#ic-edit"/></svg></span><span class="act danger"><svg class="icon sm"><use href="#ic-trash"/></svg></span></div></td>
+                </tr>
+                <tr>
+                  <td><div class="course-cell"><div class="cv"><span class="g">z</span></div><div class="ci"><b>Nombres complexes</b><span>Créé il y a 1 j</span></div></div></td>
+                  <td><span class="tag grey">ENSA</span></td>
+                  <td><span class="mini-stat mono" style="font-size:12px;">11 ▸ · 9 ▤</span></td>
+                  <td class="mono">—</td>
+                  <td><div class="rowbar"><div class="b"><i style="width:0%"></i></div><span>—</span></div></td>
+                  <td><span class="tag amber">Brouillon</span></td>
+                  <td><div class="act-btns"><span class="act"><svg class="icon sm"><use href="#ic-eye"/></svg></span><span class="act"><svg class="icon sm"><use href="#ic-edit"/></svg></span><span class="act danger"><svg class="icon sm"><use href="#ic-trash"/></svg></span></div></td>
+                </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- right col -->
+        <div class="col">
+          <!-- subscriptions -->
+          <div class="card">
+            <div class="card-h"><h3>Abonnements actifs</h3><span class="mono" style="font-size:12px;color:var(--muted)">8 940</span></div>
+            <div class="card-pad">
+              <div class="donut-wrap">
+                <div class="donut"><div class="c"><div><b>8 940</b><span>actifs</span></div></div></div>
+                <div class="legend2">
+                  <div class="li"><i style="background:var(--accent)"></i><span class="nm">Bac Premium</span><span class="vv">4 970</span></div>
+                  <div class="li"><i style="background:var(--cyan)"></i><span class="nm">Bac + Concours</span><span class="vv">2 480</span></div>
+                  <div class="li"><i style="background:var(--line)"></i><span class="nm">Gratuit</span><span class="vv">1 490</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- recent students -->
+          <div class="card card-pad">
+            <div class="section-title" style="margin-bottom:6px;"><h2 style="font-size:16px;">Nouveaux élèves</h2><a class="link" style="font-size:12px;">Tous</a></div>
+            <div class="student"><span class="av" style="background:linear-gradient(135deg,#6c8ec4,#3a5a8c)">YA</span><div class="si"><b>Yasmine Alaoui</b><span>Bac SM · Bac+Concours</span></div><span class="when">2 min</span></div>
+            <div class="student"><span class="av" style="background:linear-gradient(135deg,#c47c6c,#8c4a3a)">AK</span><div class="si"><b>Anas Kabbaj</b><span>Bac PC · Bac Premium</span></div><span class="when">18 min</span></div>
+            <div class="student"><span class="av" style="background:linear-gradient(135deg,#6cc49a,#3a8c66)">SR</span><div class="si"><b>Salma Rachidi</b><span>Bac SVT · Gratuit</span></div><span class="when">1 h</span></div>
+            <div class="student"><span class="av" style="background:linear-gradient(135deg,#9c8ec4,#5a4a8c)">IM</span><div class="si"><b>Imane Mansouri</b><span>Bac SM · Bac+Concours</span></div><span class="when">2 h</span></div>
+          </div>
+
+          <!-- alerts -->
+          <div class="card card-pad">
+            <div class="section-title" style="margin-bottom:6px;"><h2 style="font-size:16px;">À traiter</h2></div>
+            <div class="alert-item"><span class="ic" style="background:var(--red-soft);color:var(--red)"><svg class="icon sm"><use href="#ic-card"/></svg></span><div><p><b>3 paiements</b> en échec à relancer.</p><span class="when">Abonnements · aujourd'hui</span></div></div>
+            <div class="alert-item"><span class="ic" style="background:var(--accent-soft);color:var(--accent-2)"><svg class="icon sm"><use href="#ic-alert"/></svg></span><div><p><b>2 cours</b> en brouillon à publier.</p><span class="when">Contenu · il y a 1 j</span></div></div>
+            <div class="alert-item"><span class="ic" style="background:color-mix(in srgb,var(--cyan) 16%,transparent);color:#1796a6"><svg class="icon sm"><use href="#ic-help"/></svg></span><div><p><b>5 signalements</b> sur des questions de quiz.</p><span class="when">Modération · il y a 2 j</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "accent": "amber", "corners": "rounded" }/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_admin_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  apply();
+
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.addEventListener('click', function(){ document.querySelectorAll('.nav-item').forEach(function(x){ x.classList.remove('active'); }); n.classList.add('active'); }); });
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

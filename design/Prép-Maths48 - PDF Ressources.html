@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Ressource PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eceee8; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482; --red:#cf5b54;
+  --paper:#ffffff; --paper-ink:#1a2433;
+  --r-lg:18px; --r-md:13px; --r-sm:10px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --shadow-page:0 18px 50px -18px rgba(12,24,48,.4), 0 6px 16px rgba(12,24,48,.12);
+  --sidebar-w:240px;
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+body[data-reader="dark"]{ --bg:#0a1322; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:14.5px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.15; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:19px; height:19px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:15px; height:15px; } .icon.lg{ width:22px; height:22px; }
+.btn{ display:inline-flex; align-items:center; gap:8px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:13.5px; cursor:pointer; padding:10px 16px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 16px -7px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); } .btn-ghost:hover{ border-color:#d2d3cb; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); }
+.btn-sm{ padding:7px 12px; font-size:12.5px; }
+.tag{ font-family:var(--font-mono); font-size:10px; letter-spacing:.03em; padding:3px 8px; border-radius:6px; }
+
+/* layout */
+.app{ display:grid; grid-template-columns:var(--sidebar-w) 1fr; min-height:100vh; }
+.sidebar{ background:var(--navy); color:#aebbd0; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; padding:18px 14px; }
+.sb-logo{ display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:18px; color:#fff; padding:6px 8px 16px; }
+.sb-logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--accent); color:var(--accent-ink); padding:4px 8px; border-radius:8px; font-size:13px; }
+.sb-group{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:#5d6f8a; padding:13px 10px 7px; }
+.nav-item{ display:flex; align-items:center; gap:11px; padding:9px 11px; border-radius:9px; font-weight:500; font-size:13.5px; cursor:pointer; transition:.14s; position:relative; color:inherit; }
+.nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+.nav-item.active{ background:rgba(255,255,255,.09); color:#fff; }
+.nav-item.active::before{ content:""; position:absolute; left:-14px; top:8px; bottom:8px; width:3px; border-radius:0 3px 3px 0; background:var(--accent); }
+.nav-item .badge{ margin-left:auto; font-family:var(--font-mono); font-size:9.5px; background:var(--accent); color:var(--accent-ink); padding:1px 6px; border-radius:20px; }
+.nav-item .lockmini{ margin-left:auto; opacity:.5; }
+.sb-spacer{ flex:1; }
+.sb-user{ display:flex; align-items:center; gap:10px; padding:11px; border-radius:12px; background:rgba(255,255,255,.05); margin-top:8px; }
+.sb-user .av{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#3a4f70,#243a5c); display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; color:#cdd8e8; font-size:12px; flex:0 0 auto; }
+.sb-user .nm{ font-size:12.5px; line-height:1.2; min-width:0; }
+.sb-user .nm b{ color:#fff; display:block; font-family:var(--font-body); }
+.sb-user .nm span{ font-size:11px; color:#7e90ac; }
+
+.main{ min-width:0; display:flex; flex-direction:column; }
+/* reader topbar */
+.rtop{ position:sticky; top:0; z-index:30; background:var(--surface); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; padding:11px 22px; }
+.rtop .back{ display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:13.5px; color:var(--ink-2); padding:7px 11px; border-radius:9px; cursor:pointer; }
+.rtop .back:hover{ background:var(--surface-2); color:var(--ink); }
+.rtop .fileinfo{ display:flex; align-items:center; gap:11px; min-width:0; }
+.rtop .ft{ width:30px; height:38px; border-radius:6px; flex:0 0 auto; display:grid; place-items:center; font-family:var(--font-mono); font-size:8px; font-weight:700; color:#fff; }
+.rtop .fn{ min-width:0; } .rtop .fn b{ font-family:var(--font-display); font-size:14px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .rtop .fn span{ font-size:11.5px; color:var(--muted); }
+.rtop .tools{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+.zoomctl{ display:flex; align-items:center; gap:2px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; padding:3px; }
+.zoomctl .z{ width:30px; height:28px; border-radius:6px; display:grid; place-items:center; color:var(--ink-2); cursor:pointer; }
+.zoomctl .z:hover{ background:var(--surface); } .zoomctl .lvl{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink-2); padding:0 8px; min-width:48px; text-align:center; }
+.iconbtn{ width:36px; height:36px; border-radius:9px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; color:var(--ink-2); cursor:pointer; transition:.14s; }
+.iconbtn:hover{ border-color:#d2d3cb; color:var(--ink); } .iconbtn.on{ background:var(--accent-soft); color:var(--accent-2); border-color:color-mix(in srgb,var(--accent) 30%,var(--line)); }
+.pagenav{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px; color:var(--ink-2); }
+.pagenav input{ width:36px; text-align:center; border:1px solid var(--line); border-radius:7px; padding:5px; font-family:var(--font-mono); font-size:12px; color:var(--ink); }
+
+/* reader body: thumbs | viewer | aside */
+.reader{ display:grid; grid-template-columns:148px 1fr 296px; min-height:0; }
+.thumbs{ background:var(--surface); border-right:1px solid var(--line); padding:16px 12px; overflow:auto; height:calc(100vh - 59px); position:sticky; top:59px; }
+.thumbs .th-h{ font-family:var(--font-mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.thumb{ position:relative; margin-bottom:12px; cursor:pointer; }
+.thumb .pg{ aspect-ratio:1/1.41; background:var(--paper); border:1px solid var(--line); border-radius:5px; overflow:hidden; box-shadow:var(--shadow-sm); transition:.14s; padding:8px; }
+.thumb.active .pg{ border-color:var(--accent); box-shadow:0 0 0 2px var(--accent); }
+.thumb .n{ position:absolute; bottom:-7px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:9px; background:var(--navy); color:#fff; padding:1px 7px; border-radius:10px; }
+.thumb .mini-line{ height:2.5px; background:var(--line-2); border-radius:2px; margin-bottom:3px; }
+.thumb .mini-line.t{ height:4px; background:#d3d4cc; width:60%; margin-bottom:6px; }
+
+/* viewer */
+.viewer{ padding:30px; overflow:auto; height:calc(100vh - 59px); display:flex; flex-direction:column; align-items:center; gap:24px; }
+.page-doc{ width:100%; max-width:680px; background:var(--paper); color:var(--paper-ink); border-radius:6px; box-shadow:var(--shadow-page); padding:54px 56px; position:relative; }
+.page-doc .wm{ position:absolute; inset:0; pointer-events:none; display:grid; place-items:center; overflow:hidden; }
+.page-doc .wm span{ font-family:var(--font-mono); font-size:13px; color:rgba(26,36,51,.05); transform:rotate(-26deg); white-space:nowrap; letter-spacing:1px; }
+.doc-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; border-bottom:2px solid var(--paper-ink); padding-bottom:16px; margin-bottom:24px; }
+.doc-head .dl{ font-family:var(--font-mono); font-size:10px; letter-spacing:.06em; color:var(--accent-2); }
+.doc-head h2{ font-size:23px; margin-top:6px; }
+.doc-head .badge48{ font-family:var(--font-mono); font-weight:700; font-size:13px; background:var(--navy); color:#fff; padding:5px 10px; border-radius:8px; flex:0 0 auto; }
+.doc-sec{ margin-bottom:22px; }
+.doc-sec h3{ font-size:16px; color:var(--navy); display:flex; align-items:center; gap:9px; margin-bottom:11px; }
+.doc-sec h3::before{ content:""; width:5px; height:18px; background:var(--accent); border-radius:3px; }
+.doc-sec p, .doc-sec li{ font-size:14px; color:#34414f; line-height:1.65; }
+.doc-sec ul{ margin:8px 0; padding-left:20px; }
+.formula-box{ background:#f4f6f9; border:1px solid #e2e7ee; border-left:3px solid var(--accent); border-radius:8px; padding:14px 18px; font-family:var(--font-mono); font-size:14px; color:var(--navy); margin:12px 0; }
+.callout-box{ background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 30%,#e2e7ee); border-radius:8px; padding:14px 16px; margin:14px 0; display:flex; gap:11px; }
+.callout-box .ci{ font-size:13.5px; color:#5b4a1f; } .callout-box .ci b{ color:var(--accent-ink); }
+.callout-box .ic{ color:var(--accent-2); flex:0 0 auto; }
+.doc-foot{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e2e7ee; padding-top:14px; margin-top:30px; font-family:var(--font-mono); font-size:10.5px; color:#9aa6b4; }
+.page-label{ font-family:var(--font-mono); font-size:11px; color:var(--muted); }
+body[data-reader="dark"] .viewer{ background:#0a1322; }
+body[data-reader="dark"] .page-label{ color:#5d6f8a; }
+
+/* aside */
+.r-aside{ background:var(--surface); border-left:1px solid var(--line); padding:20px; overflow:auto; height:calc(100vh - 59px); position:sticky; top:59px; }
+.res-hero{ border:1px solid var(--line); border-radius:var(--r-md); overflow:hidden; margin-bottom:18px; }
+.res-hero .cov{ height:88px; position:relative; display:grid; place-items:center; }
+.res-hero .cov .ftbig{ width:46px; height:56px; border-radius:8px; display:grid; place-items:center; font-family:var(--font-mono); font-size:11px; font-weight:700; color:#fff; box-shadow:var(--shadow-sm); }
+.res-hero .rb{ padding:15px; } .res-hero .rb h3{ font-size:15.5px; } .res-hero .rb .meta{ font-size:12px; color:var(--muted); margin-top:4px; display:flex; gap:12px; flex-wrap:wrap; }
+.res-actions{ display:grid; gap:9px; margin:16px 0 20px; }
+.aside-sec{ margin-bottom:22px; }
+.aside-sec h4{ font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:11px; }
+.info-row{ display:flex; align-items:center; justify-content:space-between; font-size:13px; padding:8px 0; border-bottom:1px solid var(--line-2); }
+.info-row:last-child{ border-bottom:0; } .info-row .l{ color:var(--muted); display:flex; align-items:center; gap:8px; } .info-row .v{ font-weight:600; }
+.related{ display:grid; gap:9px; }
+.rel{ display:flex; align-items:center; gap:11px; padding:10px; border:1px solid var(--line); border-radius:11px; background:var(--surface); cursor:pointer; transition:.14s; }
+.rel:hover{ border-color:#d4d5cc; box-shadow:var(--shadow-sm); transform:translateY(-1px); }
+.rel.active{ border-color:color-mix(in srgb,var(--accent) 40%,var(--line)); background:var(--accent-soft); }
+.rel .ft{ width:30px; height:38px; border-radius:6px; flex:0 0 auto; display:grid; place-items:center; font-family:var(--font-mono); font-size:8px; font-weight:700; color:#fff; }
+.rel .ri{ min-width:0; flex:1; } .rel .ri b{ font-family:var(--font-display); font-size:13px; font-weight:600; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .rel .ri span{ font-size:11px; color:var(--muted); }
+.rel .lk{ color:var(--muted); }
+.secure-note{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:6px; padding:11px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; }
+
+.ft.resume{ background:#3b82c4; } .ft.methode{ background:#7c6bd6; } .ft.exos{ background:var(--accent-2); } .ft.corr{ background:var(--green); } .ft.piege{ background:var(--red); }
+.cov.resume{ background:linear-gradient(135deg,#3b82c4,#2b6aa6); } .cov.methode{ background:linear-gradient(135deg,#7c6bd6,#5b4ab6); } .cov.exos{ background:linear-gradient(135deg,var(--accent),var(--accent-2)); } .cov.corr{ background:linear-gradient(135deg,var(--green),#28a073); } .cov.piege{ background:linear-gradient(135deg,var(--red),#a8453f); }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:1180px){ .reader{ grid-template-columns:1fr 280px; } .thumbs{ display:none; } }
+@media (max-width:960px){
+  :root{ --sidebar-w:70px; }
+  .sb-logo span,.sb-group,.nav-item span,.nav-item .badge,.nav-item .lockmini,.sb-user .nm{ display:none; }
+  .sb-logo,.nav-item,.sb-user{ justify-content:center; }
+}
+@media (max-width:760px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ position:fixed; bottom:0; top:auto; left:0; right:0; height:auto; flex-direction:row; z-index:50; padding:8px; gap:4px; }
+  .sb-logo,.sb-group,.sb-spacer,.sb-user{ display:none; }
+  .sidebar .nav-list{ display:flex; gap:4px; width:100%; justify-content:space-around; }
+  .nav-item{ flex-direction:column; gap:3px; font-size:10px; padding:7px 4px; } .nav-item span{ display:block; } .nav-item.active::before{ display:none; }
+  .reader{ grid-template-columns:1fr; } .r-aside{ display:none; }
+  .viewer{ padding:18px; height:auto; } .page-doc{ padding:30px 24px; }
+  .rtop .fn{ display:none; }
+  #tweaks{ left:12px; right:12px; width:auto; bottom:80px; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded" data-reader="light">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3z"/><path d="M5 4v16"/></symbol>
+  <symbol id="ic-route" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="ic-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.5L7.5 21l4.5-2.5L16.5 21 15 13.5"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.7 2.3-2.7 4"/><path d="M12 17.5h.01"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18 6l-1.8 1.8M7.8 16.2L6 18M18 18l-1.8-1.8M7.8 7.8L6 6"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="ic-zin" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5M11 8v6M8 11h6"/></symbol>
+  <symbol id="ic-zout" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5M8 11h6"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="ic-print" viewBox="0 0 24 24"><path d="M7 9V3h10v6"/><rect x="5" y="9" width="14" height="8" rx="2"/><path d="M7 17h10v4H7z"/></symbol>
+  <symbol id="ic-bookmark" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></symbol>
+  <symbol id="ic-bm-fill" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></symbol>
+  <symbol id="ic-chev-l" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="ic-chev-r" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="ic-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.6.6-1 1.2-1 2H9c0-.8-.4-1.4-1-2A6 6 0 0 1 12 3z"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="ic-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="ic-page" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/></symbol>
+</svg>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo"><span class="mk">48</span><span>Prép-Maths</span></div>
+    <div class="sb-group">Apprendre</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-home"/></svg><span>Tableau de bord</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-book"/></svg><span>Mes cours</span><span class="badge">3</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-route"/></svg><span>Mon parcours</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-grid"/></svg><span>Catalogue</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-award"/></svg><span>Concours</span></a>
+    </nav>
+    <div class="sb-group">Ressources</div>
+    <nav class="nav-list">
+      <a class="nav-item active"><svg class="icon"><use href="#ic-file"/></svg><span>PDF & fiches</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-help"/></svg><span>Quiz</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-clock"/></svg><span>Mode examen</span><svg class="icon sm lockmini"><use href="#ic-lock"/></svg></a>
+    </nav>
+    <div class="sb-spacer"></div>
+    <a class="nav-item"><svg class="icon"><use href="#ic-settings"/></svg><span>Paramètres</span></a>
+    <div class="sb-user"><div class="av">YA</div><div class="nm"><b>Yasmine A.</b><span>Niveau 7 · Intermédiaire</span></div></div>
+  </aside>
+
+  <div class="main">
+    <!-- reader topbar -->
+    <div class="rtop">
+      <div class="back"><svg class="icon sm"><use href="#ic-back"/></svg> Cours</div>
+      <div class="fileinfo">
+        <span class="ft resume">RÉSU</span>
+        <div class="fn"><b id="docTitle">Résumé — Limites &amp; continuité</b><span>Bac Sciences Maths · PDF · 3 pages</span></div>
+      </div>
+      <div class="tools">
+        <div class="pagenav"><span class="iconbtn" id="prevPage" style="width:32px;height:32px;"><svg class="icon sm"><use href="#ic-chev-l"/></svg></span> <input id="pageInput" value="1"> / 3 <span class="iconbtn" id="nextPage" style="width:32px;height:32px;"><svg class="icon sm"><use href="#ic-chev-r"/></svg></span></div>
+        <div class="zoomctl"><span class="z" id="zoomOut"><svg class="icon sm"><use href="#ic-zout"/></svg></span><span class="lvl" id="zoomLvl">100%</span><span class="z" id="zoomIn"><svg class="icon sm"><use href="#ic-zin"/></svg></span></div>
+        <div class="iconbtn" id="bmBtn" title="Favori"><svg class="icon sm"><use href="#ic-bookmark"/></svg></div>
+        <div class="iconbtn" title="Imprimer"><svg class="icon sm"><use href="#ic-print"/></svg></div>
+        <button class="btn btn-primary btn-sm"><svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-download"/></svg> Télécharger</button>
+      </div>
+    </div>
+
+    <!-- reader body -->
+    <div class="reader">
+      <!-- thumbnails -->
+      <div class="thumbs">
+        <div class="th-h">Pages</div>
+        <div class="thumb active" data-p="1"><div class="pg"><div class="mini-line t"></div><div class="mini-line" style="width:92%"></div><div class="mini-line" style="width:80%"></div><div class="mini-line" style="width:88%"></div><div class="mini-line" style="width:40%"></div><div class="mini-line" style="width:90%;margin-top:8px;background:#e9d9b8"></div><div class="mini-line" style="width:70%"></div></div><span class="n">1</span></div>
+        <div class="thumb" data-p="2"><div class="pg"><div class="mini-line t"></div><div class="mini-line" style="width:85%"></div><div class="mini-line" style="width:90%"></div><div class="mini-line" style="width:60%"></div><div class="mini-line" style="width:88%;margin-top:8px;background:#cfe0f0"></div><div class="mini-line" style="width:75%"></div><div class="mini-line" style="width:50%"></div></div><span class="n">2</span></div>
+        <div class="thumb" data-p="3"><div class="pg"><div class="mini-line t"></div><div class="mini-line" style="width:90%"></div><div class="mini-line" style="width:70%"></div><div class="mini-line" style="width:84%"></div><div class="mini-line" style="width:88%;margin-top:8px;background:#d9ecdf"></div><div class="mini-line" style="width:45%"></div></div><span class="n">3</span></div>
+      </div>
+
+      <!-- viewer -->
+      <div class="viewer" id="viewer">
+        <span class="page-label">Page <b id="curPageLbl">1</b> sur 3</span>
+        <div class="page-doc" id="pageDoc" style="transform-origin:top center;">
+          <div class="wm"><span>Yasmine A. · prepmaths48.ma · 48-20413 &nbsp;&nbsp;&nbsp; Yasmine A. · prepmaths48.ma</span></div>
+          <div class="doc-head">
+            <div><div class="dl">RÉSUMÉ DE COURS · MÉTHODE 48</div><h2>Limites &amp; continuité</h2></div>
+            <span class="badge48">48</span>
+          </div>
+          <div class="doc-sec">
+            <h3>1. Notion de limite</h3>
+            <p>Soit f une fonction définie au voisinage de a. On dit que f admet une limite ℓ en a si f(x) se rapproche de ℓ aussi près qu'on veut lorsque x se rapproche de a.</p>
+            <div class="formula-box">lim<sub>x→a</sub> f(x) = ℓ</div>
+          </div>
+          <div class="doc-sec">
+            <h3>2. Opérations sur les limites</h3>
+            <ul>
+              <li>Somme : lim (f + g) = lim f + lim g</li>
+              <li>Produit : lim (f × g) = lim f × lim g</li>
+              <li>Quotient : lim (f / g) = lim f / lim g &nbsp;(si lim g ≠ 0)</li>
+            </ul>
+          </div>
+          <div class="doc-sec">
+            <h3>3. Formes indéterminées</h3>
+            <p>Quatre formes nécessitent une étude particulière. Il faut lever l'indétermination (factorisation, conjugué, croissances comparées).</p>
+            <div class="formula-box">∞ − ∞ &nbsp;·&nbsp; 0 × ∞ &nbsp;·&nbsp; ∞ / ∞ &nbsp;·&nbsp; 0 / 0</div>
+          </div>
+          <div class="callout-box">
+            <span class="ic"><svg class="icon sm" style="stroke:var(--accent-2)"><use href="#ic-bulb"/></svg></span>
+            <div class="ci"><b>Astuce concours.</b> Pour ∞/∞ avec des polynômes, compare directement les termes de plus haut degré — tu gagnes un temps précieux le jour J.</div>
+          </div>
+          <div class="doc-foot"><span>PRÉP-MATHS48 · RÉSUMÉ</span><span>Page 1/3</span></div>
+        </div>
+      </div>
+
+      <!-- aside -->
+      <aside class="r-aside">
+        <div class="res-hero">
+          <div class="cov resume"><span class="ftbig" style="background:#3b82c4;">RÉSU</span></div>
+          <div class="rb">
+            <h3>Résumé — Limites &amp; continuité</h3>
+            <div class="meta"><span>PDF · 3 pages</span><span>820 Ko</span></div>
+          </div>
+        </div>
+        <div class="res-actions">
+          <button class="btn btn-primary"><svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-download"/></svg> Télécharger le PDF</button>
+          <button class="btn btn-ghost"><svg class="icon sm"><use href="#ic-share"/></svg> Partager</button>
+        </div>
+        <div class="aside-sec">
+          <h4>Informations</h4>
+          <div class="info-row"><span class="l"><svg class="icon sm"><use href="#ic-book"/></svg> Cours</span><span class="v">Limites &amp; continuité</span></div>
+          <div class="info-row"><span class="l"><svg class="icon sm"><use href="#ic-doc"/></svg> Type</span><span class="v">Résumé</span></div>
+          <div class="info-row"><span class="l"><svg class="icon sm"><use href="#ic-clock"/></svg> Lecture</span><span class="v">~8 min</span></div>
+          <div class="info-row"><span class="l"><svg class="icon sm"><use href="#ic-eye"/></svg> Consultée</span><span class="v">3 fois</span></div>
+        </div>
+        <div class="aside-sec">
+          <h4>Ressources de cette session</h4>
+          <div class="related">
+            <div class="rel active"><span class="ft resume">RÉSU</span><div class="ri"><b>Résumé du cours</b><span>3 pages · en lecture</span></div></div>
+            <div class="rel"><span class="ft methode">MÉTH</span><div class="ri"><b>Fiche méthode</b><span>2 pages</span></div><svg class="icon sm chev"><use href="#ic-chev-r"/></svg></div>
+            <div class="rel"><span class="ft exos">EXOS</span><div class="ri"><b>Série d'exercices</b><span>12 exercices</span></div><svg class="icon sm chev"><use href="#ic-chev-r"/></svg></div>
+            <div class="rel"><span class="ft corr">CORR</span><div class="ri"><b>Correction détaillée</b><span>9 pages</span></div><svg class="icon sm chev"><use href="#ic-chev-r"/></svg></div>
+            <div class="rel"><span class="ft piege">PIÈGE</span><div class="ri"><b>Fiche pièges concours</b><span>1 page</span></div><svg class="icon sm chev"><use href="#ic-chev-r"/></svg></div>
+          </div>
+        </div>
+        <div class="secure-note"><svg class="icon sm"><use href="#ic-lock"/></svg> Ressource premium · réservée aux élèves</div>
+      </aside>
+    </div>
+  </div>
+</div>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Fond du lecteur</label><div class="seg" data-key="reader"><button data-val="light" class="on">Clair</button><button data-val="dark">Sombre</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "accent": "amber", "reader":"light", "corners": "rounded" }/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_pdf_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-reader', state.reader);
+    document.body.setAttribute('data-corners', state.corners);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  apply();
+
+  // zoom
+  var zoom=100, doc=document.getElementById('pageDoc');
+  function applyZoom(){ doc.style.transform='scale('+(zoom/100)+')'; document.getElementById('zoomLvl').textContent=zoom+'%'; }
+  document.getElementById('zoomIn').addEventListener('click', function(){ zoom=Math.min(180,zoom+10); applyZoom(); });
+  document.getElementById('zoomOut').addEventListener('click', function(){ zoom=Math.max(60,zoom-10); applyZoom(); });
+
+  // page nav (visual)
+  var cur=1, total=3;
+  function setPage(p){ cur=Math.max(1,Math.min(total,p));
+    document.getElementById('pageInput').value=cur;
+    document.getElementById('curPageLbl').textContent=cur;
+    document.querySelectorAll('.thumb').forEach(function(t){ t.classList.toggle('active', +t.dataset.p===cur); });
+    document.querySelector('.doc-foot').lastElementChild.textContent='Page '+cur+'/3';
+  }
+  document.getElementById('prevPage').addEventListener('click', function(){ setPage(cur-1); });
+  document.getElementById('nextPage').addEventListener('click', function(){ setPage(cur+1); });
+  document.getElementById('pageInput').addEventListener('change', function(e){ setPage(parseInt(e.target.value)||1); });
+  document.querySelectorAll('.thumb').forEach(function(t){ t.addEventListener('click', function(){ setPage(+t.dataset.p); }); });
+
+  // bookmark
+  document.getElementById('bmBtn').addEventListener('click', function(){ var on=this.classList.toggle('on'); this.querySelector('use').setAttribute('href', on?'#ic-bm-fill':'#ic-bookmark'); });
+
+  // related switch (visual)
+  document.querySelectorAll('.rel').forEach(function(r){ r.addEventListener('click', function(){ document.querySelectorAll('.rel').forEach(function(x){ x.classList.remove('active'); }); r.classList.add('active'); }); });
+
+  // nav
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.addEventListener('click', function(){ if(n.querySelector('.lockmini'))return; document.querySelectorAll('.nav-item').forEach(function(x){ x.classList.remove('active'); }); n.classList.add('active'); }); });
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

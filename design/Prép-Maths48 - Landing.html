@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Réussir le Bac & les concours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5f1;
+  --surface:#ffffff;
+  --surface-2:#fbfbf8;
+  --ink:#0f1e36;
+  --ink-2:#37445d;
+  --muted:#6b7789;
+  --line:#e6e7e0;
+  --line-2:#edeee8;
+  --navy:#0c1830;
+  --navy-2:#11233f;
+  --navy-3:#1b3357;
+  --accent:#f3a93a;
+  --accent-2:#e6981f;
+  --accent-ink:#3a2906;
+  --accent-soft:#fdedd2;
+  --cyan:#26c1d4;
+  --green:#33b482;
+  --r-lg:22px;
+  --r-md:16px;
+  --r-sm:11px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 10px 30px -10px rgba(15,30,54,.18), 0 4px 12px rgba(15,30,54,.06);
+  --shadow-lg:0 40px 80px -30px rgba(12,24,48,.45), 0 16px 40px -20px rgba(12,24,48,.30);
+  --maxw:1200px;
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{
+  --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5;
+}
+body[data-corners="sharp"]{ --r-lg:6px; --r-md:5px; --r-sm:4px; }
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-body); font-size:17px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.08; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+img{ max-width:100%; display:block; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 28px; }
+.mono{ font-family:var(--font-mono); }
+
+/* ---------- buttons ---------- */
+.btn{ display:inline-flex; align-items:center; gap:9px; justify-content:center;
+  font-family:var(--font-body); font-weight:600; font-size:16px; cursor:pointer;
+  padding:13px 22px; border-radius:var(--r-sm); border:1px solid transparent; transition:.18s ease; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 18px -6px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:transparent; color:var(--ink); border-color:var(--line); }
+.btn-ghost:hover{ background:var(--surface); border-color:#d7d8d0; }
+.btn-dark{ background:var(--navy); color:#fff; }
+.btn-dark:hover{ background:var(--navy-2); transform:translateY(-1px); }
+.btn-lg{ padding:16px 28px; font-size:17px; }
+.btn-sm{ padding:9px 15px; font-size:14.5px; }
+.btn-white{ background:#fff; color:var(--navy); }
+.btn-white:hover{ transform:translateY(-1px); }
+
+.eyebrow{ font-family:var(--font-mono); font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent-2); display:inline-flex; align-items:center; gap:9px; }
+body[data-accent="cyan"] .eyebrow{ color:var(--accent-2); }
+.eyebrow::before{ content:""; width:22px; height:1.5px; background:currentColor; display:inline-block; }
+.eyebrow.center::before{ display:none; }
+.section{ padding:96px 0; position:relative; }
+.section-head{ max-width:680px; margin-bottom:52px; }
+.section-head h2{ font-size:clamp(30px,3.6vw,44px); margin:16px 0 14px; }
+.section-head p{ color:var(--muted); font-size:18px; margin:0; }
+.section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+
+.pill{ display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600;
+  padding:6px 13px; border-radius:100px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); }
+.pill .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); }
+.tag-mono{ font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; padding:3px 9px; border-radius:6px; }
+
+/* image placeholder */
+.ph{ position:relative; background:
+   repeating-linear-gradient(135deg, color-mix(in srgb,var(--navy) 8%, transparent) 0 7px, transparent 7px 15px),
+   var(--line-2);
+  border:1px solid var(--line); border-radius:var(--r-md);
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  font-family:var(--font-mono); font-size:11px; color:var(--muted); }
+.ph.dark{ background:
+   repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 7px, transparent 7px 15px),
+   rgba(255,255,255,.04); border-color:rgba(255,255,255,.12); color:#8ea0bb; }
+
+/* ============ NAV ============ */
+header.nav{ position:sticky; top:0; z-index:60; transition:.25s; }
+header.nav .bar{ display:flex; align-items:center; gap:30px; height:72px; }
+header.nav.scrolled{ background:color-mix(in srgb,var(--bg) 82%, transparent); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+.logo{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:700; font-size:20px; letter-spacing:-.02em; }
+.logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--navy); color:#fff; padding:4px 9px; border-radius:9px; font-size:15px; position:relative; }
+.logo .mk::after{ content:""; position:absolute; right:4px; bottom:4px; width:5px; height:5px; border-radius:50%; background:var(--accent); }
+.navlinks{ display:flex; gap:28px; font-weight:500; color:var(--ink-2); font-size:15.5px; }
+.navlinks a:hover{ color:var(--ink); }
+.nav-cta{ margin-left:auto; display:flex; align-items:center; gap:14px; }
+.nav-cta .login{ font-weight:600; font-size:15.5px; }
+
+/* ============ HERO ============ */
+.hero{ position:relative; overflow:hidden; padding:60px 0 90px; }
+.hero::before{ content:""; position:absolute; inset:0; z-index:0;
+  background:
+   radial-gradient(900px 420px at 78% 8%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%),
+   radial-gradient(700px 460px at 8% 92%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 62%);
+  opacity:.8; }
+.hero::after{ content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:linear-gradient(var(--ink) 1px,transparent 1px),linear-gradient(90deg,var(--ink) 1px,transparent 1px);
+  background-size:46px 46px; opacity:.025; mask-image:radial-gradient(70% 60% at 50% 40%,#000,transparent); }
+.hero .wrap{ position:relative; z-index:1; display:grid; grid-template-columns:1.02fr .98fr; gap:56px; align-items:center; }
+.hero h1{ font-size:clamp(38px,4.7vw,62px); letter-spacing:-.03em; }
+.hero h1 .hl{ position:relative; white-space:nowrap; }
+.hero h1 .hl::after{ content:""; position:absolute; left:-2px; right:-2px; bottom:.08em; height:.32em; background:var(--accent); opacity:.32; z-index:-1; border-radius:3px; }
+.hero .lead{ font-size:19.5px; color:var(--ink-2); max-width:480px; margin:22px 0 30px; }
+.hero-cta{ display:flex; gap:14px; flex-wrap:wrap; }
+.hero-trust{ display:flex; align-items:center; gap:16px; margin-top:30px; }
+.avatars{ display:flex; }
+.avatars span{ width:36px; height:36px; border-radius:50%; border:2.5px solid var(--bg); margin-left:-10px;
+  background:linear-gradient(135deg,#cfd6e0,#aeb8c6); display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-size:11px; color:#3a4760; font-weight:700; }
+.avatars span:first-child{ margin-left:0; }
+.hero-trust .t-txt{ font-size:14px; color:var(--muted); line-height:1.35; }
+.hero-trust .t-txt b{ color:var(--ink); }
+.stars{ color:var(--accent); letter-spacing:1px; }
+
+/* product mock */
+.mock{ position:relative; }
+.mock .app{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg);
+  box-shadow:var(--shadow-lg); overflow:hidden; }
+.mock .app-top{ display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid var(--line-2); }
+.mock .app-top .dots{ display:flex; gap:6px; }
+.mock .app-top .dots i{ width:9px; height:9px; border-radius:50%; background:#e0e1da; display:block; }
+.mock .app-top .mini-logo{ font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--ink-2); margin-left:6px; }
+.mock .app-top .ava{ margin-left:auto; width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#cfd6e0,#aeb8c6); }
+.mock .app-body{ padding:18px; display:grid; gap:14px; }
+.continue-card{ display:flex; gap:14px; align-items:center; padding:14px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface-2); }
+.continue-card .thumb{ width:88px; height:62px; border-radius:10px; flex:0 0 auto;
+  background:linear-gradient(135deg,var(--navy-2),var(--navy-3)); position:relative; overflow:hidden; }
+.continue-card .thumb .play{ position:absolute; inset:0; margin:auto; width:0;height:0; border-style:solid;
+  border-width:8px 0 8px 13px; border-color:transparent transparent transparent #fff; align-self:center; }
+.continue-card .thumb::after{ content:""; position:absolute; inset:0; background:radial-gradient(circle at 30% 20%, color-mix(in srgb,var(--cyan) 50%, transparent), transparent 60%); }
+.continue-card .ci{ flex:1; min-width:0; }
+.continue-card .ci .lbl{ font-family:var(--font-mono); font-size:10px; color:var(--accent-2); letter-spacing:.08em; }
+.continue-card .ci h4{ font-size:15.5px; margin:3px 0 8px; }
+.bar{ height:7px; border-radius:5px; background:var(--line); overflow:hidden; }
+.bar > i{ display:block; height:100%; border-radius:5px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+.continue-card .pct{ font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:6px; display:block; }
+.mini-list{ display:grid; gap:9px; }
+.mini-list .mi{ display:flex; align-items:center; gap:11px; font-size:13.5px; color:var(--ink-2); padding:9px 12px; border:1px solid var(--line-2); border-radius:10px; background:var(--surface); }
+.mini-list .mi .ic{ width:20px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center; flex:0 0 auto; }
+.mini-list .mi.done .ic{ background:color-mix(in srgb,var(--green) 16%, transparent); color:var(--green); }
+.mini-list .mi.now .ic{ background:var(--accent-soft); color:var(--accent-2); }
+.mini-list .mi.lock{ color:var(--muted); }
+.mini-list .mi.lock .ic{ background:var(--line-2); color:var(--muted); }
+.mini-list .mi .meta{ margin-left:auto; font-family:var(--font-mono); font-size:10.5px; color:var(--muted); }
+.mock .float{ position:absolute; background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow-md); padding:11px 14px; display:flex; align-items:center; gap:10px; }
+.mock .float .ring{ width:34px; height:34px; border-radius:50%;
+  background:conic-gradient(var(--green) 0 240deg, var(--line) 240deg 360deg); display:grid; place-items:center; }
+.mock .float .ring::after{ content:""; width:24px; height:24px; border-radius:50%; background:var(--surface); }
+.mock .float .ring span{ position:absolute; font-family:var(--font-mono); font-size:10px; font-weight:700; }
+.mock .float.f1{ top:-22px; right:24px; }
+.mock .float.f2{ bottom:36px; left:-26px; }
+.mock .float .ft{ font-size:12px; line-height:1.25; }
+.mock .float .ft b{ font-size:13px; }
+.badge-emoji{ width:34px; height:34px; border-radius:10px; background:var(--accent-soft); display:grid; place-items:center; font-size:17px; }
+
+/* ============ LOGOS ============ */
+.logos{ padding:30px 0 8px; }
+.logos .row{ display:flex; align-items:center; justify-content:center; gap:42px; flex-wrap:wrap; }
+.logos .cap{ font-family:var(--font-mono); font-size:11px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; }
+.logos .lg{ height:30px; width:124px; opacity:.55; }
+
+/* ============ PATH ============ */
+.path-sec{ background:var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.path-grid{ display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:start; }
+.path-aside{ position:sticky; top:110px; }
+.path-aside .big48{ font-family:var(--font-display); font-weight:700; font-size:96px; line-height:.9; letter-spacing:-.04em;
+  background:linear-gradient(135deg,var(--ink),var(--navy-3)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.path-aside .big48 sup{ font-size:30px; color:var(--accent-2); -webkit-text-fill-color:var(--accent-2); vertical-align:top; }
+.path-stats{ display:flex; gap:26px; margin-top:24px; }
+.path-stats .ps .n{ font-family:var(--font-display); font-weight:700; font-size:24px; }
+.path-stats .ps .l{ font-size:13px; color:var(--muted); }
+
+.timeline{ position:relative; padding-left:46px; }
+.timeline .track{ position:absolute; left:15px; top:6px; bottom:6px; width:3px; background:var(--line); border-radius:3px; overflow:hidden; }
+.timeline .track > i{ position:absolute; left:0; top:0; width:100%; height:0; border-radius:3px;
+  background:linear-gradient(var(--green),var(--accent)); transition:height 1.1s cubic-bezier(.4,0,.2,1); }
+.tnode{ position:relative; margin-bottom:22px; }
+.tnode .knob{ position:absolute; left:-46px; top:2px; width:34px; height:34px; border-radius:50%;
+  background:var(--surface); border:2px solid var(--line); display:grid; place-items:center;
+  font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--muted); z-index:2; transition:.3s; }
+.tnode.done .knob{ border-color:var(--green); color:var(--green); background:color-mix(in srgb,var(--green) 12%, var(--surface)); }
+.tnode.now .knob{ border-color:var(--accent); color:var(--accent-2); background:var(--accent-soft); }
+.tnode.now .knob::after{ content:""; position:absolute; inset:-6px; border-radius:50%; border:2px solid var(--accent); opacity:.4; animation:pulse 2s infinite; }
+@keyframes pulse{ 0%{ transform:scale(.8); opacity:.5;} 70%{ transform:scale(1.3); opacity:0;} 100%{opacity:0;} }
+.tcard{ border:1px solid var(--line); border-radius:var(--r-md); padding:18px 20px; background:var(--surface-2); transition:.25s; }
+.tnode.now .tcard{ background:var(--surface); border-color:color-mix(in srgb,var(--accent) 40%, var(--line)); box-shadow:var(--shadow-sm); }
+.tnode.soon .tcard{ opacity:.62; }
+.tcard .th{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.tcard h3{ font-size:19px; }
+.tcard p{ color:var(--muted); font-size:14.5px; margin:7px 0 0; }
+.tcard .chips{ display:flex; gap:7px; margin-top:12px; flex-wrap:wrap; }
+.chip{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; padding:4px 9px; border-radius:7px; background:var(--line-2); color:var(--ink-2); }
+.st-pill{ font-size:12px; font-weight:600; padding:4px 11px; border-radius:100px; }
+.st-pill.done{ background:color-mix(in srgb,var(--green) 15%, transparent); color:#1c8f63; }
+.st-pill.now{ background:var(--accent-soft); color:var(--accent-2); }
+.st-pill.soon{ background:var(--line-2); color:var(--muted); }
+
+/* ============ WHY (bento dark) ============ */
+.why{ background:var(--navy); color:#e9eef7; }
+.why .eyebrow{ color:var(--accent); }
+.why .section-head h2{ color:#fff; }
+.why .section-head p{ color:#9fb0c9; }
+.bento{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:172px; gap:18px; }
+.cell{ border:1px solid rgba(255,255,255,.1); border-radius:var(--r-md); padding:22px; background:rgba(255,255,255,.035);
+  position:relative; overflow:hidden; display:flex; flex-direction:column; transition:.25s; }
+.cell:hover{ background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.18); transform:translateY(-2px); }
+.cell h3{ color:#fff; font-size:19px; }
+.cell p{ color:#9fb0c9; font-size:14px; margin:7px 0 0; }
+.cell .ic-box{ width:42px; height:42px; border-radius:11px; display:grid; place-items:center; margin-bottom:14px;
+  background:color-mix(in srgb,var(--accent) 18%, transparent); color:var(--accent); }
+.span2{ grid-column:span 2; } .row2{ grid-row:span 2; }
+.cell.feat{ background:linear-gradient(150deg, color-mix(in srgb,var(--accent) 16%, var(--navy-2)), var(--navy-2)); border-color:color-mix(in srgb,var(--accent) 25%, transparent); }
+.cell.feat .progviz{ margin-top:auto; }
+.ringbig{ width:120px; height:120px; border-radius:50%; position:relative; margin:6px 0 0;
+  background:conic-gradient(var(--accent) 0 245deg, rgba(255,255,255,.1) 245deg 360deg); display:grid; place-items:center; }
+.ringbig::after{ content:""; width:88px; height:88px; border-radius:50%; background:var(--navy-2); }
+.ringbig span{ position:absolute; font-family:var(--font-display); font-weight:700; font-size:26px; color:#fff; }
+.ringbig small{ display:block; font-family:var(--font-body); font-size:11px; color:#9fb0c9; font-weight:500; }
+.badges-row{ display:flex; gap:8px; margin-top:auto; }
+.badges-row b{ width:38px; height:38px; border-radius:11px; display:grid; place-items:center; font-size:17px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); }
+
+/* ============ COURSES ============ */
+.courses .head-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:30px; flex-wrap:wrap; }
+.filters{ display:flex; gap:9px; flex-wrap:wrap; margin-bottom:26px; }
+.filter{ font-size:14px; font-weight:600; padding:9px 16px; border-radius:100px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-2); cursor:pointer; transition:.18s; }
+.filter:hover{ border-color:#d2d3cb; }
+.filter.active{ background:var(--navy); color:#fff; border-color:var(--navy); }
+.course-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.ccard{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); overflow:hidden; transition:.25s; cursor:pointer; }
+.ccard:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); border-color:#dcddd4; }
+.ccard .cthumb{ height:148px; position:relative; background:linear-gradient(135deg,var(--navy-2),var(--navy-3)); overflow:hidden; }
+.ccard .cthumb::after{ content:""; position:absolute; inset:0; opacity:.5;
+  background:radial-gradient(420px 160px at 20% 0%, color-mix(in srgb,var(--cyan) 45%, transparent), transparent 60%); }
+.ccard .cthumb .glyph{ position:absolute; right:16px; bottom:12px; font-family:var(--font-mono); font-size:44px; font-weight:700; color:rgba(255,255,255,.14); }
+.ccard .cthumb .lvl{ position:absolute; left:14px; top:14px; }
+.ccard .cbody{ padding:18px; }
+.ccard .cbody h3{ font-size:18px; margin:0 0 6px; }
+.ccard .cmeta{ display:flex; gap:14px; font-size:13px; color:var(--muted); margin:10px 0 14px; flex-wrap:wrap; }
+.ccard .cmeta .mi{ display:flex; align-items:center; gap:6px; }
+.diff{ display:inline-flex; gap:3px; align-items:center; }
+.diff i{ width:7px; height:7px; border-radius:50%; background:var(--line); }
+.diff i.on{ background:var(--accent); }
+.cfoot{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding-top:14px; border-top:1px solid var(--line-2); }
+.cfoot .prog{ flex:1; }
+.cfoot .prog .pl{ font-family:var(--font-mono); font-size:10.5px; color:var(--muted); margin-bottom:5px; display:block; }
+
+/* ============ CONCOURS ============ */
+.concours{ background:var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.concours-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.cc-panel{ border:1px solid var(--line); border-radius:var(--r-lg); padding:34px; position:relative; overflow:hidden; background:var(--surface-2); }
+.cc-panel.dark{ background:var(--navy); color:#e9eef7; border-color:var(--navy); }
+.cc-panel.dark h3{ color:#fff; } .cc-panel.dark p{ color:#9fb0c9; }
+.cc-panel .ico{ width:52px; height:52px; border-radius:14px; display:grid; place-items:center; margin-bottom:18px; }
+.cc-panel h3{ font-size:25px; margin-bottom:8px; }
+.cc-panel .schools{ display:flex; gap:8px; flex-wrap:wrap; margin:18px 0 22px; }
+.cc-panel .sch{ font-family:var(--font-mono); font-size:12px; padding:6px 11px; border-radius:8px; }
+.cc-panel.light .sch{ background:#fff; border:1px solid var(--line); color:var(--ink-2); }
+.cc-panel.dark .sch{ background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); color:#cdd8e8; }
+.cc-panel .equal{ position:absolute; top:24px; right:26px; font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; color:var(--muted); }
+.cc-panel.dark .equal{ color:#8092ad; }
+
+/* ============ TESTIMONIALS ============ */
+.testi-grid{ display:grid; grid-template-columns:1.5fr 1fr; gap:24px; }
+.testi-main{ background:var(--navy); color:#fff; border-radius:var(--r-lg); padding:42px; position:relative; overflow:hidden; }
+.testi-main::before{ content:"\201C"; position:absolute; top:6px; left:30px; font-family:var(--font-display); font-size:150px; color:var(--accent); opacity:.22; line-height:1; }
+.testi-main blockquote{ font-family:var(--font-display); font-weight:500; font-size:27px; line-height:1.32; letter-spacing:-.01em; margin:24px 0 28px; position:relative; }
+.testi-main .who{ display:flex; align-items:center; gap:13px; }
+.testi-main .who .av{ width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#3a4f70,#243a5c); }
+.testi-main .who b{ display:block; font-family:var(--font-body); }
+.testi-main .who span{ color:#9fb0c9; font-size:14px; }
+.testi-side{ display:grid; gap:24px; }
+.testi-sm{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-md); padding:24px; }
+.testi-sm p{ font-size:15.5px; color:var(--ink-2); margin:0 0 16px; }
+.testi-sm .who{ display:flex; align-items:center; gap:11px; }
+.testi-sm .who .av{ width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#cfd6e0,#aeb8c6); }
+.testi-sm .who b{ font-size:14px; } .testi-sm .who span{ font-size:12.5px; color:var(--muted); display:block; }
+
+/* ============ PRICING ============ */
+.pricing{ background:var(--surface); border-top:1px solid var(--line); }
+.price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; align-items:start; }
+.pcard{ border:1px solid var(--line); border-radius:var(--r-lg); padding:32px; background:var(--surface-2); position:relative; }
+.pcard.feat{ background:var(--navy); color:#e9eef7; border-color:var(--navy); transform:translateY(-10px); box-shadow:var(--shadow-lg); }
+.pcard.feat h3{ color:#fff; }
+.pcard .ptag{ font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.pcard.feat .ptag{ color:var(--accent); }
+.pcard h3{ font-size:23px; margin:8px 0 16px; }
+.pcard .amt{ font-family:var(--font-display); font-weight:700; font-size:46px; letter-spacing:-.03em; }
+.pcard .amt small{ font-family:var(--font-body); font-weight:500; font-size:16px; color:var(--muted); }
+.pcard.feat .amt small{ color:#9fb0c9; }
+.pcard .pdesc{ color:var(--muted); font-size:14.5px; margin:6px 0 22px; min-height:42px; }
+.pcard.feat .pdesc{ color:#9fb0c9; }
+.feats{ display:grid; gap:12px; margin-bottom:26px; }
+.feats li{ display:flex; gap:11px; align-items:flex-start; font-size:14.5px; list-style:none; }
+.feats .ck{ width:20px; height:20px; border-radius:6px; flex:0 0 auto; display:grid; place-items:center; margin-top:1px;
+  background:color-mix(in srgb,var(--green) 15%, transparent); color:var(--green); }
+.pcard.feat .ck{ background:color-mix(in srgb,var(--accent) 22%, transparent); color:var(--accent); }
+.feats ul{ padding:0; margin:0; }
+.ribbon{ position:absolute; top:22px; right:24px; background:var(--accent); color:var(--accent-ink);
+  font-size:12px; font-weight:700; padding:5px 12px; border-radius:100px; }
+
+/* ============ FAQ ============ */
+.faq-list{ max-width:780px; margin:0 auto; display:grid; gap:14px; }
+.faq{ border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); overflow:hidden; }
+.faq summary{ list-style:none; cursor:pointer; padding:20px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; font-weight:600; font-size:17px; }
+.faq summary::-webkit-details-marker{ display:none; }
+.faq summary .ico{ width:26px; height:26px; border-radius:8px; background:var(--line-2); display:grid; place-items:center; flex:0 0 auto; transition:.25s; font-size:18px; color:var(--ink-2); }
+.faq[open] summary .ico{ background:var(--accent); color:var(--accent-ink); transform:rotate(45deg); }
+.faq .ans{ padding:0 24px 22px; color:var(--muted); font-size:15.5px; max-width:640px; }
+
+/* ============ CTA ============ */
+.cta{ }
+.cta-box{ background:var(--navy); border-radius:28px; padding:64px; text-align:center; position:relative; overflow:hidden; }
+.cta-box::before{ content:""; position:absolute; inset:0;
+  background:radial-gradient(600px 300px at 50% 0%, color-mix(in srgb,var(--accent) 26%, transparent), transparent 60%); }
+.cta-box::after{ content:""; position:absolute; inset:0; opacity:.06;
+  background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px); background-size:40px 40px; }
+.cta-box > *{ position:relative; z-index:1; }
+.cta-box h2{ color:#fff; font-size:clamp(30px,3.8vw,46px); max-width:680px; margin:0 auto 16px; }
+.cta-box p{ color:#aebbd0; font-size:18px; max-width:520px; margin:0 auto 30px; }
+.cta-box .hero-cta{ justify-content:center; }
+.cta-box .micro{ margin-top:18px; font-size:13.5px; color:#8094b0; font-family:var(--font-mono); }
+
+/* ============ FOOTER ============ */
+footer.ft{ background:var(--navy); color:#9fb0c9; padding:64px 0 36px; }
+.ft-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:40px; }
+.ft .logo{ color:#fff; margin-bottom:16px; }
+.ft p{ font-size:14.5px; max-width:260px; }
+.ft h5{ color:#fff; font-family:var(--font-body); font-size:14px; letter-spacing:.04em; margin:0 0 16px; text-transform:uppercase; }
+.ft ul{ list-style:none; padding:0; margin:0; display:grid; gap:11px; font-size:14.5px; }
+.ft ul a:hover{ color:#fff; }
+.ft-bottom{ display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:48px; padding-top:24px; border-top:1px solid rgba(255,255,255,.1); font-size:13px; flex-wrap:wrap; }
+
+/* lock badge (protected videos) */
+.lock-note{ display:inline-flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); font-family:var(--font-mono); }
+
+/* reveal — hidden state applied only when JS marks the doc (.reveal-on) so content
+   is never invisible without JS; .in wins with !important as a robustness guard. */
+.reveal-on .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in{ opacity:1 !important; transform:none !important; }
+.reveal.d1{ transition-delay:.07s;} .reveal.d2{ transition-delay:.14s;} .reveal.d3{ transition-delay:.21s;} .reveal.d4{ transition-delay:.28s;}
+
+@media (prefers-reduced-motion: reduce){
+  .reveal-on .reveal{ opacity:1; transform:none; transition:none; }
+  .timeline .track > i{ transition:none; }
+  html{ scroll-behavior:auto; }
+}
+
+/* ============ TWEAKS PANEL ============ */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:264px; background:#10203a; color:#e9eef7;
+  border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+  font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; }
+#tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:17px; line-height:1; background:none; border:0; color:#fff; }
+#tweaks .tk-h .x:hover{ opacity:1; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px;
+  padding:7px 6px; border-radius:7px; cursor:pointer; transition:.15s; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+#tweaks input[type=text]{ width:100%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); color:#fff;
+  border-radius:9px; padding:9px 11px; font-family:var(--font-body); font-size:13px; }
+#tweaks .swrow{ display:flex; gap:8px; }
+#tweaks .sw{ width:34px; height:34px; border-radius:9px; border:2px solid transparent; cursor:pointer; }
+#tweaks .sw.on{ border-color:#fff; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:980px){
+  .hero .wrap{ grid-template-columns:1fr; gap:44px; }
+  .hero h1 .hl{ white-space:normal; }
+  .path-grid{ grid-template-columns:1fr; gap:36px; } .path-aside{ position:static; }
+  .bento{ grid-template-columns:repeat(2,1fr); grid-auto-rows:160px; }
+  .span2{ grid-column:span 2; } .row2{ grid-row:span 1; }
+  .course-grid{ grid-template-columns:repeat(2,1fr); }
+  .concours-grid,.testi-grid,.price-grid{ grid-template-columns:1fr; }
+  .pcard.feat{ transform:none; }
+  .ft-grid{ grid-template-columns:1fr 1fr; gap:30px; }
+}
+@media (max-width:640px){
+  body{ font-size:16px; }
+  .navlinks{ display:none; }
+  .section{ padding:64px 0; }
+  .course-grid{ grid-template-columns:1fr; }
+  .bento{ grid-template-columns:1fr; grid-auto-rows:auto; } .cell{ min-height:150px; } .span2{ grid-column:span 1; }
+  .cta-box{ padding:40px 24px; }
+  .testi-main{ padding:30px; } .testi-main blockquote{ font-size:22px; }
+  .ft-grid{ grid-template-columns:1fr; }
+  #tweaks{ left:12px; right:12px; width:auto; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded">
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap bar">
+    <a class="logo" href="#"><span class="mk">48</span> Prép-Maths</a>
+    <nav class="navlinks">
+      <a href="#parcours">Parcours</a>
+      <a href="#cours">Cours</a>
+      <a href="#concours">Concours</a>
+      <a href="#prix">Tarifs</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="login" href="#">Connexion</a>
+      <a class="btn btn-primary btn-sm" href="#">Commencer gratuitement</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <span class="pill reveal"><span class="dot"></span> Parcours guidé · 2ᵉ Bac → Concours</span>
+      <h1 class="reveal d1" id="heroTitle">Un chemin <span class="hl">clair</span>,<br>étape par étape,<br>jusqu'à la réussite.</h1>
+      <p class="lead reveal d2">On te dit quoi réviser, dans quel ordre. Vidéos courtes, PDF pratiques, quiz corrigés — et on suit ta progression jusqu'au Bac et aux concours. <strong style="color:var(--ink)">داكشي اللي خصك، بلا ما تتلف.</strong></p>
+      <div class="hero-cta reveal d3">
+        <a class="btn btn-primary btn-lg" href="#">Commencer gratuitement →</a>
+        <a class="btn btn-ghost btn-lg" href="#cours">▷ Explorer les cours</a>
+      </div>
+      <div class="hero-trust reveal d4">
+        <div class="avatars">
+          <span>YA</span><span>AN</span><span>SA</span><span>IM</span><span>+</span>
+        </div>
+        <div class="t-txt"><span class="stars">★★★★★</span> &nbsp;<b>4,9/5</b><br>+12 000 élèves marocains accompagnés</div>
+      </div>
+    </div>
+
+    <!-- product mock -->
+    <div class="mock reveal d2">
+      <div class="app">
+        <div class="app-top">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="mini-logo">48·tableau de bord</span>
+          <span class="ava"></span>
+        </div>
+        <div class="app-body">
+          <div class="continue-card">
+            <div class="thumb"><span class="play"></span></div>
+            <div class="ci">
+              <span class="lbl">EN COURS · BAC SM</span>
+              <h4>Limites & continuité — Vidéo 6/14</h4>
+              <div class="bar"><i style="width:64%"></i></div>
+              <span class="pct">64% du module · ~32 min restantes</span>
+            </div>
+          </div>
+          <div class="mini-list">
+            <div class="mi done"><span class="ic">✓</span> Dérivation — chapitre validé <span class="meta">100%</span></div>
+            <div class="mi now"><span class="ic">▶</span> Limites & continuité <span class="meta">64%</span></div>
+            <div class="mi lock"><span class="ic">🔒</span> Intégrales <span class="meta">verrouillé</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="float f1">
+        <span class="badge-emoji">🏅</span>
+        <div class="ft"><b>+1 badge</b><br><span style="color:var(--muted)">Série de 12 jours</span></div>
+      </div>
+      <div class="float f2">
+        <span class="ring"><span>67%</span></span>
+        <div class="ft"><b>Progression</b><br><span style="color:var(--muted)">du parcours guidé</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGOS ============ -->
+<section class="logos">
+  <div class="wrap">
+    <div class="row">
+      <span class="cap">Ils préparent avec Prép-Maths48</span>
+      <span class="ph lg">lycée</span>
+      <span class="ph lg">prépa privée</span>
+      <span class="ph lg">centre soutien</span>
+      <span class="ph lg">association</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARCOURS GUIDÉ ============ -->
+<section class="section path-sec" id="parcours">
+  <div class="wrap path-grid">
+    <aside class="path-aside reveal">
+      <span class="eyebrow">La méthode 48</span>
+      <div class="big48">48<sup>jalons</sup></div>
+      <h2 style="font-size:30px; margin:12px 0 14px;">Ton parcours, balisé du début à la fin.</h2>
+      <p style="color:var(--muted); margin:0;">Pas de « par où je commence ? ». Chaque chapitre tient en 4 temps — comprendre, s'entraîner, corriger, valider — et on débloque le suivant quand tu es prêt.</p>
+      <div class="path-stats">
+        <div class="ps"><div class="n">4</div><div class="l">temps / chapitre</div></div>
+        <div class="ps"><div class="n">~48h</div><div class="l">pour le maîtriser</div></div>
+        <div class="ps"><div class="n">94%</div><div class="l">vont au bout</div></div>
+      </div>
+      <a class="btn btn-dark" href="#" style="margin-top:26px;">Voir mon parcours →</a>
+    </aside>
+
+    <div class="timeline" id="timeline">
+      <div class="track"><i id="trackFill"></i></div>
+
+      <div class="tnode done reveal">
+        <span class="knob">✓</span>
+        <div class="tcard">
+          <div class="th"><h3>Bases & révisions du Bac</h3><span class="st-pill done">Terminé</span></div>
+          <p>Remise à niveau ciblée : les prérequis qui bloquent le plus en 2ᵉ Bac.</p>
+          <div class="chips"><span class="chip">6 vidéos</span><span class="chip">2 PDF</span><span class="chip">quiz validé</span></div>
+        </div>
+      </div>
+
+      <div class="tnode now reveal d1">
+        <span class="knob">2</span>
+        <div class="tcard">
+          <div class="th"><h3>Chapitres clés + quiz</h3><span class="st-pill now">En cours · 64%</span></div>
+          <p>Limites, dérivation, intégrales, suites, complexes. Une vidéo courte → exos → correction → quiz.</p>
+          <div class="bar" style="margin-top:12px;"><i style="width:64%"></i></div>
+          <div class="chips"><span class="chip">14 vidéos</span><span class="chip">4 PDF / session</span><span class="chip">astuces concours</span></div>
+        </div>
+      </div>
+
+      <div class="tnode soon reveal d2">
+        <span class="knob">3</span>
+        <div class="tcard">
+          <div class="th"><h3>Annales Bac chronométrées</h3><span class="st-pill soon">À venir</span></div>
+          <p>Sujets type, en conditions réelles, avec le mode examen et la correction détaillée.</p>
+          <div class="chips"><span class="chip">mode examen</span><span class="chip">corrigés vidéo</span></div>
+        </div>
+      </div>
+
+      <div class="tnode soon reveal d3">
+        <span class="knob">4</span>
+        <div class="tcard">
+          <div class="th"><h3>Spécial concours</h3><span class="st-pill soon">À venir</span></div>
+          <p>Médecine, ENSA, ENSAM, ENCG : QCM chronométrés, pièges fréquents, fiches méthode dédiées.</p>
+          <div class="chips"><span class="chip">QCM concours</span><span class="chip">fiches pièges</span><span class="chip">parcours dédié</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POURQUOI (bento) ============ -->
+<section class="section why">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pourquoi Prép-Maths48</span>
+      <h2>Tout ce qu'il faut pour réussir,<br>au bon moment — rien de superflu.</h2>
+      <p>Une plateforme pensée pour la discipline et la performance, pas pour t'éparpiller.</p>
+    </div>
+    <div class="bento">
+      <div class="cell feat span2 row2 reveal">
+        <span class="eyebrow" style="color:var(--accent)">Suivi & motivation</span>
+        <h3 style="margin-top:10px;">Progression, badges & séries</h3>
+        <p>Ta progression est visible en permanence. Tu gagnes des badges, tu gardes ta série — comme un jeu, mais qui te fait réussir.</p>
+        <div class="progviz" style="display:flex; align-items:center; gap:24px;">
+          <div class="ringbig"><span>67%<small>parcours</small></span></div>
+          <div class="badges-row" style="margin:0;"><b>🏅</b><b>🔥</b><b>⭐</b><b>🎯</b></div>
+        </div>
+      </div>
+      <div class="cell reveal d1">
+        <span class="ic-box">▶</span>
+        <h3>Vidéos courtes</h3>
+        <p>Droit au but, 6–10 min. Une notion = une vidéo.</p>
+      </div>
+      <div class="cell reveal d2">
+        <span class="ic-box">?</span>
+        <h3>Quiz par module</h3>
+        <p>On valide avant de débloquer la suite.</p>
+      </div>
+      <div class="cell span2 reveal d2">
+        <span class="ic-box">▤</span>
+        <h3>PDF premium par session</h3>
+        <p>Résumé · série d'exercices · correction · fiche pièges concours. Téléchargeables, imprimables.</p>
+      </div>
+      <div class="cell reveal d3">
+        <span class="ic-box">⏱</span>
+        <h3>Mode examen</h3>
+        <p>Conditions réelles, chronométré.</p>
+      </div>
+      <div class="cell reveal d4">
+        <span class="ic-box">🔒</span>
+        <h3>Vidéos sécurisées</h3>
+        <p>Accès élève uniquement, non téléchargeables.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COURS ============ -->
+<section class="section courses" id="cours">
+  <div class="wrap">
+    <div class="head-row reveal">
+      <div class="section-head" style="margin:0;">
+        <span class="eyebrow">Catalogue</span>
+        <h2>Cours par filière</h2>
+        <p>Du programme de 2ᵉ Bac aux modules concours — filtre selon ton objectif.</p>
+      </div>
+      <a class="btn btn-ghost" href="#">Voir tout le catalogue →</a>
+    </div>
+    <div class="filters reveal d1">
+      <button class="filter active">Tous</button>
+      <button class="filter">Bac Sciences Maths</button>
+      <button class="filter">Bac PC</button>
+      <button class="filter">Bac SVT</button>
+      <button class="filter">Médecine</button>
+      <button class="filter">ENSA / ENSAM</button>
+      <button class="filter">ENCG / TAFEM</button>
+    </div>
+    <div class="course-grid">
+      <article class="ccard reveal d1">
+        <div class="cthumb"><span class="tag-mono lvl" style="background:rgba(255,255,255,.14); color:#fff;">2ᵉ BAC · SM</span><span class="glyph">∫</span></div>
+        <div class="cbody">
+          <h3>Limites & continuité</h3>
+          <p style="color:var(--muted); font-size:14px; margin:0;">Le socle de l'analyse, expliqué simplement.</p>
+          <div class="cmeta">
+            <span class="mi">▶ 14 vidéos</span><span class="mi">▤ 4 PDF</span>
+            <span class="mi">Difficulté <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></span>
+          </div>
+          <div class="cfoot">
+            <div class="prog"><span class="pl">Progression · 64%</span><div class="bar"><i style="width:64%"></i></div></div>
+            <a class="btn btn-dark btn-sm" href="#">Continuer</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="ccard reveal d2">
+        <div class="cthumb"><span class="tag-mono lvl" style="background:color-mix(in srgb,var(--accent) 85%, #000); color:var(--accent-ink);">MÉDECINE</span><span class="glyph">P</span></div>
+        <div class="cbody">
+          <h3>Probabilités concours</h3>
+          <p style="color:var(--muted); font-size:14px; margin:0;">QCM type concours, chronométrés et corrigés.</p>
+          <div class="cmeta">
+            <span class="mi">▶ 9 vidéos</span><span class="mi">▤ 6 PDF</span>
+            <span class="mi">Difficulté <span class="diff"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></span>
+          </div>
+          <div class="cfoot">
+            <div class="prog"><span class="pl">Non commencé</span><div class="bar"><i style="width:0%"></i></div></div>
+            <a class="btn btn-primary btn-sm" href="#">Accéder</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="ccard reveal d3">
+        <div class="cthumb"><span class="tag-mono lvl" style="background:rgba(255,255,255,.14); color:#fff;">ENSA</span><span class="glyph">z</span></div>
+        <div class="cbody">
+          <h3>Nombres complexes — vitesse</h3>
+          <p style="color:var(--muted); font-size:14px; margin:0;">Méthodes rapides pour gagner du temps le jour J.</p>
+          <div class="cmeta">
+            <span class="mi">▶ 11 vidéos</span><span class="mi">▤ 3 PDF</span>
+            <span class="mi">Difficulté <span class="diff"><i class="on"></i><i class="on"></i><i></i><i></i></span></span>
+          </div>
+          <div class="cfoot">
+            <div class="prog"><span class="pl">Progression · 30%</span><div class="bar"><i style="width:30%"></i></div></div>
+            <a class="btn btn-dark btn-sm" href="#">Continuer</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCOURS ============ -->
+<section class="section concours" id="concours">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow center">Après le Bac</span>
+      <h2>Bac & concours, à parts égales</h2>
+      <p>La même rigueur pour décrocher ton Bac… et pour viser l'école de tes rêves.</p>
+    </div>
+    <div class="concours-grid">
+      <div class="cc-panel light reveal d1">
+        <span class="equal">50 / 50</span>
+        <span class="ico" style="background:color-mix(in srgb,var(--cyan) 16%, transparent); color:var(--cyan);">✚</span>
+        <h3>Médecine & Santé</h3>
+        <p style="color:var(--muted); margin:0;">Concours communs, QCM chronométrés et pièges classiques décortiqués.</p>
+        <div class="schools"><span class="sch">FMP</span><span class="sch">FMPM</span><span class="sch">Médecine privée</span><span class="sch">Pharmacie</span></div>
+        <a class="btn btn-ghost" href="#">Découvrir le parcours →</a>
+      </div>
+      <div class="cc-panel dark reveal d2">
+        <span class="equal">50 / 50</span>
+        <span class="ico" style="background:color-mix(in srgb,var(--accent) 22%, transparent); color:var(--accent);">◈</span>
+        <h3>Ingénieurs & Commerce</h3>
+        <p>Maths intensives et logique pour les grandes écoles marocaines.</p>
+        <div class="schools"><span class="sch">ENSA</span><span class="sch">ENSAM</span><span class="sch">ENCG</span><span class="sch">TAFEM</span></div>
+        <a class="btn btn-white" href="#">Découvrir le parcours →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TÉMOIGNAGES ============ -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow center">Ils ont réussi</span>
+      <h2>Des résultats, pas des promesses</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-main reveal d1">
+        <blockquote>Le parcours guidé m'a évité de me disperser. J'avançais sans me poser de questions — et j'ai eu Médecine du premier coup.</blockquote>
+        <div class="who"><span class="av"></span><div><b>Imane B.</b><span>Bac SM → FMP Casablanca</span></div></div>
+      </div>
+      <div class="testi-side">
+        <div class="testi-sm reveal d2">
+          <p>« Les vidéos courtes, c'est exactement ce qu'il me fallait. Bnadem ma kayməllsh. »</p>
+          <div class="who"><span class="av"></span><div><b>Anas K.</b><span>Bac PC → ENSA Tanger</span></div></div>
+        </div>
+        <div class="testi-sm reveal d3">
+          <p>« Les fiches pièges m'ont sauvée au concours ENCG. Tout était anticipé. »</p>
+          <div class="who"><span class="av"></span><div><b>Salma R.</b><span>Bac SVT → ENCG</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="section pricing" id="prix">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow center">Offres</span>
+      <h2>Choisis ton objectif</h2>
+      <p>Commence gratuitement, passe au niveau supérieur quand tu es prêt. Sans engagement.</p>
+    </div>
+    <div class="price-grid">
+      <div class="pcard reveal d1">
+        <span class="ptag">Gratuit</span>
+        <h3>Découverte</h3>
+        <div class="amt">0 <small>DH</small></div>
+        <p class="pdesc">Teste la plateforme et la Méthode 48 sans payer.</p>
+        <ul class="feats">
+          <li><span class="ck">✓</span> Quelques vidéos par filière</li>
+          <li><span class="ck">✓</span> 2 PDF résumés offerts</li>
+          <li><span class="ck">✓</span> 1 quiz par semaine</li>
+        </ul>
+        <a class="btn btn-ghost" href="#" style="width:100%;">Créer un compte</a>
+      </div>
+
+      <div class="pcard feat reveal d2">
+        <span class="ribbon">Le plus choisi</span>
+        <span class="ptag">Bac Premium</span>
+        <h3>Réussir le Bac</h3>
+        <div class="amt">99 <small>DH/mois</small></div>
+        <p class="pdesc">Tout le programme 2ᵉ Bac, en parcours guidé complet.</p>
+        <ul class="feats">
+          <li><span class="ck">✓</span> Toutes les vidéos du Bac</li>
+          <li><span class="ck">✓</span> Tous les PDF (résumé, exos, corrigés)</li>
+          <li><span class="ck">✓</span> Quiz illimités + mode examen</li>
+          <li><span class="ck">✓</span> Suivi de progression & badges</li>
+        </ul>
+        <a class="btn btn-primary" href="#" style="width:100%;">Commencer maintenant</a>
+      </div>
+
+      <div class="pcard reveal d3">
+        <span class="ptag">Bac + Concours</span>
+        <h3>Viser plus haut</h3>
+        <div class="amt">169 <small>DH/mois</small></div>
+        <p class="pdesc">Le Bac complet + la prépa concours intégrale.</p>
+        <ul class="feats">
+          <li><span class="ck">✓</span> Tout le pack Bac Premium</li>
+          <li><span class="ck">✓</span> Parcours Médecine, ENSA, ENSAM, ENCG</li>
+          <li><span class="ck">✓</span> QCM concours chronométrés</li>
+          <li><span class="ck">✓</span> Fiches pièges & annales</li>
+        </ul>
+        <a class="btn btn-dark" href="#" style="width:100%;">Tout débloquer</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head center reveal">
+      <span class="eyebrow center">Questions fréquentes</span>
+      <h2>On répond à tes doutes</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq reveal d1" open>
+        <summary>Les vidéos sont-elles téléchargeables ? <span class="ico">+</span></summary>
+        <div class="ans">Non. Pour protéger le travail des profs, les vidéos sont sécurisées et accessibles uniquement depuis ton compte élève connecté — elles ne peuvent pas être téléchargées ni partagées.</div>
+      </details>
+      <details class="faq reveal d1">
+        <summary>Puis-je préparer le Bac ET un concours en même temps ? <span class="ico">+</span></summary>
+        <div class="ans">Oui. L'offre Bac + Concours combine le programme complet de 2ᵉ Bac et les parcours dédiés Médecine, ENSA, ENSAM et ENCG, avec un suivi de progression séparé pour chaque objectif.</div>
+      </details>
+      <details class="faq reveal d2">
+        <summary>Comment fonctionne l'offre gratuite ? <span class="ico">+</span></summary>
+        <div class="ans">Tu crées un compte et tu accèdes immédiatement à une sélection de vidéos, 2 PDF résumés et un quiz par semaine — sans carte bancaire. Tu passes au niveau supérieur seulement si tu le souhaites.</div>
+      </details>
+      <details class="faq reveal d2">
+        <summary>Le contenu suit-il le programme officiel marocain ? <span class="ico">+</span></summary>
+        <div class="ans">Oui, tous les cours sont alignés sur le programme officiel de 2ᵉ année Bac et sur les attendus réels des concours post-bac marocains.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="section cta">
+  <div class="wrap">
+    <div class="cta-box reveal">
+      <span class="eyebrow center" style="color:var(--accent); justify-content:center; display:inline-flex;">Prêt à commencer ?</span>
+      <h2>Ta réussite commence par un premier chapitre.</h2>
+      <p>Crée ton compte gratuit en 2 minutes et lance ton parcours guidé dès aujourd'hui.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg" href="#">Commencer gratuitement →</a>
+        <a class="btn btn-white btn-lg" href="#cours">Explorer les cours</a>
+      </div>
+      <div class="micro">Sans carte bancaire · Annulable à tout moment</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft-grid">
+      <div>
+        <a class="logo" href="#"><span class="mk">48</span> Prép-Maths</a>
+        <p>La plateforme marocaine pour réussir le Bac et préparer les concours post-bac, avec une méthode claire et un parcours guidé.</p>
+        <span class="lock-note" style="margin-top:14px; color:#7e90ac;">🔒 Vidéos sécurisées · accès élève</span>
+      </div>
+      <div>
+        <h5>Plateforme</h5>
+        <ul><li><a href="#cours">Cours</a></li><li><a href="#parcours">Parcours guidé</a></li><li><a href="#prix">Tarifs</a></li><li><a href="#">Tableau de bord</a></li></ul>
+      </div>
+      <div>
+        <h5>Concours</h5>
+        <ul><li><a href="#">Médecine</a></li><li><a href="#">ENSA / ENSAM</a></li><li><a href="#">ENCG / TAFEM</a></li><li><a href="#">Annales</a></li></ul>
+      </div>
+      <div>
+        <h5>Aide</h5>
+        <ul><li><a href="#">Centre d'aide</a></li><li><a href="#">Nous contacter</a></li><li><a href="#">Conditions</a></li><li><a href="#">Confidentialité</a></li></ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span>© 2026 Prép-Maths48 — Fait au Maroc 🇲🇦</span>
+      <span class="mono" style="color:#7e90ac;">prepmaths48.ma</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ TWEAKS PANEL ============ -->
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row">
+      <label>Couleur d'accent</label>
+      <div class="seg" data-key="accent">
+        <button data-val="amber" class="on">Ambre</button>
+        <button data-val="cyan">Cyan</button>
+      </div>
+    </div>
+    <div class="tk-row">
+      <label>Coins</label>
+      <div class="seg" data-key="corners">
+        <button data-val="rounded" class="on">Arrondis</button>
+        <button data-val="sharp">Nets</button>
+      </div>
+    </div>
+    <div class="tk-row">
+      <label>Titre du hero</label>
+      <input type="text" id="tkTitle" value="Un chemin clair, étape par étape, jusqu'à la réussite.">
+    </div>
+  </div>
+</aside>
+
+<script>
+/* defaults the host can rewrite */
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "amber",
+  "corners": "rounded",
+  "heroTitle": "Un chemin clair, étape par étape, jusqu'à la réussite."
+}/*EDITMODE-END*/;
+
+(function(){
+  document.documentElement.classList.add('reveal-on');
+  var LS = 'pm48_tweaks';
+  var state = Object.assign({}, TWEAK_DEFAULTS);
+  try{ var s = JSON.parse(localStorage.getItem(LS)||'{}'); Object.assign(state, s); }catch(e){}
+
+  function applyTitle(v){
+    // keep the highlighted word styling if "clair" present, else plain
+    var el = document.getElementById('heroTitle');
+    if(!el) return;
+    var safe = v.replace(/</g,'&lt;');
+    safe = safe.replace(/\bclair\b/i, function(m){ return '<span class="hl">'+m+'</span>'; });
+    el.innerHTML = safe;
+  }
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    if(state.heroTitle) applyTitle(state.heroTitle);
+    // sync controls
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){
+      var k = seg.dataset.key;
+      seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); });
+    });
+    var ti = document.getElementById('tkTitle'); if(ti && document.activeElement!==ti) ti.value = state.heroTitle;
+  }
+  function setKey(k,v){
+    state[k]=v;
+    try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({ type:'__edit_mode_set_keys', edits:{[k]:v} }, '*'); }catch(e){}
+    apply();
+  }
+
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){
+    b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); });
+  });
+  document.getElementById('tkTitle').addEventListener('input', function(e){ setKey('heroTitle', e.target.value); });
+
+  /* host protocol */
+  var panel = document.getElementById('tweaks');
+  window.addEventListener('message', function(e){
+    var t = e && e.data && e.data.type;
+    if(t==='__activate_edit_mode') panel.classList.add('on');
+    else if(t==='__deactivate_edit_mode') panel.classList.remove('on');
+  });
+  try{ window.parent.postMessage({ type:'__edit_mode_available' }, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){
+    panel.classList.remove('on');
+    try{ window.parent.postMessage({ type:'__edit_mode_dismissed' }, '*'); }catch(e){}
+  });
+
+  /* drag the panel */
+  (function(){
+    var head=document.getElementById('tkHead'), sx,sy,ox,oy,drag=false;
+    head.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY;
+      var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; });
+  })();
+
+  apply();
+
+  /* nav scroll state */
+  var nav=document.getElementById('nav');
+  var onScroll=function(){ nav.classList.toggle('scrolled', window.scrollY>10); };
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+  /* filters (visual toggle) */
+  document.querySelectorAll('.filter').forEach(function(f){
+    f.addEventListener('click', function(){
+      document.querySelectorAll('.filter').forEach(function(x){ x.classList.remove('active'); });
+      f.classList.add('active');
+    });
+  });
+
+  /* reveal on scroll — rect-based (IntersectionObserver is unreliable in some
+     preview iframes), with a failsafe that reveals everything regardless. */
+  var reveals = [].slice.call(document.querySelectorAll('.reveal'));
+  function checkReveal(){
+    var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+    for(var i=reveals.length-1;i>=0;i--){
+      var r = reveals[i].getBoundingClientRect();
+      if(r.top < vh*0.92 && r.bottom > -40){ reveals[i].classList.add('in'); reveals.splice(i,1); }
+    }
+  }
+  window.addEventListener('scroll', checkReveal, {passive:true});
+  window.addEventListener('resize', checkReveal);
+  checkReveal();
+  requestAnimationFrame(checkReveal);
+  setTimeout(checkReveal, 120);
+  setTimeout(function(){ document.querySelectorAll('.reveal').forEach(function(e){ e.classList.add('in'); }); }, 1600);
+
+  /* timeline track fill */
+  var tl=document.getElementById('timeline'), fill=document.getElementById('trackFill'), tlDone=false;
+  function checkTl(){
+    if(tlDone || !tl || !fill) return;
+    var vh = window.innerHeight || 800;
+    var r = tl.getBoundingClientRect();
+    if(r.top < vh*0.7){ fill.style.height='42%'; tlDone=true; }
+  }
+  window.addEventListener('scroll', checkTl, {passive:true});
+  checkTl(); setTimeout(checkTl, 200);
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

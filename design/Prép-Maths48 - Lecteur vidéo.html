@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Lecteur vidéo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef0ea;
+  --surface:#ffffff;
+  --surface-2:#fbfbf8;
+  --ink:#0f1e36;
+  --ink-2:#37445d;
+  --muted:#6b7789;
+  --line:#e6e7e0;
+  --line-2:#edeee8;
+  --navy:#0c1830;
+  --navy-2:#11233f;
+  --navy-3:#1b3357;
+  --accent:#f3a93a;
+  --accent-2:#e6981f;
+  --accent-ink:#3a2906;
+  --accent-soft:#fdedd2;
+  --cyan:#26c1d4;
+  --green:#33b482;
+  --red:#cf5b54;
+  --r-lg:18px; --r-md:14px; --r-sm:10px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.14; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:16px; height:16px; } .icon.lg{ width:24px; height:24px; }
+
+.btn{ display:inline-flex; align-items:center; gap:8px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:14px; cursor:pointer; padding:10px 17px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 16px -7px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); }
+.btn-ghost:hover{ border-color:#d2d3cb; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); }
+.btn-sm{ padding:8px 13px; font-size:13px; }
+.btn.done-state{ background:color-mix(in srgb,var(--green) 16%, var(--surface)); color:#1c8f63; border-color:color-mix(in srgb,var(--green) 35%, var(--line)); }
+.pill{ display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:600; padding:5px 11px; border-radius:100px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); }
+.tag{ font-family:var(--font-mono); font-size:10px; letter-spacing:.04em; padding:3px 8px; border-radius:6px; background:var(--line-2); color:var(--ink-2); }
+.bar{ height:7px; border-radius:6px; background:var(--line); overflow:hidden; }
+.bar > i{ display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+
+/* ============ TOPBAR ============ */
+.topbar{ position:sticky; top:0; z-index:40; background:var(--navy); color:#cdd8e8; display:flex; align-items:center; gap:16px; padding:12px 22px; }
+.topbar .back{ display:flex; align-items:center; gap:9px; font-weight:600; font-size:14px; color:#e9eef7; padding:7px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.14); cursor:pointer; }
+.topbar .back:hover{ background:rgba(255,255,255,.07); }
+.crumb{ font-size:13.5px; color:#8497b2; display:flex; align-items:center; gap:9px; min-width:0; }
+.crumb b{ color:#fff; font-weight:600; }
+.crumb .sep{ opacity:.5; }
+.topbar .right{ margin-left:auto; display:flex; align-items:center; gap:12px; }
+.secure-chip{ display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; color:#bfe6c9; background:rgba(51,180,130,.14); border:1px solid rgba(51,180,130,.3); padding:7px 12px; border-radius:10px; }
+.streak{ display:flex; align-items:center; gap:6px; color:var(--accent); font-weight:700; font-size:13px; }
+.tb-av{ width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#3a4f70,#243a5c); }
+
+/* ============ LAYOUT ============ */
+.stage{ display:grid; grid-template-columns:1fr 372px; gap:0; align-items:start; }
+.viewer{ min-width:0; padding:24px 26px 60px; }
+.aside{ position:sticky; top:60px; height:calc(100vh - 60px); border-left:1px solid var(--line); background:var(--surface); display:flex; flex-direction:column; }
+
+/* ============ PLAYER ============ */
+.player{ position:relative; aspect-ratio:16/9; background:#070d18; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-md); }
+.player .poster{ position:absolute; inset:0; background:
+  radial-gradient(900px 420px at 70% -10%, #16304f, transparent 60%),
+  linear-gradient(160deg,#0d1a2e,#0a1424); }
+.player .board{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.player .board .eq{ font-family:var(--font-mono); color:rgba(255,255,255,.16); font-size:46px; letter-spacing:2px; text-align:center; line-height:1.7; }
+.player .board .eq small{ font-size:22px; }
+.player .grain{ position:absolute; inset:0; opacity:.05; background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px); background-size:40px 40px; }
+/* watermark proof */
+.player .wm{ position:absolute; inset:0; pointer-events:none; display:grid; place-items:center; }
+.player .wm span{ font-family:var(--font-mono); font-size:13px; color:rgba(255,255,255,.10); transform:rotate(-24deg); letter-spacing:1px; white-space:nowrap; }
+/* top overlay */
+.player .ovr-top{ position:absolute; top:0; left:0; right:0; display:flex; align-items:center; gap:10px; padding:16px 18px;
+  background:linear-gradient(180deg,rgba(0,0,0,.5),transparent); color:#fff; }
+.player .ovr-top .t{ font-family:var(--font-display); font-weight:600; font-size:15.5px; }
+.player .ovr-top .sec{ margin-left:auto; display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:#bfe6c9;
+  background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.16); padding:5px 10px; border-radius:8px; }
+/* center play */
+.player .bigplay{ position:absolute; inset:0; margin:auto; width:78px; height:78px; border-radius:50%;
+  background:rgba(243,169,58,.92); display:grid; place-items:center; cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,.4); transition:.18s; }
+.player .bigplay:hover{ transform:scale(1.06); }
+.player .bigplay svg{ width:30px; height:30px; fill:#1d130a; stroke:none; margin-left:4px; }
+.player.playing .bigplay{ opacity:0; pointer-events:none; }
+/* controls */
+.controls{ position:absolute; left:0; right:0; bottom:0; padding:14px 16px 13px; color:#fff;
+  background:linear-gradient(0deg,rgba(0,0,0,.7),transparent); }
+.scrub{ height:6px; border-radius:6px; background:rgba(255,255,255,.22); position:relative; cursor:pointer; margin-bottom:11px; }
+.scrub .buf{ position:absolute; left:0; top:0; bottom:0; width:78%; background:rgba(255,255,255,.18); border-radius:6px; }
+.scrub .prog{ position:absolute; left:0; top:0; bottom:0; width:62%; background:var(--accent); border-radius:6px; }
+.scrub .handle{ position:absolute; left:62%; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.4); }
+.scrub .chap{ position:absolute; top:-1px; width:2px; height:8px; background:rgba(255,255,255,.5); }
+.ctrl-row{ display:flex; align-items:center; gap:16px; }
+.ctrl-row .c{ cursor:pointer; display:flex; align-items:center; opacity:.92; }
+.ctrl-row .c:hover{ opacity:1; }
+.ctrl-row .time{ font-family:var(--font-mono); font-size:12px; color:#dfe6f0; }
+.ctrl-row .spacer{ flex:1; }
+.ctrl-row .speed{ font-family:var(--font-mono); font-size:12px; border:1px solid rgba(255,255,255,.22); padding:3px 8px; border-radius:7px; cursor:pointer; }
+.ctrl-row .cc{ font-family:var(--font-mono); font-size:11px; border:1px solid rgba(255,255,255,.22); padding:3px 7px; border-radius:6px; cursor:pointer; }
+.vol{ display:flex; align-items:center; gap:7px; }
+.vol .vbar{ width:60px; height:5px; border-radius:5px; background:rgba(255,255,255,.25); position:relative; }
+.vol .vbar i{ position:absolute; left:0; top:0; bottom:0; width:70%; background:#fff; border-radius:5px; }
+
+/* ============ UNDER PLAYER ============ */
+.head-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin:22px 0 4px; flex-wrap:wrap; }
+.head-row .lbl{ font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; color:var(--accent-2); }
+.head-row h1{ font-size:25px; margin:7px 0 9px; letter-spacing:-.02em; }
+.head-row .meta{ display:flex; gap:16px; color:var(--muted); font-size:13px; flex-wrap:wrap; }
+.head-row .meta .m{ display:flex; align-items:center; gap:6px; }
+.head-actions{ display:flex; gap:10px; align-items:center; }
+.iconbtn{ width:42px; height:42px; border-radius:11px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; color:var(--ink-2); cursor:pointer; transition:.14s; }
+.iconbtn:hover{ border-color:#d2d3cb; color:var(--ink); } .iconbtn.on{ background:var(--accent-soft); color:var(--accent-2); border-color:color-mix(in srgb,var(--accent) 30%,var(--line)); }
+
+/* tabs */
+.tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin:22px 0 0; flex-wrap:wrap; }
+.tab{ display:inline-flex; align-items:center; gap:8px; padding:12px 16px; font-weight:600; font-size:14px; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:.14s; }
+.tab:hover{ color:var(--ink); }
+.tab.active{ color:var(--ink); border-bottom-color:var(--accent); }
+.tab .n{ font-family:var(--font-mono); font-size:10px; background:var(--line-2); color:var(--ink-2); padding:1px 6px; border-radius:20px; }
+.panel{ display:none; padding:24px 2px; }
+.panel.active{ display:block; }
+
+.lede{ font-size:16px; color:var(--ink-2); max-width:680px; }
+.learn{ display:grid; grid-template-columns:1fr 1fr; gap:12px 26px; margin-top:18px; max-width:720px; }
+.learn .li{ display:flex; gap:11px; align-items:flex-start; font-size:14.5px; }
+.learn .ck{ width:22px; height:22px; border-radius:7px; flex:0 0 auto; display:grid; place-items:center; background:color-mix(in srgb,var(--green) 15%,transparent); color:var(--green); margin-top:1px; }
+
+/* callout cards */
+.callout{ border-radius:var(--r-md); padding:22px 24px; display:flex; gap:18px; max-width:760px; }
+.callout .ic{ width:46px; height:46px; border-radius:13px; flex:0 0 auto; display:grid; place-items:center; }
+.callout h3{ font-size:18px; margin-bottom:7px; }
+.callout p{ margin:0; color:var(--ink-2); font-size:14.5px; }
+.callout.astuce{ background:linear-gradient(135deg, var(--accent-soft), color-mix(in srgb,var(--accent-soft) 50%, var(--surface))); border:1px solid color-mix(in srgb,var(--accent) 35%, var(--line)); }
+.callout.astuce .ic{ background:var(--accent); color:var(--accent-ink); }
+.callout.erreur{ background:color-mix(in srgb,var(--red) 9%, var(--surface)); border:1px solid color-mix(in srgb,var(--red) 28%, var(--line)); }
+.callout.erreur .ic{ background:color-mix(in srgb,var(--red) 16%,transparent); color:var(--red); }
+.callout .eq{ font-family:var(--font-mono); background:rgba(255,255,255,.6); border:1px solid var(--line); border-radius:8px; padding:7px 11px; font-size:13px; margin-top:12px; display:inline-block; }
+.callout.erreur .wrong{ color:var(--red); text-decoration:line-through; opacity:.8; }
+.callout.erreur .right{ color:#1c8f63; font-weight:700; }
+
+/* notes */
+.note-box{ max-width:720px; }
+.note-input{ display:flex; gap:10px; align-items:flex-start; }
+.note-input .ts{ font-family:var(--font-mono); font-size:12px; background:var(--navy); color:#fff; padding:9px 11px; border-radius:9px; flex:0 0 auto; display:flex; align-items:center; gap:6px; }
+.note-input textarea{ flex:1; border:1px solid var(--line); border-radius:11px; padding:11px 13px; font-family:var(--font-body); font-size:14.5px; resize:vertical; min-height:46px; background:var(--surface); color:var(--ink); }
+.note-input textarea:focus{ outline:none; border-color:var(--accent); }
+.notes-list{ margin-top:18px; display:grid; gap:10px; }
+.note-card{ display:flex; gap:12px; padding:13px 15px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface-2); }
+.note-card .jump{ font-family:var(--font-mono); font-size:11.5px; color:var(--accent-2); font-weight:700; cursor:pointer; flex:0 0 auto; }
+.note-card p{ margin:0; font-size:14px; color:var(--ink-2); }
+
+/* pdf resources */
+.pdf-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; max-width:760px; }
+.pdf-card{ display:flex; gap:14px; align-items:center; padding:15px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); cursor:pointer; transition:.16s; }
+.pdf-card:hover{ border-color:#d8d9d0; box-shadow:var(--shadow-sm); transform:translateY(-2px); }
+.pdf-card .ft{ width:42px; height:52px; border-radius:9px; flex:0 0 auto; display:grid; place-items:center; font-family:var(--font-mono); font-size:9px; font-weight:700; color:#fff; }
+.pdf-card .ft.resume{ background:#3b82c4; } .pdf-card .ft.exos{ background:var(--accent-2); } .pdf-card .ft.corr{ background:var(--green); } .pdf-card .ft.piege{ background:var(--red); }
+.pdf-card .pi h4{ font-size:14.5px; font-family:var(--font-display); }
+.pdf-card .pi span{ font-size:12px; color:var(--muted); }
+.pdf-card .dl{ margin-left:auto; color:var(--muted); }
+
+/* quiz prompt */
+.quiz-prompt{ margin-top:26px; max-width:760px; background:linear-gradient(135deg,var(--navy),var(--navy-2)); color:#e9eef7; border-radius:var(--r-lg); padding:24px 26px; display:flex; align-items:center; gap:20px; position:relative; overflow:hidden; }
+.quiz-prompt::after{ content:""; position:absolute; inset:0; background:radial-gradient(420px 200px at 100% 0%, color-mix(in srgb,var(--accent) 24%, transparent), transparent 60%); }
+.quiz-prompt .qi{ position:relative; z-index:1; flex:1; }
+.quiz-prompt .lbl{ font-family:var(--font-mono); font-size:11px; letter-spacing:.06em; color:var(--accent); }
+.quiz-prompt h3{ color:#fff; font-size:20px; margin:6px 0 5px; }
+.quiz-prompt p{ margin:0; color:#9fb0c9; font-size:14px; }
+.quiz-prompt .btn{ position:relative; z-index:1; }
+
+/* ============ ASIDE (sessions) ============ */
+.aside-h{ padding:18px 20px; border-bottom:1px solid var(--line); }
+.aside-h .ct{ font-family:var(--font-mono); font-size:11px; color:var(--accent-2); letter-spacing:.05em; }
+.aside-h h2{ font-size:17px; margin:6px 0 12px; }
+.aside-h .pr{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:7px; }
+.aside-list{ overflow:auto; flex:1; padding:8px 12px 20px; }
+.mod-h{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; color:var(--muted); text-transform:uppercase; padding:16px 8px 8px; }
+.mod-h .ml{ flex:1; height:1px; background:var(--line); }
+.sess{ display:flex; gap:12px; align-items:center; padding:10px 11px; border-radius:11px; cursor:pointer; transition:.13s; }
+.sess:hover{ background:var(--surface-2); }
+.sess.active{ background:var(--accent-soft); }
+.sess .st{ width:26px; height:26px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; border:1.5px solid var(--line); color:var(--muted); }
+.sess.done .st{ background:color-mix(in srgb,var(--green) 14%,transparent); border-color:color-mix(in srgb,var(--green) 40%,transparent); color:var(--green); }
+.sess.active .st{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.sess.lock .st{ color:var(--muted); }
+.sess .si{ min-width:0; flex:1; }
+.sess .si h4{ font-size:13.5px; font-family:var(--font-display); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sess .si .sm2{ font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.sess.active .si h4{ color:var(--ink); }
+.sess.lock{ opacity:.6; }
+.sess .dur{ font-family:var(--font-mono); font-size:11px; color:var(--muted); flex:0 0 auto; }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; }
+#tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:1080px){
+  .stage{ grid-template-columns:1fr; }
+  .aside{ position:static; height:auto; border-left:0; border-top:1px solid var(--line); }
+  .aside-list{ max-height:520px; }
+}
+@media (max-width:640px){
+  .crumb{ display:none; }
+  .viewer{ padding:16px 14px 50px; }
+  .learn,.pdf-grid{ grid-template-columns:1fr; }
+  .quiz-prompt{ flex-direction:column; align-items:flex-start; }
+  #tweaks{ left:12px; right:12px; width:auto; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-back" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-pause" viewBox="0 0 24 24"><rect x="7" y="5" width="3.5" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="13.5" y="5" width="3.5" height="14" rx="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-next" viewBox="0 0 24 24"><path d="M6 5l9 7-9 7z" fill="currentColor" stroke="none"/><rect x="16.5" y="5" width="2.5" height="14" rx="1" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-vol" viewBox="0 0 24 24"><path d="M5 9v6h4l5 4V5L9 9z" fill="currentColor" stroke="none"/><path d="M17 8.5a5 5 0 0 1 0 7" fill="none"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18 6l-1.8 1.8M7.8 16.2L6 18M18 18l-1.8-1.8M7.8 7.8L6 6"/></symbol>
+  <symbol id="ic-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="ic-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 1 4 10.5c-.6.6-1 1.2-1 2H9c0-.8-.4-1.4-1-2A6 6 0 0 1 12 3z"/></symbol>
+  <symbol id="ic-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v5M12 18h.01"/></symbol>
+  <symbol id="ic-edit" viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M14 5l5 5L9 20H4v-5z"/></symbol>
+  <symbol id="ic-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5"/><path d="M5 20h14"/></symbol>
+  <symbol id="ic-bookmark" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></symbol>
+  <symbol id="ic-flame" viewBox="0 0 24 24"><path d="M12 3s5 4 5 9a5 5 0 0 1-10 0c0-2 1-3 1-3s0 2 2 2c0-3 2-5 2-8z"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.7 2.3-2.7 4"/><path d="M12 17.5h.01"/></symbol>
+</svg>
+
+<!-- ============ TOPBAR ============ -->
+<div class="topbar">
+  <div class="back"><svg class="icon sm"><use href="#ic-back"/></svg> Retour au cours</div>
+  <div class="crumb">Bac Sciences Maths <span class="sep">/</span> <b>Limites &amp; continuité</b> <span class="sep">/</span> Vidéo 6 sur 14</div>
+  <div class="right">
+    <div class="streak"><svg class="icon sm" style="stroke:var(--accent)"><use href="#ic-flame"/></svg> 12 j</div>
+    <div class="secure-chip"><svg class="icon sm" style="stroke:#bfe6c9"><use href="#ic-lock"/></svg> Lecture sécurisée</div>
+    <div class="tb-av"></div>
+  </div>
+</div>
+
+<div class="stage">
+  <!-- ============ VIEWER ============ -->
+  <div class="viewer">
+    <!-- PLAYER -->
+    <div class="player" id="player">
+      <div class="poster"></div>
+      <div class="board"><div class="eq">lim<small>x→a</small> &nbsp;f(g(x)) = f(<small>lim</small> g(x))</div></div>
+      <div class="grain"></div>
+      <div class="wm"><span>Yasmine A. · prepmaths48.ma · ID 48-20413</span></div>
+      <div class="ovr-top">
+        <span class="t">Limite d'une fonction composée</span>
+        <span class="sec"><svg class="icon sm" style="stroke:#bfe6c9"><use href="#ic-lock"/></svg> Protégé · non téléchargeable</span>
+      </div>
+      <div class="bigplay" id="bigplay"><svg viewBox="0 0 24 24"><use href="#ic-play"/></svg></div>
+      <div class="controls">
+        <div class="scrub" id="scrub">
+          <div class="buf"></div>
+          <div class="prog" id="prog"></div>
+          <div class="chap" style="left:25%"></div><div class="chap" style="left:48%"></div><div class="chap" style="left:71%"></div>
+          <div class="handle" id="handle"></div>
+        </div>
+        <div class="ctrl-row">
+          <span class="c" id="playToggle"><svg class="icon lg"><use href="#ic-play"/></svg></span>
+          <span class="c"><svg class="icon"><use href="#ic-next"/></svg></span>
+          <span class="vol"><svg class="icon"><use href="#ic-vol"/></svg><span class="vbar"><i></i></span></span>
+          <span class="time" id="time">12:48 / 20:30</span>
+          <span class="spacer"></span>
+          <span class="cc">CC · FR</span>
+          <span class="speed" id="speed">1.5×</span>
+          <span class="c"><svg class="icon"><use href="#ic-settings"/></svg></span>
+          <span class="c"><svg class="icon"><use href="#ic-expand"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- title + actions -->
+    <div class="head-row">
+      <div>
+        <div class="lbl">SESSION 6/14 · BAC SCIENCES MATHS</div>
+        <h1>Limite d'une fonction composée</h1>
+        <div class="meta">
+          <span class="m"><svg class="icon sm"><use href="#ic-clock"/></svg> 20 min 30</span>
+          <span class="m"><svg class="icon sm"><use href="#ic-file"/></svg> 4 PDF liés</span>
+          <span class="m"><svg class="icon sm"><use href="#ic-help"/></svg> Quiz · 10 questions</span>
+          <span class="m"><svg class="icon sm" style="stroke:var(--green)"><use href="#ic-check"/></svg> 92% l'ont validée</span>
+        </div>
+      </div>
+      <div class="head-actions">
+        <div class="iconbtn" id="bookmarkBtn" title="Favori"><svg class="icon"><use href="#ic-bookmark"/></svg></div>
+        <button class="btn btn-primary" id="doneBtn"><svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-check"/></svg> Marquer comme terminé</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-p="apercu">Aperçu</div>
+      <div class="tab" data-p="astuce"><svg class="icon sm" style="stroke:var(--accent-2)"><use href="#ic-bulb"/></svg> Astuce concours</div>
+      <div class="tab" data-p="erreur"><svg class="icon sm" style="stroke:var(--red)"><use href="#ic-alert"/></svg> Erreur fréquente</div>
+      <div class="tab" data-p="notes">Mes notes <span class="n" id="noteCount">2</span></div>
+      <div class="tab" data-p="pdf">Ressources PDF <span class="n">4</span></div>
+    </div>
+
+    <!-- PANELS -->
+    <div class="panel active" data-panel="apercu">
+      <p class="lede">On étudie comment calculer la limite d'une composée <b>f ∘ g</b> : le théorème de composition, les conditions d'application et les cas où il faut lever une indétermination avant de composer.</p>
+      <div class="learn">
+        <div class="li"><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Reconnaître une fonction composée et ses « briques ».</div>
+        <div class="li"><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Appliquer le théorème de composition des limites.</div>
+        <div class="li"><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Gérer les formes indéterminées avant de composer.</div>
+        <div class="li"><span class="ck"><svg class="icon sm"><use href="#ic-check"/></svg></span> Éviter le piège classique du changement de variable.</div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="astuce">
+      <div class="callout astuce">
+        <span class="ic"><svg class="icon lg" style="stroke:var(--accent-ink)"><use href="#ic-bulb"/></svg></span>
+        <div>
+          <h3>Astuce concours — gagne 2 minutes</h3>
+          <p>Au concours, pose <b>systématiquement</b> le changement de variable u = g(x) et écris « quand x → a, u → ℓ ». Les correcteurs cherchent cette phrase : elle rapporte des points même si le calcul final dérape.</p>
+          <span class="eq">u = g(x), &nbsp; x → a ⟹ u → ℓ &nbsp; donc &nbsp; lim f(g(x)) = lim<sub>u→ℓ</sub> f(u)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="erreur">
+      <div class="callout erreur">
+        <span class="ic"><svg class="icon lg" style="stroke:var(--red)"><use href="#ic-alert"/></svg></span>
+        <div>
+          <h3>Erreur fréquente</h3>
+          <p>Composer les limites <b>sans vérifier la continuité</b> de f au point limite. Le théorème ne s'applique que si f est continue (ou admet une limite) en ℓ = lim g.</p>
+          <p style="margin-top:12px;"><span class="wrong">lim f(g(x)) = f(lim g(x)) toujours</span> &nbsp;→&nbsp; <span class="right">seulement si f continue en ℓ</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="notes">
+      <div class="note-box">
+        <div class="note-input">
+          <span class="ts"><svg class="icon sm" style="stroke:#fff"><use href="#ic-edit"/></svg> 12:48</span>
+          <textarea id="noteText" placeholder="Écris une note à l'instant 12:48 de la vidéo… (enregistrée automatiquement)"></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="btn btn-dark btn-sm" id="addNote">Ajouter la note</button></div>
+        <div class="notes-list" id="notesList">
+          <div class="note-card"><span class="jump">04:12</span><p>Bien retenir : vérifier la continuité de f AVANT de composer.</p></div>
+          <div class="note-card"><span class="jump">09:30</span><p>Le changement de variable u = g(x) marche presque toujours au concours.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-panel="pdf">
+      <div class="pdf-grid">
+        <div class="pdf-card"><span class="ft resume">RÉSU</span><div class="pi"><h4>Résumé du cours</h4><span>PDF · 3 pages</span></div><svg class="icon dl"><use href="#ic-download"/></svg></div>
+        <div class="pdf-card"><span class="ft exos">EXOS</span><div class="pi"><h4>Série d'exercices</h4><span>PDF · 12 exercices</span></div><svg class="icon dl"><use href="#ic-download"/></svg></div>
+        <div class="pdf-card"><span class="ft corr">CORR</span><div class="pi"><h4>Correction détaillée</h4><span>PDF · 9 pages</span></div><svg class="icon dl"><use href="#ic-download"/></svg></div>
+        <div class="pdf-card"><span class="ft piege">PIÈGE</span><div class="pi"><h4>Fiche pièges concours</h4><span>PDF · 1 page</span></div><svg class="icon dl"><use href="#ic-download"/></svg></div>
+      </div>
+    </div>
+
+    <!-- QUIZ PROMPT -->
+    <div class="quiz-prompt">
+      <div class="qi">
+        <div class="lbl">À LA FIN DE LA VIDÉO</div>
+        <h3>Valide ce que tu viens d'apprendre</h3>
+        <p>10 questions · ~12 min · débloque la session suivante avec 70% de réussite.</p>
+      </div>
+      <a class="btn btn-primary">Commencer le quiz →</a>
+    </div>
+  </div>
+
+  <!-- ============ ASIDE : SESSIONS ============ -->
+  <aside class="aside">
+    <div class="aside-h">
+      <div class="ct">CONTENU DU COURS</div>
+      <h2>Limites &amp; continuité</h2>
+      <div class="pr"><span>6 / 14 sessions</span><span>64%</span></div>
+      <div class="bar"><i style="width:64%"></i></div>
+    </div>
+    <div class="aside-list">
+      <div class="mod-h">Module 1 · Limites <span class="ml"></span></div>
+      <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Notion de limite</h4><div class="sm2">Vidéo · validé</div></div><span class="dur">14:02</span></div>
+      <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Limites usuelles</h4><div class="sm2">Vidéo · validé</div></div><span class="dur">11:20</span></div>
+      <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Opérations sur les limites</h4><div class="sm2">Vidéo · validé</div></div><span class="dur">16:45</span></div>
+      <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Formes indéterminées</h4><div class="sm2">Vidéo · validé</div></div><span class="dur">18:10</span></div>
+      <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Limites et asymptotes</h4><div class="sm2">Vidéo · validé</div></div><span class="dur">13:55</span></div>
+      <div class="sess active"><span class="st"><svg class="icon sm"><use href="#ic-play"/></svg></span><div class="si"><h4>Limite d'une fonction composée</h4><div class="sm2">En lecture · 64%</div></div><span class="dur">20:30</span></div>
+      <div class="mod-h">Module 2 · Continuité <span class="ml"></span></div>
+      <div class="sess"><span class="st">7</span><div class="si"><h4>Continuité en un point</h4><div class="sm2">Vidéo + quiz</div></div><span class="dur">15:08</span></div>
+      <div class="sess"><span class="st">8</span><div class="si"><h4>Théorème des valeurs intermédiaires</h4><div class="sm2">Vidéo + quiz</div></div><span class="dur">17:40</span></div>
+      <div class="sess lock"><span class="st"><svg class="icon sm"><use href="#ic-lock"/></svg></span><div class="si"><h4>Continuité & dérivabilité</h4><div class="sm2">Verrouillé</div></div><span class="dur">19:12</span></div>
+      <div class="sess lock"><span class="st"><svg class="icon sm"><use href="#ic-lock"/></svg></span><div class="si"><h4>Annales — sujets type Bac</h4><div class="sm2">Mode examen</div></div><span class="dur">—</span></div>
+    </div>
+  </aside>
+</div>
+
+<!-- tweaks -->
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "accent": "amber", "corners": "rounded" }/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_player_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  apply();
+
+  // tabs
+  document.querySelectorAll('#tabs .tab').forEach(function(t){ t.addEventListener('click', function(){
+    document.querySelectorAll('#tabs .tab').forEach(function(x){ x.classList.remove('active'); }); t.classList.add('active');
+    var p=t.dataset.p; document.querySelectorAll('.panel').forEach(function(pn){ pn.classList.toggle('active', pn.dataset.panel===p); });
+  }); });
+
+  // play toggle
+  var player=document.getElementById('player'), playing=false;
+  function setPlay(v){ playing=v; player.classList.toggle('playing', playing);
+    var use1=document.querySelector('#playToggle use'); if(use1) use1.setAttribute('href', playing?'#ic-pause':'#ic-play');
+  }
+  document.getElementById('bigplay').addEventListener('click', function(){ setPlay(true); });
+  document.getElementById('playToggle').addEventListener('click', function(){ setPlay(!playing); });
+
+  // scrub seek (visual)
+  var scrub=document.getElementById('scrub'), prog=document.getElementById('prog'), handle=document.getElementById('handle'), timeEl=document.getElementById('time');
+  var TOTAL=20*60+30;
+  function fmt(s){ s=Math.max(0,Math.round(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  scrub.addEventListener('click', function(e){ var r=scrub.getBoundingClientRect(); var pct=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+    prog.style.width=(pct*100)+'%'; handle.style.left=(pct*100)+'%'; timeEl.textContent=fmt(pct*TOTAL)+' / 20:30'; });
+
+  // speed cycle
+  var speeds=['1×','1.25×','1.5×','1.75×','2×'], si=2, speedEl=document.getElementById('speed');
+  speedEl.addEventListener('click', function(){ si=(si+1)%speeds.length; speedEl.textContent=speeds[si]; });
+
+  // done + bookmark
+  document.getElementById('doneBtn').addEventListener('click', function(){ var b=this; var on=b.classList.toggle('done-state');
+    b.innerHTML = on ? '<svg class="icon sm" style="stroke:#1c8f63"><use href="#ic-check"/></svg> Terminé'
+                     : '<svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-check"/></svg> Marquer comme terminé'; });
+  document.getElementById('bookmarkBtn').addEventListener('click', function(){ this.classList.toggle('on'); });
+
+  // notes (persist)
+  var NLS='pm48_notes', list=document.getElementById('notesList'), ta=document.getElementById('noteText'), cnt=document.getElementById('noteCount');
+  document.getElementById('addNote').addEventListener('click', function(){ var v=ta.value.trim(); if(!v) return;
+    var card=document.createElement('div'); card.className='note-card'; card.innerHTML='<span class="jump">12:48</span><p></p>'; card.querySelector('p').textContent=v;
+    list.insertBefore(card, list.firstChild); ta.value=''; cnt.textContent=list.children.length; });
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>

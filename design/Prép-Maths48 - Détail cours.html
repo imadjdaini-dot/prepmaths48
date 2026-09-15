@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prép-Maths48 — Détail du cours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Hanken+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f2ed; --surface:#ffffff; --surface-2:#fbfbf8;
+  --ink:#0f1e36; --ink-2:#37445d; --muted:#6b7789;
+  --line:#e6e7e0; --line-2:#edeee8;
+  --navy:#0c1830; --navy-2:#11233f; --navy-3:#1b3357;
+  --accent:#f3a93a; --accent-2:#e6981f; --accent-ink:#3a2906; --accent-soft:#fdedd2;
+  --cyan:#26c1d4; --green:#33b482; --red:#cf5b54;
+  --r-lg:20px; --r-md:15px; --r-sm:11px;
+  --shadow-sm:0 1px 2px rgba(15,30,54,.06), 0 2px 6px rgba(15,30,54,.05);
+  --shadow-md:0 12px 30px -14px rgba(15,30,54,.22), 0 4px 12px rgba(15,30,54,.06);
+  --sidebar-w:252px;
+  --font-display:'Space Grotesk', system-ui, sans-serif;
+  --font-body:'Hanken Grotesk', system-ui, sans-serif;
+  --font-mono:'Space Mono', ui-monospace, monospace;
+}
+body[data-accent="cyan"]{ --accent:#26c1d4; --accent-2:#16a7ba; --accent-ink:#06343b; --accent-soft:#d3f1f5; }
+body[data-corners="sharp"]{ --r-lg:7px; --r-md:6px; --r-sm:5px; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:15.5px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; line-height:1.13; letter-spacing:-.02em; margin:0; }
+a{ color:inherit; text-decoration:none; }
+.mono{ font-family:var(--font-mono); }
+.icon{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+.icon.sm{ width:16px; height:16px; } .icon.lg{ width:24px; height:24px; }
+.btn{ display:inline-flex; align-items:center; gap:8px; justify-content:center; font-family:var(--font-body); font-weight:600; font-size:14.5px; cursor:pointer; padding:11px 18px; border-radius:var(--r-sm); border:1px solid transparent; transition:.16s; white-space:nowrap; }
+.btn-primary{ background:var(--accent); color:var(--accent-ink); box-shadow:0 6px 16px -7px color-mix(in srgb,var(--accent) 70%, transparent); }
+.btn-primary:hover{ background:var(--accent-2); transform:translateY(-1px); }
+.btn-ghost{ background:var(--surface); color:var(--ink); border-color:var(--line); } .btn-ghost:hover{ border-color:#d2d3cb; }
+.btn-dark{ background:var(--navy); color:#fff; } .btn-dark:hover{ background:var(--navy-2); }
+.btn-light{ background:rgba(255,255,255,.12); color:#fff; border-color:rgba(255,255,255,.2); } .btn-light:hover{ background:rgba(255,255,255,.18); }
+.btn-sm{ padding:8px 14px; font-size:13.5px; } .btn-block{ width:100%; }
+.pill{ display:inline-flex; align-items:center; gap:7px; font-size:12.5px; font-weight:600; padding:5px 11px; border-radius:100px; border:1px solid var(--line); background:var(--surface); color:var(--ink-2); }
+.tag{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; padding:3px 8px; border-radius:6px; background:var(--line-2); color:var(--ink-2); }
+.bar{ height:8px; border-radius:6px; background:var(--line); overflow:hidden; }
+.bar > i{ display:block; height:100%; border-radius:6px; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+.bar.green > i{ background:linear-gradient(90deg,var(--green),#28a073); }
+
+/* layout */
+.app{ display:grid; grid-template-columns:var(--sidebar-w) 1fr; min-height:100vh; }
+.sidebar{ background:var(--navy); color:#aebbd0; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; padding:20px 16px; }
+.sb-logo{ display:flex; align-items:center; gap:11px; font-family:var(--font-display); font-weight:700; font-size:19px; color:#fff; padding:6px 8px 18px; }
+.sb-logo .mk{ font-family:var(--font-mono); font-weight:700; background:var(--accent); color:var(--accent-ink); padding:4px 9px; border-radius:9px; font-size:14px; }
+.sb-group{ font-family:var(--font-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:#5d6f8a; padding:14px 10px 7px; }
+.nav-item{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; font-weight:500; font-size:14.5px; cursor:pointer; transition:.14s; position:relative; color:inherit; }
+.nav-item:hover{ background:rgba(255,255,255,.06); color:#fff; }
+.nav-item.active{ background:rgba(255,255,255,.09); color:#fff; }
+.nav-item.active::before{ content:""; position:absolute; left:-16px; top:9px; bottom:9px; width:3px; border-radius:0 3px 3px 0; background:var(--accent); }
+.nav-item .badge{ margin-left:auto; font-family:var(--font-mono); font-size:10px; background:var(--accent); color:var(--accent-ink); padding:1px 6px; border-radius:20px; }
+.nav-item .lockmini{ margin-left:auto; opacity:.5; }
+.sb-spacer{ flex:1; }
+.sb-user{ display:flex; align-items:center; gap:11px; padding:12px; border-radius:14px; background:rgba(255,255,255,.05); margin-top:8px; }
+.sb-user .av{ width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,#3a4f70,#243a5c); display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; color:#cdd8e8; font-size:13px; flex:0 0 auto; }
+.sb-user .nm{ font-size:13.5px; line-height:1.2; min-width:0; }
+.sb-user .nm b{ color:#fff; display:block; font-family:var(--font-body); }
+.sb-user .nm span{ font-size:11.5px; color:#7e90ac; }
+
+.main{ min-width:0; display:flex; flex-direction:column; }
+.topbar{ position:sticky; top:0; z-index:30; background:color-mix(in srgb,var(--bg) 85%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; padding:13px 30px; }
+.crumb{ font-size:13.5px; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.crumb a:hover{ color:var(--ink); } .crumb .sep{ opacity:.5; } .crumb b{ color:var(--ink); }
+.tb-actions{ margin-left:auto; display:flex; align-items:center; gap:10px; }
+.iconbtn{ width:40px; height:40px; border-radius:11px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center; color:var(--ink-2); cursor:pointer; transition:.14s; position:relative; }
+.iconbtn:hover{ border-color:#d2d3cb; color:var(--ink); } .iconbtn.on{ background:var(--accent-soft); color:var(--accent-2); border-color:color-mix(in srgb,var(--accent) 30%,var(--line)); }
+.iconbtn .dot{ position:absolute; top:9px; right:10px; width:7px; height:7px; border-radius:50%; background:var(--accent); border:2px solid var(--surface); }
+.tb-av{ width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,#cfd6e0,#aeb8c6); }
+
+/* ===== course hero ===== */
+.hero{ background:linear-gradient(150deg,var(--navy),var(--navy-2)); color:#e9eef7; position:relative; overflow:hidden; }
+.hero::after{ content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(700px 320px at 88% -10%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%), radial-gradient(500px 300px at 0% 120%, color-mix(in srgb,var(--cyan) 14%, transparent), transparent 60%); }
+.hero .grain{ position:absolute; inset:0; opacity:.05; background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px); background-size:44px 44px; mask-image:radial-gradient(80% 80% at 60% 0%,#000,transparent); }
+.hero-inner{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:34px 30px 38px; display:grid; grid-template-columns:1fr 340px; gap:40px; align-items:start; }
+.hero .crumbs{ font-size:13px; color:#8497b2; display:flex; gap:8px; margin-bottom:16px; }
+.hero .crumbs b{ color:#cdd8e8; }
+.hero .tags{ display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+.hero .tags .tg{ font-family:var(--font-mono); font-size:11px; padding:5px 10px; border-radius:7px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14); color:#cdd8e8; }
+.hero .tags .tg.acc{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+.hero h1{ color:#fff; font-size:38px; letter-spacing:-.03em; margin-bottom:14px; }
+.hero .desc{ color:#a9b8cd; font-size:16.5px; max-width:560px; }
+.hero .facts{ display:flex; gap:26px; margin-top:24px; flex-wrap:wrap; }
+.hero .fact{ display:flex; flex-direction:column; gap:2px; }
+.hero .fact .v{ font-family:var(--font-display); font-weight:700; font-size:22px; color:#fff; display:flex; align-items:center; gap:7px; }
+.hero .fact .l{ font-size:12.5px; color:#8497b2; }
+.hero .prof{ display:flex; align-items:center; gap:11px; margin-top:26px; }
+.hero .prof .pav{ width:46px; height:46px; border-radius:50%; background:linear-gradient(135deg,#41597d,#26456f); flex:0 0 auto; }
+.hero .prof .pn b{ color:#fff; display:block; font-family:var(--font-body); font-size:14.5px; }
+.hero .prof .pn span{ color:#8497b2; font-size:12.5px; }
+
+/* enroll card in hero */
+.enroll{ background:var(--surface); border-radius:var(--r-lg); box-shadow:var(--shadow-md); overflow:hidden; color:var(--ink); position:sticky; top:74px; }
+.enroll .cover{ height:150px; position:relative; background:linear-gradient(135deg,var(--navy-2),var(--navy-3)); }
+.enroll .cover::after{ content:""; position:absolute; inset:0; opacity:.5; background:radial-gradient(360px 140px at 25% 0%, color-mix(in srgb,var(--cyan) 45%, transparent), transparent 60%); }
+.enroll .cover .glyph{ position:absolute; right:16px; bottom:8px; font-family:var(--font-mono); font-weight:700; font-size:64px; color:rgba(255,255,255,.14); }
+.enroll .cover .play{ position:absolute; inset:0; margin:auto; width:58px; height:58px; border-radius:50%; background:rgba(255,255,255,.16); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,.3); display:grid; place-items:center; cursor:pointer; }
+.enroll .cover .play::after{ content:""; width:0; height:0; border-style:solid; border-width:9px 0 9px 14px; border-color:transparent transparent transparent #fff; margin-left:3px; }
+.enroll .ebody{ padding:20px; }
+.enroll .pr-line{ display:flex; justify-content:space-between; font-size:13px; color:var(--muted); margin-bottom:7px; }
+.enroll .pr-line b{ color:var(--ink); font-family:var(--font-display); }
+.enroll .meta-list{ margin:18px 0; display:grid; gap:11px; }
+.enroll .ml{ display:flex; align-items:center; gap:11px; font-size:13.5px; color:var(--ink-2); }
+.enroll .ml .mi{ width:30px; height:30px; border-radius:9px; background:var(--surface-2); border:1px solid var(--line); display:grid; place-items:center; color:var(--accent-2); flex:0 0 auto; }
+.enroll .secure{ display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted); margin-top:14px; justify-content:center; }
+
+/* ===== content body ===== */
+.body-wrap{ max-width:1180px; margin:0 auto; padding:30px; display:grid; grid-template-columns:1fr 340px; gap:30px; align-items:start; }
+.tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin-bottom:24px; flex-wrap:wrap; }
+.tab{ padding:12px 16px; font-weight:600; font-size:14.5px; color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:.14s; }
+.tab:hover{ color:var(--ink); } .tab.active{ color:var(--ink); border-bottom-color:var(--accent); }
+.panel{ display:none; } .panel.active{ display:block; }
+
+.sec-h{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:16px; }
+.sec-h h2{ font-size:21px; } .sec-h .ic{ font-family:var(--font-mono); font-size:12.5px; color:var(--muted); }
+
+/* modules accordion */
+.module{ border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); margin-bottom:14px; overflow:hidden; }
+.mod-head{ display:flex; align-items:center; gap:14px; padding:16px 18px; cursor:pointer; user-select:none; }
+.mod-head .mn{ width:34px; height:34px; border-radius:10px; flex:0 0 auto; display:grid; place-items:center; font-family:var(--font-mono); font-weight:700; font-size:13px; background:var(--accent-soft); color:var(--accent-2); }
+.mod-head.done .mn{ background:color-mix(in srgb,var(--green) 14%,transparent); color:var(--green); }
+.mod-head .mt{ flex:1; min-width:0; }
+.mod-head .mt h3{ font-size:16.5px; }
+.mod-head .mt .ms{ font-size:12.5px; color:var(--muted); margin-top:2px; }
+.mod-head .chev{ color:var(--muted); transition:.25s; }
+.module.open .mod-head .chev{ transform:rotate(90deg); }
+.mod-body{ display:none; padding:2px 10px 10px; }
+.module.open .mod-body{ display:block; }
+.sess{ display:flex; align-items:center; gap:13px; padding:11px 12px; border-radius:11px; transition:.13s; cursor:pointer; }
+.sess:hover{ background:var(--surface-2); }
+.sess .st{ width:30px; height:30px; border-radius:50%; flex:0 0 auto; display:grid; place-items:center; border:1.5px solid var(--line); color:var(--muted); }
+.sess.done .st{ background:color-mix(in srgb,var(--green) 14%,transparent); border-color:color-mix(in srgb,var(--green) 40%,transparent); color:var(--green); }
+.sess.now .st{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+.sess.lock{ opacity:.6; } .sess.lock .st{ color:var(--muted); }
+.sess .si{ flex:1; min-width:0; }
+.sess .si h4{ font-size:14.5px; font-family:var(--font-display); font-weight:600; }
+.sess .si .types{ display:flex; gap:7px; margin-top:5px; flex-wrap:wrap; }
+.sess .ty{ font-family:var(--font-mono); font-size:10px; padding:2px 7px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; }
+.sess .ty.video{ background:color-mix(in srgb,var(--cyan) 13%,transparent); color:#1796a6; }
+.sess .ty.pdf{ background:color-mix(in srgb,var(--accent) 16%,transparent); color:var(--accent-2); }
+.sess .ty.quiz{ background:var(--line-2); color:var(--ink-2); }
+.sess .dur{ font-family:var(--font-mono); font-size:11.5px; color:var(--muted); flex:0 0 auto; }
+.sess .go{ color:var(--muted); flex:0 0 auto; }
+.sess.now .si h4{ color:var(--ink); }
+
+/* aside cards */
+.card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--r-lg); padding:22px; margin-bottom:20px; }
+.card h3{ font-size:16px; margin-bottom:14px; }
+.success{ text-align:center; }
+.ring{ width:148px; height:148px; border-radius:50%; margin:4px auto 12px; position:relative; background:conic-gradient(var(--green) 0 331deg, var(--line-2) 331deg 360deg); display:grid; place-items:center; }
+.ring::after{ content:""; width:112px; height:112px; border-radius:50%; background:var(--surface); }
+.ring .rv{ position:absolute; } .ring .rv b{ font-family:var(--font-display); font-weight:700; font-size:32px; display:block; color:#1c8f63; } .ring .rv span{ font-size:12px; color:var(--muted); }
+.succ-rows{ display:grid; gap:12px; margin-top:8px; }
+.succ-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; font-size:13.5px; }
+.succ-row .l{ color:var(--ink-2); display:flex; align-items:center; gap:8px; }
+.succ-row .v{ font-family:var(--font-display); font-weight:600; }
+.mini-bar{ height:6px; border-radius:5px; background:var(--line); overflow:hidden; width:90px; }
+.mini-bar > i{ display:block; height:100%; border-radius:5px; }
+
+.includes li{ list-style:none; display:flex; gap:11px; align-items:center; font-size:14px; padding:8px 0; border-bottom:1px solid var(--line-2); }
+.includes li:last-child{ border-bottom:0; }
+.includes ul{ padding:0; margin:0; }
+.includes .ic{ width:30px; height:30px; border-radius:9px; background:var(--surface-2); border:1px solid var(--line); display:grid; place-items:center; color:var(--accent-2); flex:0 0 auto; }
+
+.prof-card .pp{ display:flex; gap:13px; align-items:center; margin-bottom:14px; }
+.prof-card .pp .pav{ width:54px; height:54px; border-radius:50%; background:linear-gradient(135deg,#41597d,#26456f); flex:0 0 auto; }
+.prof-card .pp b{ font-family:var(--font-display); font-size:16px; }
+.prof-card .pp span{ font-size:13px; color:var(--muted); }
+.prof-card p{ font-size:13.5px; color:var(--ink-2); margin:0; }
+
+.note-secure{ display:flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); font-family:var(--font-mono); }
+
+/* tweaks */
+#tweaks{ position:fixed; right:20px; bottom:20px; z-index:120; width:262px; background:#10203a; color:#e9eef7; border:1px solid rgba(255,255,255,.14); border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:var(--font-body); display:none; overflow:hidden; }
+#tweaks.on{ display:block; }
+#tweaks .tk-h{ display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid rgba(255,255,255,.1); cursor:grab; }
+#tweaks .tk-h b{ font-family:var(--font-display); font-size:14px; } #tweaks .tk-h .x{ cursor:pointer; opacity:.6; font-size:16px; background:none; border:0; color:#fff; }
+#tweaks .tk-b{ padding:14px 15px; display:grid; gap:16px; }
+#tweaks .tk-row label{ display:block; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:#9fb0c9; margin-bottom:7px; font-family:var(--font-mono); }
+#tweaks .seg{ display:flex; background:rgba(255,255,255,.06); border-radius:9px; padding:3px; gap:3px; }
+#tweaks .seg button{ flex:1; border:0; background:none; color:#cdd8e8; font-family:var(--font-body); font-weight:600; font-size:13px; padding:7px 6px; border-radius:7px; cursor:pointer; }
+#tweaks .seg button.on{ background:var(--accent); color:var(--accent-ink); }
+
+@media (max-width:1080px){
+  .hero-inner{ grid-template-columns:1fr; } .enroll{ position:static; max-width:420px; }
+  .body-wrap{ grid-template-columns:1fr; }
+}
+@media (max-width:960px){
+  :root{ --sidebar-w:74px; }
+  .sb-logo span,.sb-group,.nav-item span,.nav-item .badge,.nav-item .lockmini,.sb-user .nm{ display:none; }
+  .sb-logo,.nav-item,.sb-user{ justify-content:center; }
+}
+@media (max-width:760px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ position:fixed; bottom:0; top:auto; left:0; right:0; height:auto; flex-direction:row; z-index:50; padding:8px; gap:4px; }
+  .sb-logo,.sb-group,.sb-spacer,.sb-user{ display:none; }
+  .sidebar .nav-list{ display:flex; gap:4px; width:100%; justify-content:space-around; }
+  .nav-item{ flex-direction:column; gap:3px; font-size:10px; padding:7px 4px; } .nav-item span{ display:block; } .nav-item.active::before{ display:none; }
+  .hero h1{ font-size:29px; } .hero-inner{ padding:24px 16px 28px; }
+  .body-wrap{ padding:18px 16px 90px; }
+  #tweaks{ left:12px; right:12px; width:auto; bottom:80px; }
+}
+</style>
+</head>
+<body data-accent="amber" data-corners="rounded">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5h4v5"/></symbol>
+  <symbol id="ic-book" viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 0-3 3z"/><path d="M5 4v16"/><path d="M19 17H8a3 3 0 0 0-3 3"/></symbol>
+  <symbol id="ic-route" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 0 1 0 6H9a3 3 0 0 0 0 6h6.5"/></symbol>
+  <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="ic-award" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5.5"/><path d="M9 13.5L7.5 21l4.5-2.5L16.5 21 15 13.5"/></symbol>
+  <symbol id="ic-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6"/></symbol>
+  <symbol id="ic-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 0 1 5.2.9c0 1.8-2.7 2.3-2.7 4"/><path d="M12 17.5h.01"/></symbol>
+  <symbol id="ic-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.5M12 18.5V21M21 12h-2.5M5.5 12H3M18 6l-1.8 1.8M7.8 16.2L6 18M18 18l-1.8-1.8M7.8 7.8L6 6"/></symbol>
+  <symbol id="ic-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="ic-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></symbol>
+  <symbol id="ic-play" viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+  <symbol id="ic-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="ic-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="ic-bookmark" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></symbol>
+  <symbol id="ic-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></symbol>
+  <symbol id="ic-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="ic-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 6M17.5 19a5.5 5.5 0 0 0-2.3-4.5"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 4l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-3.9-3.8 5.4-.8z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="ic-cert" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="13" rx="2"/><circle cx="12" cy="10.5" r="2.5"/><path d="M10 14l-1 5 3-1.6L15 19l-1-5"/></symbol>
+  <symbol id="ic-infinity" viewBox="0 0 24 24"><path d="M7 9a3 3 0 1 0 0 6c2 0 3-2 5-3s3-3 5-3a3 3 0 1 1 0 6c-2 0-3-2-5-3S9 9 7 9z"/></symbol>
+</svg>
+
+<div class="app">
+  <!-- sidebar -->
+  <aside class="sidebar">
+    <div class="sb-logo"><span class="mk">48</span><span>Prép-Maths</span></div>
+    <div class="sb-group">Apprendre</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-home"/></svg><span>Tableau de bord</span></a>
+      <a class="nav-item active"><svg class="icon"><use href="#ic-book"/></svg><span>Mes cours</span><span class="badge">3</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-route"/></svg><span>Mon parcours</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-grid"/></svg><span>Catalogue</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-award"/></svg><span>Concours</span></a>
+    </nav>
+    <div class="sb-group">Ressources</div>
+    <nav class="nav-list">
+      <a class="nav-item"><svg class="icon"><use href="#ic-file"/></svg><span>PDF & fiches</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-help"/></svg><span>Quiz</span></a>
+      <a class="nav-item"><svg class="icon"><use href="#ic-clock"/></svg><span>Mode examen</span><svg class="icon sm lockmini"><use href="#ic-lock"/></svg></a>
+    </nav>
+    <div class="sb-spacer"></div>
+    <a class="nav-item"><svg class="icon"><use href="#ic-settings"/></svg><span>Paramètres</span></a>
+    <div class="sb-user"><div class="av">YA</div><div class="nm"><b>Yasmine A.</b><span>Niveau 7 · Intermédiaire</span></div></div>
+  </aside>
+
+  <!-- main -->
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb"><a>Mes cours</a> <span class="sep">/</span> <a>Bac Sciences Maths</a> <span class="sep">/</span> <b>Limites &amp; continuité</b></div>
+      <div class="tb-actions">
+        <div class="iconbtn" id="bm"><svg class="icon"><use href="#ic-bookmark"/></svg></div>
+        <div class="iconbtn"><svg class="icon"><use href="#ic-share"/></svg></div>
+        <div class="iconbtn"><svg class="icon"><use href="#ic-bell"/></svg><span class="dot"></span></div>
+        <div class="tb-av"></div>
+      </div>
+    </div>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="grain"></div>
+      <div class="hero-inner">
+        <div class="hero-main">
+          <div class="tags">
+            <span class="tg acc">2ᵉ BAC · SCIENCES MATHS</span>
+            <span class="tg">Analyse</span>
+            <span class="tg">Niveau ●●●○</span>
+          </div>
+          <h1>Limites &amp; continuité</h1>
+          <p class="desc">Le socle de toute l'analyse du Bac. De la notion de limite aux théorèmes de continuité, avec la Méthode 48 : une vidéo courte, des exercices, la correction et un quiz pour chaque session. Pensé pour aller vite et retenir l'essentiel.</p>
+          <div class="facts">
+            <div class="fact"><span class="v"><svg class="icon sm" style="stroke:var(--accent)"><use href="#ic-play"/></svg> 14</span><span class="l">vidéos · 4h12</span></div>
+            <div class="fact"><span class="v"><svg class="icon sm" style="stroke:var(--accent)"><use href="#ic-file"/></svg> 16</span><span class="l">PDF (résumé, exos, corrigés)</span></div>
+            <div class="fact"><span class="v"><svg class="icon sm" style="stroke:var(--accent)"><use href="#ic-help"/></svg> 4</span><span class="l">quiz de validation</span></div>
+            <div class="fact"><span class="v"><svg class="icon sm" style="stroke:var(--green)"><use href="#ic-users"/></svg> 92%</span><span class="l">taux de réussite</span></div>
+          </div>
+          <div class="prof">
+            <div class="pav"></div>
+            <div class="pn"><b>Pr. Karim El Idrissi</b><span>Agrégé de mathématiques · 14 ans d'expérience Bac & concours</span></div>
+          </div>
+        </div>
+
+        <!-- enroll card -->
+        <div class="enroll">
+          <div class="cover"><span class="glyph">lim</span><span class="play"></span></div>
+          <div class="ebody">
+            <div class="pr-line"><span>Ta progression</span><b>64%</b></div>
+            <div class="bar"><i style="width:64%"></i></div>
+            <a class="btn btn-primary btn-block" style="margin-top:16px;"><svg class="icon sm" style="stroke:var(--accent-ink)"><use href="#ic-play"/></svg> Continuer — Vidéo 6/14</a>
+            <div class="meta-list">
+              <div class="ml"><span class="mi"><svg class="icon sm"><use href="#ic-clock"/></svg></span> 4h12 de vidéo · accès à vie</div>
+              <div class="ml"><span class="mi"><svg class="icon sm"><use href="#ic-infinity"/></svg></span> Ressources PDF illimitées</div>
+              <div class="ml"><span class="mi"><svg class="icon sm"><use href="#ic-cert"/></svg></span> Attestation de fin de cours</div>
+            </div>
+            <div class="secure"><svg class="icon sm"><use href="#ic-lock"/></svg> Vidéos sécurisées · non téléchargeables</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== BODY ===== -->
+    <div class="body-wrap">
+      <!-- left: content -->
+      <div class="content-col">
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-p="prog">Programme</div>
+          <div class="tab" data-p="apercu">Aperçu</div>
+          <div class="tab" data-p="pdf">Ressources</div>
+          <div class="tab" data-p="avis">Avis</div>
+        </div>
+
+        <!-- programme -->
+        <div class="panel active" data-panel="prog">
+          <div class="sec-h">
+            <h2>Programme du cours</h2>
+            <span class="ic">3 modules · 14 sessions · 4h12</span>
+          </div>
+
+          <!-- module 1 -->
+          <div class="module open">
+            <div class="mod-head done">
+              <div class="mn"><svg class="icon sm"><use href="#ic-check"/></svg></div>
+              <div class="mt"><h3>Module 1 — Limites</h3><div class="ms">5 sessions · validé à 100%</div></div>
+              <svg class="icon chev"><use href="#ic-chev"/></svg>
+            </div>
+            <div class="mod-body">
+              <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Notion de limite</h4><div class="types"><span class="ty video"><svg class="icon sm" style="width:11px;height:11px;stroke:#1796a6"><use href="#ic-play"/></svg> vidéo</span><span class="ty pdf">résumé</span><span class="ty quiz">quiz</span></div></div><span class="dur">14:02</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Limites usuelles</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">exos</span><span class="ty pdf">corrigé</span></div></div><span class="dur">11:20</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Opérations sur les limites</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">exos</span><span class="ty quiz">quiz</span></div></div><span class="dur">16:45</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Formes indéterminées</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">exos</span><span class="ty pdf">corrigé</span></div></div><span class="dur">18:10</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess done"><span class="st"><svg class="icon sm"><use href="#ic-check"/></svg></span><div class="si"><h4>Limites et asymptotes</h4><div class="types"><span class="ty video">vidéo</span><span class="ty quiz">quiz</span></div></div><span class="dur">13:55</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+            </div>
+          </div>
+
+          <!-- module 2 -->
+          <div class="module open">
+            <div class="mod-head">
+              <div class="mn">2</div>
+              <div class="mt"><h3>Module 2 — Continuité</h3><div class="ms">5 sessions · en cours (1/5)</div></div>
+              <svg class="icon chev"><use href="#ic-chev"/></svg>
+            </div>
+            <div class="mod-body">
+              <div class="sess now"><span class="st"><svg class="icon sm"><use href="#ic-play"/></svg></span><div class="si"><h4>Limite d'une fonction composée</h4><div class="types"><span class="ty video">vidéo · 64%</span><span class="ty pdf">4 PDF</span><span class="ty quiz">quiz</span></div></div><span class="dur">20:30</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess"><span class="st">7</span><div class="si"><h4>Continuité en un point</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">exos</span><span class="ty quiz">quiz</span></div></div><span class="dur">15:08</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess"><span class="st">8</span><div class="si"><h4>Théorème des valeurs intermédiaires</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">exos</span><span class="ty pdf">corrigé</span></div></div><span class="dur">17:40</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess"><span class="st">9</span><div class="si"><h4>Continuité &amp; dérivabilité</h4><div class="types"><span class="ty video">vidéo</span><span class="ty quiz">quiz</span></div></div><span class="dur">19:12</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+              <div class="sess"><span class="st">10</span><div class="si"><h4>Fonction réciproque</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">résumé</span></div></div><span class="dur">12:30</span><svg class="icon go"><use href="#ic-chev"/></svg></div>
+            </div>
+          </div>
+
+          <!-- module 3 -->
+          <div class="module">
+            <div class="mod-head">
+              <div class="mn">3</div>
+              <div class="mt"><h3>Module 3 — Annales &amp; mode examen</h3><div class="ms">4 sessions · verrouillé</div></div>
+              <svg class="icon chev"><use href="#ic-chev"/></svg>
+            </div>
+            <div class="mod-body">
+              <div class="sess lock"><span class="st"><svg class="icon sm"><use href="#ic-lock"/></svg></span><div class="si"><h4>Sujet type Bac — Analyse</h4><div class="types"><span class="ty quiz">mode examen</span><span class="ty pdf">corrigé</span></div></div><span class="dur">—</span></div>
+              <div class="sess lock"><span class="st"><svg class="icon sm"><use href="#ic-lock"/></svg></span><div class="si"><h4>Pièges fréquents au Bac</h4><div class="types"><span class="ty video">vidéo</span><span class="ty pdf">fiche</span></div></div><span class="dur">16:00</span></div>
+              <div class="sess lock"><span class="st"><svg class="icon sm"><use href="#ic-lock"/></svg></span><div class="si"><h4>QCM concours — Limites</h4><div class="types"><span class="ty quiz">QCM chrono</span></div></div><span class="dur">—</span></div>
+              <div class="sess lock"><span class="st"><svg class="icon sm"><use href="#ic-lock"/></svg></span><div class="si"><h4>Examen blanc final</h4><div class="types"><span class="ty quiz">mode examen</span></div></div><span class="dur">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- apercu -->
+        <div class="panel" data-panel="apercu">
+          <div class="sec-h"><h2>À propos de ce cours</h2></div>
+          <p style="color:var(--ink-2); max-width:680px;">Ce cours couvre l'intégralité du chapitre « Limites &amp; continuité » au programme de 2ᵉ année Bac Sciences Maths, et prépare aussi aux QCM des concours post-bac. Chaque session suit la <b>Méthode 48</b> : comprendre (vidéo courte), s'entraîner (exercices), corriger (corrigé détaillé), valider (quiz).</p>
+          <div class="sec-h" style="margin-top:28px;"><h2>Ce que tu sauras faire</h2></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px 26px; max-width:720px;">
+            <div style="display:flex; gap:11px; font-size:14.5px;"><span style="color:var(--green);"><svg class="icon sm" style="stroke:var(--green)"><use href="#ic-check"/></svg></span> Calculer toute limite au programme du Bac.</div>
+            <div style="display:flex; gap:11px; font-size:14.5px;"><span style="color:var(--green);"><svg class="icon sm" style="stroke:var(--green)"><use href="#ic-check"/></svg></span> Lever une forme indéterminée avec méthode.</div>
+            <div style="display:flex; gap:11px; font-size:14.5px;"><span style="color:var(--green);"><svg class="icon sm" style="stroke:var(--green)"><use href="#ic-check"/></svg></span> Appliquer le théorème des valeurs intermédiaires.</div>
+            <div style="display:flex; gap:11px; font-size:14.5px;"><span style="color:var(--green);"><svg class="icon sm" style="stroke:var(--green)"><use href="#ic-check"/></svg></span> Éviter les pièges classiques du concours.</div>
+          </div>
+        </div>
+
+        <!-- pdf -->
+        <div class="panel" data-panel="pdf">
+          <div class="sec-h"><h2>Ressources du cours</h2><span class="ic">16 PDF</span></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div class="card" style="margin:0; padding:15px; display:flex; gap:13px; align-items:center;"><span style="width:40px;height:50px;border-radius:9px;background:#3b82c4;color:#fff;display:grid;place-items:center;font-family:var(--font-mono);font-size:9px;font-weight:700;">RÉSU</span><div><h4 style="font-size:14.5px;">Résumé — Limites</h4><span style="font-size:12px;color:var(--muted);">PDF · 3 pages</span></div></div>
+            <div class="card" style="margin:0; padding:15px; display:flex; gap:13px; align-items:center;"><span style="width:40px;height:50px;border-radius:9px;background:var(--accent-2);color:#fff;display:grid;place-items:center;font-family:var(--font-mono);font-size:9px;font-weight:700;">EXOS</span><div><h4 style="font-size:14.5px;">Série d'exercices</h4><span style="font-size:12px;color:var(--muted);">PDF · 12 exos</span></div></div>
+            <div class="card" style="margin:0; padding:15px; display:flex; gap:13px; align-items:center;"><span style="width:40px;height:50px;border-radius:9px;background:var(--green);color:#fff;display:grid;place-items:center;font-family:var(--font-mono);font-size:9px;font-weight:700;">CORR</span><div><h4 style="font-size:14.5px;">Correction détaillée</h4><span style="font-size:12px;color:var(--muted);">PDF · 9 pages</span></div></div>
+            <div class="card" style="margin:0; padding:15px; display:flex; gap:13px; align-items:center;"><span style="width:40px;height:50px;border-radius:9px;background:var(--red);color:#fff;display:grid;place-items:center;font-family:var(--font-mono);font-size:9px;font-weight:700;">PIÈGE</span><div><h4 style="font-size:14.5px;">Fiche pièges concours</h4><span style="font-size:12px;color:var(--muted);">PDF · 1 page</span></div></div>
+          </div>
+        </div>
+
+        <!-- avis -->
+        <div class="panel" data-panel="avis">
+          <div class="sec-h"><h2>Avis des élèves</h2><span class="ic">★ 4,9 · 312 avis</span></div>
+          <div class="card" style="margin-bottom:14px;"><div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;"><span style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#cfd6e0,#aeb8c6);"></span><div><b style="font-family:var(--font-display);">Anas K.</b><div style="font-size:12px;color:var(--muted);">Bac PC · ★★★★★</div></div></div><p style="margin:0;color:var(--ink-2);font-size:14.5px;">« Enfin compris les formes indéterminées. Les vidéos courtes + la fiche pièges, parfait avant le concours. »</p></div>
+          <div class="card" style="margin:0;"><div style="display:flex;align-items:center;gap:11px;margin-bottom:10px;"><span style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#cfd6e0,#aeb8c6);"></span><div><b style="font-family:var(--font-display);">Salma R.</b><div style="font-size:12px;color:var(--muted);">Bac SVT · ★★★★★</div></div></div><p style="margin:0;color:var(--ink-2);font-size:14.5px;">« La Méthode 48 m'a aidée à m'organiser. Je validais un chapitre par week-end. »</p></div>
+        </div>
+      </div>
+
+      <!-- right: aside -->
+      <div class="aside-col">
+        <div class="card success">
+          <h3 style="text-align:left;">Statistiques de réussite</h3>
+          <div class="ring"><div class="rv"><b>92%</b><span>réussite</span></div></div>
+          <div class="succ-rows">
+            <div class="succ-row"><span class="l"><svg class="icon sm" style="stroke:var(--accent-2)"><use href="#ic-target"/></svg> Score quiz moyen</span><span class="v">84%</span></div>
+            <div class="succ-row"><span class="l"><svg class="icon sm" style="stroke:var(--accent-2)"><use href="#ic-users"/></svg> Élèves inscrits</span><span class="v">3 240</span></div>
+            <div class="succ-row"><span class="l">Vont au bout</span><span class="mini-bar"><i style="width:88%;background:var(--green)"></i></span></div>
+            <div class="succ-row"><span class="l">Recommandent</span><span class="mini-bar"><i style="width:96%;background:var(--accent)"></i></span></div>
+          </div>
+        </div>
+
+        <div class="card includes">
+          <h3>Ce cours comprend</h3>
+          <ul>
+            <li><span class="ic"><svg class="icon sm"><use href="#ic-play"/></svg></span> 14 vidéos · 4h12</li>
+            <li><span class="ic"><svg class="icon sm"><use href="#ic-file"/></svg></span> 16 PDF téléchargeables</li>
+            <li><span class="ic"><svg class="icon sm"><use href="#ic-help"/></svg></span> 4 quiz de validation</li>
+            <li><span class="ic"><svg class="icon sm"><use href="#ic-clock"/></svg></span> Mode examen chronométré</li>
+            <li><span class="ic"><svg class="icon sm"><use href="#ic-cert"/></svg></span> Attestation de fin</li>
+          </ul>
+          <div class="note-secure" style="margin-top:14px;"><svg class="icon sm"><use href="#ic-lock"/></svg> Vidéos protégées · accès élève</div>
+        </div>
+
+        <div class="card prof-card">
+          <h3>Ton professeur</h3>
+          <div class="pp"><span class="pav"></span><div><b>Pr. Karim El Idrissi</b><br><span>Agrégé de mathématiques</span></div></div>
+          <p>14 ans à préparer des élèves au Bac Sciences Maths et aux concours Médecine, ENSA et ENCG. Pédagogie directe, orientée résultats.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<aside id="tweaks">
+  <div class="tk-h" id="tkHead"><b>Tweaks</b><button class="x" id="tkClose">✕</button></div>
+  <div class="tk-b">
+    <div class="tk-row"><label>Couleur d'accent</label><div class="seg" data-key="accent"><button data-val="amber" class="on">Ambre</button><button data-val="cyan">Cyan</button></div></div>
+    <div class="tk-row"><label>Coins</label><div class="seg" data-key="corners"><button data-val="rounded" class="on">Arrondis</button><button data-val="sharp">Nets</button></div></div>
+  </div>
+</aside>
+
+<script>
+var TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{ "accent": "amber", "corners": "rounded" }/*EDITMODE-END*/;
+(function(){
+  var LS='pm48_course_tweaks', state=Object.assign({}, TWEAK_DEFAULTS);
+  try{ Object.assign(state, JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  function apply(){
+    document.body.setAttribute('data-accent', state.accent);
+    document.body.setAttribute('data-corners', state.corners);
+    document.querySelectorAll('#tweaks .seg').forEach(function(seg){ var k=seg.dataset.key; seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('on', b.dataset.val===state[k]); }); });
+  }
+  function setKey(k,v){ state[k]=v; try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){}
+    try{ window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]:v}}, '*'); }catch(e){} apply(); }
+  document.querySelectorAll('#tweaks .seg button').forEach(function(b){ b.addEventListener('click', function(){ setKey(b.parentElement.dataset.key, b.dataset.val); }); });
+  var panel=document.getElementById('tweaks');
+  window.addEventListener('message', function(e){ var t=e&&e.data&&e.data.type; if(t==='__activate_edit_mode')panel.classList.add('on'); else if(t==='__deactivate_edit_mode')panel.classList.remove('on'); });
+  try{ window.parent.postMessage({type:'__edit_mode_available'}, '*'); }catch(e){}
+  document.getElementById('tkClose').addEventListener('click', function(){ panel.classList.remove('on'); try{ window.parent.postMessage({type:'__edit_mode_dismissed'}, '*'); }catch(e){} });
+  (function(){ var h=document.getElementById('tkHead'),sx,sy,ox,oy,drag=false;
+    h.addEventListener('mousedown',function(e){ drag=true; sx=e.clientX; sy=e.clientY; var r=panel.getBoundingClientRect(); ox=r.left; oy=r.top; panel.style.right='auto'; panel.style.bottom='auto'; panel.style.left=ox+'px'; panel.style.top=oy+'px'; e.preventDefault(); });
+    window.addEventListener('mousemove',function(e){ if(!drag)return; panel.style.left=(ox+e.clientX-sx)+'px'; panel.style.top=(oy+e.clientY-sy)+'px'; });
+    window.addEventListener('mouseup',function(){ drag=false; }); })();
+  apply();
+
+  // tabs
+  document.querySelectorAll('#tabs .tab').forEach(function(t){ t.addEventListener('click', function(){
+    document.querySelectorAll('#tabs .tab').forEach(function(x){ x.classList.remove('active'); }); t.classList.add('active');
+    var p=t.dataset.p; document.querySelectorAll('.panel').forEach(function(pn){ pn.classList.toggle('active', pn.dataset.panel===p); });
+  }); });
+
+  // accordion
+  document.querySelectorAll('.mod-head').forEach(function(h){ h.addEventListener('click', function(){ h.parentElement.classList.toggle('open'); }); });
+
+  // nav + bookmark
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.addEventListener('click', function(){ if(n.querySelector('.lockmini'))return; document.querySelectorAll('.nav-item').forEach(function(x){ x.classList.remove('active'); }); n.classList.add('active'); }); });
+  document.getElementById('bm').addEventListener('click', function(){ this.classList.toggle('on'); });
+})();
+</script>
+<!-- __pm48nav -->
+<script>
+(function(){
+var F={"landing":"Prép-Maths48 - Landing.html","login":"Prép-Maths48 - Connexion.html","dash":"Prép-Maths48 - Dashboard élève.html","catalog":"Prép-Maths48 - Catalogue.html","course":"Prép-Maths48 - Détail cours.html","player":"Prép-Maths48 - Lecteur vidéo.html","quiz":"Prép-Maths48 - Quiz.html","pdf":"Prép-Maths48 - PDF Ressources.html","admin":"Prép-Maths48 - Admin.html","pricing":"Prép-Maths48 - Pricing.html"};
+var here="";try{here=decodeURIComponent((location.pathname||"").split("/").pop()||"");}catch(e){}
+function pg(s){return here.indexOf(s)>-1;}
+var P=pg("Quiz")?"quiz":pg("Lecteur")?"player":pg("PDF")?"pdf":pg("tail")?"course":pg("Catalogue")?"catalog":pg("Dashboard")?"dash":pg("Admin")?"admin":pg("Connexion")?"login":pg("Pricing")?"pricing":"landing";
+function go(f){if(f)location.href=f;}
+function click(el,f){if(!el||!f)return;el.style.cursor="pointer";el.addEventListener("click",function(e){e.preventDefault();go(f);});}
+function clickAll(sel,f){document.querySelectorAll(sel).forEach(function(el){click(el,f);});}
+function textNav(txts){[].slice.call(document.querySelectorAll("a.btn, button.btn, .gbtn, .submit, .navlinks a")).forEach(function(el){var t=el.textContent.trim().toLowerCase();for(var i=0;i<txts.length;i++){if(t.indexOf(txts[i][0])>-1){click(el,txts[i][1]);break;}}});}
+if(P!=="admin"){var smap=[["tableau de bord",F.dash],["mes cours",F.catalog],["mon parcours",F.course],["catalogue",F.catalog],["fiches",F.pdf],["pdf",F.pdf],["quiz",F.quiz],["concours",F.catalog]];document.querySelectorAll(".sidebar .nav-item").forEach(function(n){if(n.querySelector(".lockmini"))return;var t=n.textContent.trim().toLowerCase();for(var i=0;i<smap.length;i++){if(t.indexOf(smap[i][0])>-1){click(n,smap[i][1]);break;}}});}
+if(P!=="landing"){document.querySelectorAll(".logo, .sb-logo").forEach(function(l){click(l,F.landing);});}
+clickAll(".nav-cta .login, .login", F.login);
+if(P==="landing"){textNav([["commencer gratuitement",F.login],["explorer les cours",F.catalog],["voir les cours",F.catalog],["voir une démo",F.catalog],["voir mon parcours",F.course],["parcours",F.course],["concours",F.catalog],["tarifs",F.pricing],["découvrir",F.course],["cours",F.catalog]]);clickAll(".ccard",F.course);}
+else if(P==="login"){textNav([["se connecter",F.dash],["créer mon compte",F.dash],["continuer avec google",F.dash]]);}
+else if(P==="dash"){clickAll(".continue",F.player);clickAll(".cmini",F.course);clickAll(".rcard",F.course);clickAll(".quizcard .btn",F.quiz);clickAll(".pdf-item",F.pdf);textNav([["commencer le quiz",F.quiz],["continuer",F.player]]);}
+else if(P==="catalog"){clickAll(".ccard",F.course);textNav([["voir les parcours",F.course],["voir tout",F.catalog]]);}
+else if(P==="course"){clickAll(".sess",F.player);clickAll(".pdf-card",F.pdf);textNav([["continuer",F.player],["commencer",F.player]]);}
+else if(P==="player"){click(document.querySelector(".back"),F.course);clickAll(".quiz-prompt .btn",F.quiz);clickAll(".pdf-card",F.pdf);textNav([["commencer le quiz",F.quiz]]);}
+else if(P==="quiz"){click(document.querySelector(".quit"),F.course);click(document.getElementById("continueBtn"),F.player);}
+else if(P==="pdf"){click(document.querySelector(".rtop .back"),F.course);}
+else if(P==="pricing"){textNav([["commencer gratuitement",F.login],["parler à un conseiller",F.login],["parcours",F.course],["concours",F.catalog],["cours",F.catalog],["tarifs",F.pricing]]);}
+})();
+</script>
+</body>
+</html>
