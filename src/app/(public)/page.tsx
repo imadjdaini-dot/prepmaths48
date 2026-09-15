@@ -28,64 +28,46 @@ export default async function LandingPage() {
 
   return (
     <>
-      {/* ============ HERO ============ */}
-      <section className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-80"
-          style={{
-            background:
-              "radial-gradient(900px 420px at 78% 8%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%), radial-gradient(700px 460px at 8% 92%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 62%)",
-          }}
-        />
-        <div className="wrap relative grid items-center gap-14 py-16 md:py-24 lg:grid-cols-[1.02fr_0.98fr]">
-          <div>
-            <span className="eyebrow">
-              <span className="h-px w-5 bg-current" /> Bac & concours post-bac
-            </span>
-            <h1 className="mt-4 font-display text-[clamp(38px,5vw,60px)] font-semibold leading-[1.05] tracking-tight">
-              Maîtrise les maths du Bac et{" "}
-              <span className="relative whitespace-nowrap">
-                réussis les concours
-                <span className="absolute -left-0.5 -right-0.5 bottom-1 -z-10 h-[0.32em] rounded bg-accent/30" />
-              </span>
-              .
-            </h1>
-            <p className="mt-5 max-w-md text-[19px] text-ink-2">
-              Un parcours clair, étape par étape : vidéos, fiches PDF, quiz corrigés
-              et suivi de progression. La méthode 48 pour les élèves marocains.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3.5">
-              <ButtonLink href="/catalogue" size="lg">
-                Voir les cours <ArrowRight className="h-5 w-5" />
-              </ButtonLink>
-              <ButtonLink href="/login" variant="ghost" size="lg">
-                Se connecter
-              </ButtonLink>
-            </div>
-            <div className="mt-8 flex items-center gap-4">
-              <div className="flex">
-                {["YA", "SM", "KB", "RL"].map((a, i) => (
-                  <span
-                    key={a}
-                    className="grid h-9 w-9 place-items-center rounded-full border-[2.5px] border-bg bg-gradient-to-br from-[#cfd6e0] to-[#aeb8c6] font-mono text-[11px] font-bold text-[#3a4760]"
-                    style={{ marginLeft: i === 0 ? 0 : -10 }}
-                  >
-                    {a}
-                  </span>
-                ))}
-              </div>
-              <div className="text-sm leading-tight text-muted">
-                <span className="text-accent">★★★★★</span>
-                <br />
-                <b className="text-ink">+1 200 élèves</b> accompagnés
-              </div>
-            </div>
-          </div>
+     {/* ============ HERO ============ */}
+<section className="relative overflow-hidden">
+  <div
+    className="pointer-events-none absolute inset-0 opacity-80"
+    style={{
+      background:
+        "radial-gradient(900px 420px at 78% 8%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%), radial-gradient(700px 460px at 8% 92%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 62%)",
+    }}
+  />
+  <div className="wrap relative grid items-center gap-14 py-16 md:py-24 lg:grid-cols-[1.02fr_0.98fr]">
+    <div>
+      <span className="eyebrow">
+        <span className="h-px w-5 bg-current" /> Bac & concours post-bac
+      </span>
+      <h1 className="mt-4 font-display text-[clamp(38px,5vw,60px)] font-semibold leading-[1.05] tracking-tight">
+        Maîtrise les maths du Bac et{" "}
+        <span className="relative whitespace-nowrap">
+          réussis les concours
+          <span className="absolute -left-0.5 -right-0.5 bottom-1 -z-10 h-[0.32em] rounded bg-accent/30" />
+        </span>
+        .
+      </h1>
+      <p className="mt-5 max-w-md text-[19px] text-ink-2">
+        Un parcours clair, étape par étape : vidéos, fiches PDF, quiz corrigés
+        et suivi de progression. La méthode 48 pour les élèves marocains.
+      </p>
+      <div className="mt-7 flex flex-wrap gap-3.5">
+        <ButtonLink href="/catalogue" size="lg">
+          Voir les cours <ArrowRight className="h-5 w-5" />
+        </ButtonLink>
+        <ButtonLink href="/login" variant="ghost" size="lg">
+          Se connecter
+        </ButtonLink>
+      </div>
+    </div>
 
-          {/* Mock app */}
-          <HeroMock />
-        </div>
-      </section>
+    {/* Mock app */}
+    <HeroMock />
+  </div>
+</section>
 
       {/* ============ PROBLÈME ============ */}
       <section className="wrap py-16">
