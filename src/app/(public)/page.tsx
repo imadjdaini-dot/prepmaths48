@@ -211,43 +211,20 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ============ TÉMOIGNAGES ============ */}
-      <section id="temoignages" className="wrap py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <span className="eyebrow justify-center">Ils ont réussi</span>
-          <h2 className="mt-3 font-display text-[clamp(28px,3.6vw,40px)] font-semibold">
-            Ce que disent les élèves.
-          </h2>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {[
-            {
-              n: "Salma B.",
-              r: "2 Bac SM — Prépa concours",
-              q: "Les quiz corrigés m'ont fait gagner un temps fou. J'ai enfin compris mes erreurs récurrentes.",
-            },
-            {
-              n: "Mehdi R.",
-              r: "Prépa concours",
-              q: "Le parcours est super clair. Reprendre là où je m'étais arrêté change tout.",
-            },
-            {
-              n: "Khadija L.",
-              r: "2 Bac PC",
-              q: "Les vidéos sont courtes et précises. La méthode 48 m'a redonné confiance.",
-            },
-          ].map((t) => (
-            <div key={t.n} className="card p-6 shadow-sm">
-              <div className="text-accent">★★★★★</div>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-2">“{t.q}”</p>
-              <div className="mt-4 text-sm">
-                <b className="text-ink">{t.n}</b>
-                <span className="text-muted"> · {t.r}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ============ TESTIMONIALS / REVIEWS ============ */}
+<section className="...">
+  <div className="wrap py-16 md:py-24">
+    <div className="text-center">
+      <span className="eyebrow">ILS ONT RÉUSSI</span>
+      <h2 className="...">Ce que disent les élèves.</h2>
+    </div>
+
+    <div className="grid ...">
+      {/* Cards / البطاقات ديال التلاميذ */}
+      ...
+    </div>
+  </div>
+</section>
 
       {/* ============ PRICING RÉSUMÉ ============ */}
       <section id="pricing" className="border-y border-line bg-surface">
