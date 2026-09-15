@@ -36,9 +36,9 @@ export default async function LandingPage() {
               "radial-gradient(900px 420px at 78% 8%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%), radial-gradient(700px 460px at 8% 92%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 62%)",
           }}
         />
-        <div className="wrap relative grid items-center gap-14 py-16 md:py-24 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="wrap relative py-16 md:py-24 max-w-3xl mx-auto text-center">
           <div>
-            <span className="eyebrow">
+            <span className="eyebrow justify-center">
               <span className="h-px w-5 bg-current" /> Bac & concours post-bac
             </span>
             <h1 className="mt-4 font-display text-[clamp(38px,5vw,60px)] font-semibold leading-[1.05] tracking-tight">
@@ -49,11 +49,11 @@ export default async function LandingPage() {
               </span>
               .
             </h1>
-            <p className="mt-5 max-w-md text-[19px] text-ink-2">
+            <p className="mt-5 max-w-xl mx-auto text-[19px] text-ink-2">
               Un parcours clair, étape par étape : vidéos, fiches PDF, quiz corrigés
               et suivi de progression. La méthode 48 pour les élèves marocains.
             </p>
-            <div className="mt-7 flex flex-wrap gap-3.5">
+            <div className="mt-7 flex flex-wrap justify-center gap-3.5">
               <ButtonLink href="/catalogue" size="lg">
                 Voir les cours <ArrowRight className="h-5 w-5" />
               </ButtonLink>
@@ -62,9 +62,6 @@ export default async function LandingPage() {
               </ButtonLink>
             </div>
           </div>
-
-          {/* Mock app */}
-          <HeroMock />
         </div>
       </section>
 
@@ -323,67 +320,5 @@ export default async function LandingPage() {
         </div>
       </section>
     </>
-  );
-}
-
-function HeroMock() {
-  return (
-    <div className="relative">
-      <div className="overflow-hidden rounded-lg border border-line bg-surface shadow-lg">
-        <div className="flex items-center gap-2.5 border-b border-line-2 px-4 py-3.5">
-          <div className="flex gap-1.5">
-            {[0, 1, 2].map((i) => (
-              <i key={i} className="block h-2.5 w-2.5 rounded-full bg-[#e0e1da]" />
-            ))}
-          </div>
-          <span className="mono ml-1.5 text-[12px] text-ink-2">prep-maths48.ma</span>
-        </div>
-        <div className="grid gap-3.5 p-4">
-          <div className="flex items-center gap-3.5 rounded-md border border-line bg-surface-2 p-3.5">
-            <div className="relative h-[62px] w-[88px] shrink-0 overflow-hidden rounded-[10px] bg-gradient-to-br from-navy-2 to-navy-3">
-              <span className="absolute inset-0 m-auto h-0 w-0 border-y-[8px] border-l-[13px] border-y-transparent border-l-white" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="mono text-[10px] uppercase tracking-wider text-accent-2">
-                Reprendre
-              </div>
-              <h4 className="mt-0.5 text-[15.5px] font-semibold">Dérivation · Tangente</h4>
-              <div className="progress mt-2">
-                <i style={{ width: "62%" }} />
-              </div>
-              <span className="mono mt-1.5 block text-[11px] text-muted">62 % terminé</span>
-            </div>
-          </div>
-          <div className="grid gap-2">
-            {[
-              { s: "done", t: "Nombre dérivé", m: "8:24" },
-              { s: "now", t: "Tangente à une courbe", m: "11:02" },
-              { s: "lock", t: "Dérivées usuelles", m: "🔒" },
-            ].map((mi) => (
-              <div
-                key={mi.t}
-                className={`flex items-center gap-3 rounded-[10px] border border-line-2 bg-surface px-3 py-2.5 text-[13.5px] ${
-                  mi.s === "lock" ? "text-muted" : "text-ink-2"
-                }`}
-              >
-                <span
-                  className={`grid h-5 w-5 place-items-center rounded-md text-[10px] ${
-                    mi.s === "done"
-                      ? "bg-green/20 text-green"
-                      : mi.s === "now"
-                        ? "bg-accent-soft text-accent-2"
-                        : "bg-line-2 text-muted"
-                  }`}
-                >
-                  {mi.s === "done" ? "✓" : mi.s === "now" ? "▶" : "🔒"}
-                </span>
-                <span className="flex-1">{mi.t}</span>
-                <span className="mono text-[10.5px] text-muted">{mi.m}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
   );
 }
