@@ -27,12 +27,6 @@ export default function LoginPage() {
             Pas encore de compte ? Les comptes élèves sont créés par l&apos;administration
             Prép-Maths48 : contacte ton professeur pour obtenir tes identifiants.
           </p>
-
-          <div className="mono mt-8 rounded-md border border-dashed border-line bg-surface-2 p-3 text-center text-[11px] text-muted">
-            Démo — Admin : admin@prepmaths48.com · Élève : student@prepmaths48.com
-            <br />
-            Mot de passe : password123
-          </div>
         </div>
       </div>
     </div>
