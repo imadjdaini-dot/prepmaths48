@@ -32,9 +32,9 @@ export const PLANS: PlanDef[] = [
   {
     id: "COURS",
     name: "Cours",
-    price: 199,
-    period: "/ mois",
-    months: 1,
+    price: 600,
+    period: "/ accès",
+    months: 12,
     tagline: "Tout le programme du lycée, SM et S.Ex.",
     features: [
       "Tous les cours Tronc commun, 1ère et 2ème bac (SM / S.Ex)",
@@ -48,7 +48,7 @@ export const PLANS: PlanDef[] = [
   {
     id: "CONCOURS",
     name: "Concours",
-    price: 499,
+    price: 500,
     period: "/ accès",
     months: 6,
     tagline: "Préparation Médecine & ENSA par leçons de maths.",
