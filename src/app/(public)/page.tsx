@@ -6,7 +6,6 @@ import {
   BookOpenCheck,
   BrainCircuit,
   LineChart,
-  Star,
   FunctionSquare,
   Infinity as InfinityIcon,
   ListOrdered,
@@ -28,46 +27,46 @@ export default async function LandingPage() {
 
   return (
     <>
-     {/* ============ HERO ============ */}
-<section className="relative overflow-hidden">
-  <div
-    className="pointer-events-none absolute inset-0 opacity-80"
-    style={{
-      background:
-        "radial-gradient(900px 420px at 78% 8%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%), radial-gradient(700px 460px at 8% 92%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 62%)",
-    }}
-  />
-  <div className="wrap relative grid items-center gap-14 py-16 md:py-24 lg:grid-cols-[1.02fr_0.98fr]">
-    <div>
-      <span className="eyebrow">
-        <span className="h-px w-5 bg-current" /> Bac & concours post-bac
-      </span>
-      <h1 className="mt-4 font-display text-[clamp(38px,5vw,60px)] font-semibold leading-[1.05] tracking-tight">
-        Maîtrise les maths du Bac et{" "}
-        <span className="relative whitespace-nowrap">
-          réussis les concours
-          <span className="absolute -left-0.5 -right-0.5 bottom-1 -z-10 h-[0.32em] rounded bg-accent/30" />
-        </span>
-        .
-      </h1>
-      <p className="mt-5 max-w-md text-[19px] text-ink-2">
-        Un parcours clair, étape par étape : vidéos, fiches PDF, quiz corrigés
-        et suivi de progression. La méthode 48 pour les élèves marocains.
-      </p>
-      <div className="mt-7 flex flex-wrap gap-3.5">
-        <ButtonLink href="/catalogue" size="lg">
-          Voir les cours <ArrowRight className="h-5 w-5" />
-        </ButtonLink>
-        <ButtonLink href="/login" variant="ghost" size="lg">
-          Se connecter
-        </ButtonLink>
-      </div>
-    </div>
+      {/* ============ HERO ============ */}
+      <section className="relative overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-80"
+          style={{
+            background:
+              "radial-gradient(900px 420px at 78% 8%, color-mix(in srgb,var(--accent) 22%, transparent), transparent 60%), radial-gradient(700px 460px at 8% 92%, color-mix(in srgb,var(--cyan) 16%, transparent), transparent 62%)",
+          }}
+        />
+        <div className="wrap relative grid items-center gap-14 py-16 md:py-24 lg:grid-cols-[1.02fr_0.98fr]">
+          <div>
+            <span className="eyebrow">
+              <span className="h-px w-5 bg-current" /> Bac & concours post-bac
+            </span>
+            <h1 className="mt-4 font-display text-[clamp(38px,5vw,60px)] font-semibold leading-[1.05] tracking-tight">
+              Maîtrise les maths du Bac et{" "}
+              <span className="relative whitespace-nowrap">
+                réussis les concours
+                <span className="absolute -left-0.5 -right-0.5 bottom-1 -z-10 h-[0.32em] rounded bg-accent/30" />
+              </span>
+              .
+            </h1>
+            <p className="mt-5 max-w-md text-[19px] text-ink-2">
+              Un parcours clair, étape par étape : vidéos, fiches PDF, quiz corrigés
+              et suivi de progression. La méthode 48 pour les élèves marocains.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3.5">
+              <ButtonLink href="/catalogue" size="lg">
+                Voir les cours <ArrowRight className="h-5 w-5" />
+              </ButtonLink>
+              <ButtonLink href="/login" variant="ghost" size="lg">
+                Se connecter
+              </ButtonLink>
+            </div>
+          </div>
 
-    {/* Mock app */}
-    <HeroMock />
-  </div>
-</section>
+          {/* Mock app */}
+          <HeroMock />
+        </div>
+      </section>
 
       {/* ============ PROBLÈME ============ */}
       <section className="wrap py-16">
@@ -210,21 +209,6 @@ export default async function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* ============ TESTIMONIALS / REVIEWS ============ */}
-<section className="...">
-  <div className="wrap py-16 md:py-24">
-    <div className="text-center">
-      <span className="eyebrow">ILS ONT RÉUSSI</span>
-      <h2 className="...">Ce que disent les élèves.</h2>
-    </div>
-
-    <div className="grid ...">
-      {/* Cards / البطاقات ديال التلاميذ */}
-      ...
-    </div>
-  </div>
-</section>
 
       {/* ============ PRICING RÉSUMÉ ============ */}
       <section id="pricing" className="border-y border-line bg-surface">
@@ -398,16 +382,6 @@ function HeroMock() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-      <div className="absolute -right-3 -top-5 hidden items-center gap-2.5 rounded-[14px] border border-line bg-surface px-3.5 py-2.5 shadow-md md:flex">
-        <div className="grid h-9 w-9 place-items-center rounded-full" style={{ background: "conic-gradient(var(--green) 0 240deg, var(--line) 240deg 360deg)" }}>
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-surface mono text-[10px] font-bold">67</span>
-        </div>
-        <div className="text-[12px] leading-tight">
-          <b className="text-[13px]">Progression</b>
-          <br />
-          cette semaine
         </div>
       </div>
     </div>
