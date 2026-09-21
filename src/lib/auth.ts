@@ -33,18 +33,21 @@ export const authOptions: NextAuthOptions = {
         // DEBUG (مؤقت): احذفه بعد التشخيص
         console.log("[AUTH] email:", emailClean, "| found:", !!user, "| active:", user?.isActive, "| role:", user?.role);
 
-        if (!user) return null;
+        if (!user) throw new Error("DBG_USER_NOT_FOUND");
 
         // للطلاب: إذا كان الحساب غير مفعل يرفض الدخول فوراً
         if (user.role !== "ADMIN" && !user.isActive) {
-          return null;
+          throw new Error("DBG_ACCOUNT_INACTIVE");
         }
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         // DEBUG (مؤقت): احذفه بعد التشخيص
         console.log("[AUTH] password valid:", valid, "| hash prefix:", user.passwordHash?.slice(0, 4));
 
-        if (!valid) return null;
+        if (!valid) {
+          const looksLikeBcrypt = /^\$2[aby]\$/.test(user.passwordHash ?? "");
+          throw new Error(`DBG_BAD_PASSWORD_bcryptFormat_${looksLikeBcrypt}`);
+        }
 
         // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
         if (user.role === "ADMIN" && !user.isActive) {
@@ -108,12 +111,14 @@ export const authOptions: NextAuthOptions = {
               { isolationLevel: "Serializable" }
             );
 
-            if (!newToken) return null;
+            if (!newToken) throw new Error("DBG_DEVICE_LIMIT");
             currentSessionToken = newToken;
           } catch (error) {
             console.error("Error managing student sessions limit:", error);
-            // Fail closed: عند أي خطأ لا نسمح بالدخول بدون تسجيل الجلسة
-            return null;
+            // DEBUG (مؤقت): نُظهر رمز خطأ Prisma في الـ Network tab
+            if (error instanceof Error && error.message.startsWith("DBG_")) throw error;
+            const code = (error as { code?: string }).code ?? "unknown";
+            throw new Error(`DBG_SESSION_ERROR_${code}`);
           }
         }
 
