@@ -16,6 +16,7 @@ import { LessonNotes } from "@/components/video/lesson-notes";
 import { MarkComplete } from "@/components/video/mark-complete";
 import { ButtonLink } from "@/components/ui/button";
 import { formatDuration } from "@/lib/utils";
+import { MathText } from "@/components/ui/math-text";
 import type { SessionUser } from "@/types";
 
 export default async function LearnPage({
@@ -110,9 +111,9 @@ export default async function LearnPage({
             {formatDuration(lesson.duration)} · {lesson.chapter.title}
           </p>
           {lesson.description && (
-            <p className="mt-3 whitespace-pre-line text-[15px] text-ink-2">
+            <MathText className="mt-3 text-[15px] text-ink-2">
               {lesson.description}
-            </p>
+            </MathText>
           )}
 
           {/* Navigation prev/next */}
