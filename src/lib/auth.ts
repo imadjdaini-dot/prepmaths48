@@ -30,24 +30,15 @@ export const authOptions: NextAuthOptions = {
           where: { email: emailClean },
         });
 
-        // DEBUG (مؤقت): احذفه بعد التشخيص
-        console.log("[AUTH] email:", emailClean, "| found:", !!user, "| active:", user?.isActive, "| role:", user?.role);
-
-        if (!user) throw new Error("DBG_USER_NOT_FOUND");
+        if (!user) return null;
 
         // للطلاب: إذا كان الحساب غير مفعل يرفض الدخول فوراً
         if (user.role !== "ADMIN" && !user.isActive) {
-          throw new Error("DBG_ACCOUNT_INACTIVE");
+          return null;
         }
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
-        // DEBUG (مؤقت): احذفه بعد التشخيص
-        console.log("[AUTH] password valid:", valid, "| hash prefix:", user.passwordHash?.slice(0, 4));
-
-        if (!valid) {
-          const looksLikeBcrypt = /^\$2[aby]\$/.test(user.passwordHash ?? "");
-          throw new Error(`DBG_BAD_PASSWORD_bcryptFormat_${looksLikeBcrypt}`);
-        }
+        if (!valid) return null;
 
         // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
         if (user.role === "ADMIN" && !user.isActive) {
@@ -84,9 +75,6 @@ export const authOptions: NextAuthOptions = {
 
                 // 2. وصل للحد الأقصى ويحاول جهاز جديد الدخول → تجميد الحساب
                 if (activeCount >= MAX_DEVICES) {
-                  // DEBUG (مؤقت): احذفه بعد التشخيص
-                  console.log("[AUTH] device limit reached, deactivating user:", user.id, "| sessions:", activeCount);
-
                   await tx.user.update({
                     where: { id: user.id },
                     data: { isActive: false },
@@ -111,14 +99,12 @@ export const authOptions: NextAuthOptions = {
               { isolationLevel: "Serializable" }
             );
 
-            if (!newToken) throw new Error("DBG_DEVICE_LIMIT");
+            if (!newToken) return null;
             currentSessionToken = newToken;
           } catch (error) {
             console.error("Error managing student sessions limit:", error);
-            // DEBUG (مؤقت): نُظهر رمز خطأ Prisma في الـ Network tab
-            if (error instanceof Error && error.message.startsWith("DBG_")) throw error;
-            const code = (error as { code?: string }).code ?? "unknown";
-            throw new Error(`DBG_SESSION_ERROR_${code}`);
+            // Fail closed: عند أي خطأ لا نسمح بالدخول بدون تسجيل الجلسة
+            return null;
           }
         }
 
