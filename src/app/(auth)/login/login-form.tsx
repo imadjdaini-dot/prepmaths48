@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { authErrorMessage } from "@/lib/auth-errors";
 
 export function LoginForm() {
   const router = useRouter();
@@ -25,7 +26,8 @@ export function LoginForm() {
     setLoading(false);
 
     if (res?.error) {
-      toast.error("Email ou mot de passe incorrect.");
+      const suspended = res.error === "ACCOUNT_SUSPENDED" || res.error === "DEVICE_LIMIT";
+      toast.error(authErrorMessage(res.error), { duration: suspended ? 10000 : 4000 });
       return;
     }
     toast.success("Connexion réussie !");
