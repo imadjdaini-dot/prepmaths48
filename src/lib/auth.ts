@@ -1,11 +1,17 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
 import { prisma } from "@/lib/prisma";
 import type { Role } from "@prisma/client";
 
+// أقصى عدد أجهزة مسموح به للتلميذ
+const MAX_DEVICES = 2;
+// مدة صلاحية الجلسة (30 يوماً) — نفس المدة تُستعمل لتنظيف الجلسات القديمة من BDD
+const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
+
 export const authOptions: NextAuthOptions = {
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: SESSION_MAX_AGE },
   pages: {
     signIn: "/login",
   },
@@ -49,38 +55,56 @@ export const authOptions: NextAuthOptions = {
 
         if (user.role !== "ADMIN") {
           try {
-            const activeSessions = await prisma.session.findMany({
-              where: { userId: user.id },
-            });
+            // كل العمليات داخل transaction واحدة لتفادي تسجيل دخولين متزامنين
+            // يتجاوزان الحد معاً (race condition)
+            const newToken = await prisma.$transaction(
+              async (tx) => {
+                // 1. حذف الجلسات المنتهية الصلاحية حتى لا تُحسب كأجهزة وهمية
+                await tx.session.deleteMany({
+                  where: {
+                    userId: user.id,
+                    createdAt: {
+                      lt: new Date(Date.now() - SESSION_MAX_AGE * 1000),
+                    },
+                  },
+                });
 
-            // إذا حاول الدخول وكان لديه 2 أجهزة أو أكثر
-            if (activeSessions.length >= 2) {
-              // 1. تعطيل الحساب أوتوماتيكياً
-              await prisma.user.update({
-                where: { id: user.id },
-                data: { isActive: false },
-              });
+                const activeCount = await tx.session.count({
+                  where: { userId: user.id },
+                });
 
-              // 2. مسح جميع الجلسات المسجلة من BDD
-              await prisma.session.deleteMany({
-                where: { userId: user.id },
-              });
+                // 2. وصل للحد الأقصى ويحاول جهاز جديد الدخول → تجميد الحساب
+                if (activeCount >= MAX_DEVICES) {
+                  await tx.user.update({
+                    where: { id: user.id },
+                    data: { isActive: false },
+                  });
 
-              // 3. طرد المتصفح الثالث ومنع الدخول
-              return null;
-            }
+                  // مسح كل الجلسات → يُطرد الجهازان القديمان أيضاً
+                  await tx.session.deleteMany({
+                    where: { userId: user.id },
+                  });
 
-            // إذا كان أقل من 2، ننشئ sessionToken خاص بهذا المتصفح ونخزنه
-            currentSessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+                  return null; // رفض الدخول (لا نرمي خطأ حتى لا يُلغى التجميد)
+                }
 
-            await prisma.session.create({
-              data: {
-                userId: user.id,
-                sessionToken: currentSessionToken,
+                // 3. أقل من الحد → إنشاء sessionToken لهذا الجهاز
+                const token = randomUUID();
+                await tx.session.create({
+                  data: { userId: user.id, sessionToken: token },
+                });
+                return token;
               },
-            });
+              // ملاحظة: خيار isolationLevel غير مدعوم في SQLite / MongoDB — احذفه إن كنت تستعملهما
+              { isolationLevel: "Serializable" }
+            );
+
+            if (!newToken) return null;
+            currentSessionToken = newToken;
           } catch (error) {
             console.error("Error managing student sessions limit:", error);
+            // Fail closed: عند أي خطأ لا نسمح بالدخول بدون تسجيل الجلسة
+            return null;
           }
         }
 
@@ -94,6 +118,20 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  events: {
+    // عند تسجيل الخروج نحذف جلسة هذا الجهاز من BDD حتى لا يُحسب جهازاً مستهلكاً
+    async signOut({ token }) {
+      if (token?.sessionToken) {
+        try {
+          await prisma.session.deleteMany({
+            where: { sessionToken: token.sessionToken as string },
+          });
+        } catch (error) {
+          console.error("Error removing session on signOut:", error);
+        }
+      }
+    },
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -122,6 +160,11 @@ export const authOptions: NextAuthOptions = {
       }
 
       // للطلاب: التحقق المزدوج من حالة الحساب ووجود الجلسة الحالية في BDD
+      // التلميذ بدون sessionToken (توكن قديم أو معطوب) لا يُقبل أبداً
+      if (!token.sessionToken) {
+        return { ...session, user: undefined };
+      }
+
       try {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
@@ -133,16 +176,13 @@ export const authOptions: NextAuthOptions = {
           return { ...session, user: undefined };
         }
 
-        // 2. التحقق من أن sessionToken هذا المتصفح ما زال موجوداً في BDD ولم يُحذف
-        if (token.sessionToken) {
-          const dbSession = await prisma.session.findUnique({
-            where: { sessionToken: token.sessionToken as string },
-          });
+        // 2. التحقق من أن sessionToken هذا المتصفح ما زال موجوداً في BDD
+        const dbSession = await prisma.session.findUnique({
+          where: { sessionToken: token.sessionToken as string },
+        });
 
-          // إذا حُذفت الجلسة، يتم إبطال الـ Session فوراً وطرد المتصفح القديم
-          if (!dbSession) {
-            return { ...session, user: undefined };
-          }
+        if (!dbSession) {
+          return { ...session, user: undefined };
         }
       } catch (error) {
         console.error("Session verification error:", error);
