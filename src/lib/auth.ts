@@ -27,16 +27,15 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        // للطلاب فقط: التحقق من أن الحساب نشط
+        // للطلاب فقط: التأكد من أن الحساب نشط
         if (user.role !== "ADMIN" && !user.isActive) {
-          console.warn(`Attempt to login to disabled student account: ${user.email}`);
           return null;
         }
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
 
-        // إذا كان أدمن وكان معطلاً في قاعدة البيانات أونلاين، نعيد تفعيله فوراً
+        // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
         if (user.role === "ADMIN" && !user.isActive) {
           await prisma.user.update({
             where: { id: user.id },
@@ -44,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
-        // تطبيق شرط حد الأجهزة (2 أجهزة) والتجميد على الطلاب فقط وليس الأدمن
+        // تطبيق حد الجهازين للحسابات غير الأدمن فقط
         if (user.role !== "ADMIN") {
           try {
             const activeSessions = await prisma.session.findMany({
@@ -68,7 +67,7 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        // إنشاء sessionToken للجلسة الجديدة
+        // إنشاء SessionToken دائم للجميع بما في ذلك الأدمن
         const generatedSessionToken = crypto.randomBytes(32).toString("hex");
 
         try {
@@ -80,7 +79,7 @@ export const authOptions: NextAuthOptions = {
             },
           });
         } catch (error) {
-          console.error("Error creating session:", error);
+          console.error("Error creating session in DB:", error);
         }
 
         return {
@@ -108,7 +107,7 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // إذا كان المستخدم ADMIN، اسمح له بالمرور مباشرة دون تعقيد الجلسات
+      // بالنسبة للأدمن: يمر دائماً بسلام إذا كان الـ Token يحتوي على دور ADMIN
       if (token.role === "ADMIN") {
         if (session.user) {
           session.user.id = token.id as string;
@@ -118,7 +117,7 @@ export const authOptions: NextAuthOptions = {
         return session;
       }
 
-      // بالنسبة للطلاب: التحقق من وجود الجلسة في قاعدة البيانات
+      // للطلاب: التحقق من وجود الجلسة في قاعدة البيانات
       const dbSession = await prisma.session.findUnique({
         where: { sessionToken: token.sessionToken as string },
         include: { user: true },
