@@ -27,7 +27,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        // للطلاب فقط: التأكد من أن الحساب نشط
+        // Pour les étudiants : vérifier si le compte est actif
         if (user.role !== "ADMIN" && !user.isActive) {
           return null;
         }
@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
 
-        // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
+        // Réactiver l'admin automatiquement s'il est désactivé
         if (user.role === "ADMIN" && !user.isActive) {
           await prisma.user.update({
             where: { id: user.id },
@@ -43,14 +43,13 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
-        // تطبيق حد الجهازين للحسابات غير الأدمن فقط
+        // Gestion de la limite des sessions pour les étudiants
         if (user.role !== "ADMIN") {
           try {
             const activeSessions = await prisma.session.findMany({
               where: { userId: user.id },
             });
 
-            // إذا كان لدى التلميذ أكثر من أو يساوي جلسات الحد المسموح
             if (activeSessions.length >= 2) {
               await prisma.user.update({
                 where: { id: user.id },
@@ -68,9 +67,9 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        // إنشاء SessionToken دائم وترحيله لقاعدة البيانات مع حقل expires
+        // Création du token de session dans la base
         const generatedSessionToken = crypto.randomBytes(32).toString("hex");
-        const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 يوماً
+        const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
         try {
           await prisma.session.create({
@@ -83,8 +82,6 @@ export const authOptions: NextAuthOptions = {
           });
         } catch (error) {
           console.error("Error creating session in DB:", error);
-          // في حال فشل الحفظ في قاعدة البيانات، نرفض الدخول لمنع حلقة التكرار
-          if (user.role !== "ADMIN") return null;
         }
 
         return {
@@ -108,11 +105,11 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      if (!token?.sessionToken) {
+      if (!token?.id) {
         return { ...session, user: undefined };
       }
 
-      // بالنسبة للأدمن: يمر دائماً بسلام
+      // Pour l'ADMIN : accès direct
       if (token.role === "ADMIN") {
         if (session.user) {
           session.user.id = token.id as string;
@@ -122,18 +119,18 @@ export const authOptions: NextAuthOptions = {
         return session;
       }
 
-      // للطلاب: التحقق من وجود الجلسة في قاعدة البيانات ونشاط الحساب
+      // Pour les ÉLÈVES : Vérifier directement dans la table User si le compte est toujours actif
       try {
-        const dbSession = await prisma.session.findUnique({
-          where: { sessionToken: token.sessionToken as string },
-          include: { user: true },
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { isActive: true },
         });
 
-        if (!dbSession || !dbSession.user.isActive) {
+        if (!dbUser || !dbUser.isActive) {
           return { ...session, user: undefined };
         }
       } catch (error) {
-        console.error("Error verifying session in DB:", error);
+        console.error("Error checking user status:", error);
         return { ...session, user: undefined };
       }
 
