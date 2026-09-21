@@ -3,17 +3,17 @@ import { NextResponse } from "next/server";
 
 /**
  * Protège les routes élève et admin côté edge.
- * La vérification fine (premium, propriété) est refaite côté serveur dans les pages/API.
  */
 export default withAuth(
   function middleware(req) {
     const { token } = req.nextauth;
     const { pathname } = req.nextUrl;
 
-    // Les routes /admin exigent le rôle ADMIN.
+    // إذا حاول غير الأدمن دخول مسارات /admin، يتم توجيهه إلى /dashboard
     if (pathname.startsWith("/admin") && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
+
     return NextResponse.next();
   },
   {

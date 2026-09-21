@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  callbacks: {
+ callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -106,31 +106,6 @@ export const authOptions: NextAuthOptions = {
 
     async session({ session, token }) {
       if (!token?.id) {
-        return { ...session, user: undefined };
-      }
-
-      // Pour l'ADMIN : accès direct
-      if (token.role === "ADMIN") {
-        if (session.user) {
-          session.user.id = token.id as string;
-          session.user.role = token.role as Role;
-          (session as { sessionToken?: string }).sessionToken = token.sessionToken as string;
-        }
-        return session;
-      }
-
-      // Pour les ÉLÈVES : Vérifier directement dans la table User si le compte est toujours actif
-      try {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { isActive: true },
-        });
-
-        if (!dbUser || !dbUser.isActive) {
-          return { ...session, user: undefined };
-        }
-      } catch (error) {
-        console.error("Error checking user status:", error);
         return { ...session, user: undefined };
       }
 
