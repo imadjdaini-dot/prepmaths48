@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // ==========================================
-        // إدارة وتطبيق حد 2 جهازين للتلاميذ فقط
+        // إدارة حد جهازين (2 Devices Max) للطلاب
         // ==========================================
         let sessionToken: string | undefined = undefined;
 
@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
               },
             });
 
-            // 2. حساب الجلسات النشطة المتبقية
+            // 2. جلب الجلسات النشطة
             const activeSessions = await prisma.session.findMany({
               where: {
                 userId: user.id,
@@ -69,20 +69,17 @@ export const authOptions: NextAuthOptions = {
               orderBy: { expires: "asc" },
             });
 
-            // 3. إذا تجاوز أو وصل للحد المسموح (2 أجهزة)
+            // 3. إذا وصل أو تجاوز الحد (جلسة أو أكثر)، نحذف أقدم جلسة لإبقاء مكان للجلسة الجديدة
             if (activeSessions.length >= 2) {
-              // خيار أ: إما رفض الدخول الجلسة الجديدة لحين الخروج من أحدهما
-              // خيار ب: حذف أقدم جلسة والسماح بالجلسة الجديدة (FIFO)
-              // سنعتمد هنا مسح أقدم جلسة لإتاحة تجربة سلسة للتلميذ عند الانتقال لجهاز جديد
               const oldestSession = activeSessions[0];
               await prisma.session.delete({
                 where: { id: oldestSession.id },
               });
             }
 
-            // 4. تسجيل الجلسة الجديدة للتلميذ
+            // 4. إنتاج معرف جلسة جديد وتخزينه
             sessionToken = crypto.randomBytes(32).toString("hex");
-            const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 يوماً
+            const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
             await prisma.session.create({
               data: {
@@ -120,6 +117,34 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (!token?.id) {
         return { ...session, user: undefined };
+      }
+
+      // حسابات الأدمن: استثناء وتجاوز مباشر دون فحص
+      if (token.role === "ADMIN") {
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: token.id as string,
+            role: token.role as Role,
+          },
+        };
+      }
+
+      // حسابات الطلاب: التحقق من وجود sessionToken في قاعدة البيانات
+      if (token.sessionToken) {
+        try {
+          const dbSession = await prisma.session.findUnique({
+            where: { sessionToken: token.sessionToken as string },
+          });
+
+          // إذا تم مسح الجلسة من BDD بسبب دخول جهاز ثالث، يتم إبطال الجلسة وطرد المتصفح القديم فوراً
+          if (!dbSession) {
+            return { ...session, user: undefined };
+          }
+        } catch (error) {
+          console.error("Error verifying active session in DB:", error);
+        }
       }
 
       return {
