@@ -43,41 +43,43 @@ export const authOptions: NextAuthOptions = {
         }
 
         // ====================================================
-        // تطبيق حد الجهازين (2 Devices Max) والتجميد التلقائي
+        // تطبيق حد الجهازين (2 Devices Max) وتجميد الحساب
         // ====================================================
         if (user.role !== "ADMIN") {
           try {
-            // جلب الجلسات المسجلة للطالب
-            const activeSessions = await prisma.session.findMany({
+            // 1. حساب عدد الجلسات الحالية للطالب
+            const sessionCount = await prisma.session.count({
               where: { userId: user.id },
             });
 
-            // إذا حاول الدخول وكان لديه بالفعل 2 أجهزة مسجلة أو أكثر
-            if (activeSessions.length >= 2) {
-              // 1. تعطيل الحساب أوتوماتيكياً
+            // 2. إذا تجاوز أو وصل للحد المسموح (2 أجهزة) وحاول فتح جهاز ثالث
+            if (sessionCount >= 2) {
+              // تعطيل الحساب أوتوماتيكياً
               await prisma.user.update({
                 where: { id: user.id },
                 data: { isActive: false },
               });
 
-              // 2. مسح جميع الجلسات القديمة
+              // مسح الجلسات القديمة
               await prisma.session.deleteMany({
                 where: { userId: user.id },
               });
 
-              // 3. رفض عملية الدخول
+              // رفض عملية الدخول الثالثة
               return null;
             }
 
-            // إنشاء سجل جلسة جديدة في BDD
+            // 3. إنشآء الجلسة بدون حقل expires
+            const tokenString = Math.random().toString(36).substring(2) + Date.now().toString(36);
+
             await prisma.session.create({
               data: {
                 userId: user.id,
-                sessionToken: Math.random().toString(36).substring(2) + Date.now().toString(36),
+                sessionToken: tokenString,
               },
             });
           } catch (error) {
-            console.error("Error checking student sessions limit:", error);
+            console.error("Error managing student sessions limit:", error);
           }
         }
 
@@ -104,7 +106,7 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // للطلاب: فحص ما إذا كان الحساب ما زال نشطاً في قاعدة البيانات
+      // للطلاب: فحص حالة الحساب في BDD أثناء التصفح
       if (token.role !== "ADMIN") {
         try {
           const dbUser = await prisma.user.findUnique({
