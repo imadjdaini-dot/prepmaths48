@@ -19,15 +19,18 @@ export default async function CataloguePage({
   const session = await auth();
   const audience = session?.user?.id ? await getAudience(session.user.id) : null;
 
-  const courses = await getCourseCards(
-    {
-      track: searchParams.track,
-      kind: searchParams.kind,
-      level: searchParams.level,
-      premium: searchParams.premium as "free" | "premium" | undefined,
-    },
-    audience
-  );
+  const filters = {
+    track: searchParams.track,
+    kind: searchParams.kind,
+    level: searchParams.level,
+    premium: searchParams.premium as "free" | "premium" | undefined,
+  };
+  const courses = await getCourseCards(filters, audience);
+
+  // Résultat vide pour un élève connecté : est-ce à cause de son accès (et non des filtres) ?
+  // On ne refait la requête (sans restriction) que dans ce cas précis.
+  const blockedByAccess =
+    courses.length === 0 && audience !== null && (await getCourseCards(filters)).length > 0;
 
   return (
     <div className="wrap py-12">
@@ -55,8 +58,12 @@ export default async function CataloguePage({
         <EmptyState
           className="mt-6"
           icon={<Search className="h-6 w-6" />}
-          title="Aucun cours ne correspond"
-          description="Essaie d'élargir tes filtres pour voir plus de résultats."
+          title={blockedByAccess ? "Aucun cours disponible" : "Aucun cours ne correspond"}
+          description={
+            blockedByAccess
+              ? "Ce contenu n'est pas inclus dans ton accès. Contacte ton professeur."
+              : "Essaie d'élargir tes filtres pour voir plus de résultats."
+          }
         />
       ) : (
         <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
