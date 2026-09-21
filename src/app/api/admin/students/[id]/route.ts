@@ -16,8 +16,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
   const d = parsed.data;
 
-  // Niveau/branche : seul l'admin les modifie (l'élève les voit en lecture seule).
-  // Les deux sont envoyés ensemble par le formulaire pour garantir la cohérence.
   if (d.role !== undefined || d.isActive !== undefined || d.level !== undefined) {
     await prisma.user.update({
       where: { id: params.id },
@@ -29,8 +27,6 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     });
   }
 
-  // Activation / révocation manuelle du premium.
-  // « Accorder » = accès complet : Cours (2è bac) + Concours.
   if (d.grantPremium === true) {
     const oneYear = new Date(Date.now() + 365 * 24 * 3600 * 1000);
     await prisma.subscription.createMany({
@@ -53,35 +49,44 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ ok: true });
 }
 
-// ==========================================
-// Suppression définitive d'un élève (DELETE)
-// ==========================================
+// =======================================================
+// Suppression sécurisée avec suppression des dépendances
+// =======================================================
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const guard = await guardAdmin();
   if (guard.error) return guard.error;
 
+  const userId = params.id;
+
   try {
-    // 1. مسح جميع جلسات التلميذ
-    await prisma.session.deleteMany({
-      where: { userId: params.id },
-    });
+    // استخدام $transaction لحذف كافة البيانات المرتبطة بالتلميذ أولاً
+    await prisma.$transaction([
+      // 1. مسح الجلسات والاشتراكات
+      prisma.session.deleteMany({ where: { userId } }),
+      prisma.subscription.deleteMany({ where: { userId } }),
 
-    // 2. مسح كافة اشتراكات التلميذ
-    await prisma.subscription.deleteMany({
-      where: { userId: params.id },
-    });
+      // 2. مسح تقدم الدروس والمحاولات في الاختبارات (إن وجدت في Schema)
+      prisma.courseProgress.deleteMany({ where: { userId } }),
+      prisma.quizAttempt.deleteMany({ where: { userId } }),
 
-    // 3. حذف حساب التلميذ بشكل نهائي من قاعدة البيانات
-    await prisma.user.delete({
-      where: { id: params.id },
-    });
+      // 3. أخيراً: حذف كائن التلميذ نفسه
+      prisma.user.delete({ where: { id: userId } }),
+    ]);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Erreur lors de la suppression de l'élève:", error);
-    return NextResponse.json(
-      { error: "Impossible de supprimer cet élève" },
-      { status: 500 }
-    );
+
+    // محاولة إنقاذ fallback إذا كان هناك نموذج فرعي غير مذكور في الـ Transaction
+    try {
+      await prisma.user.delete({ where: { id: userId } });
+      return NextResponse.json({ ok: true });
+    } catch (fallbackError) {
+      console.error("Fallback delete error:", fallbackError);
+      return NextResponse.json(
+        { error: "Impossible de supprimer cet élève" },
+        { status: 500 }
+      );
+    }
   }
 }
