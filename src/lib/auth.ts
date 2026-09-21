@@ -1,14 +1,18 @@
+// src/lib/auth.ts
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
 import { prisma } from "@/lib/prisma";
+import { MAX_DEVICES, describeDevice } from "@/lib/device";
 import type { Role } from "@prisma/client";
 
-// أقصى عدد أجهزة مسموح به للتلميذ
-const MAX_DEVICES = 2;
 // مدة صلاحية الجلسة (30 يوماً) — نفس المدة تُستعمل لتنظيف الجلسات القديمة من BDD
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
+
+// hash وهمي: نقارن به حين لا يوجد المستخدم حتى لا يختلف زمن الاستجابة
+// (فلا يُعرف من التوقيت إن كان الإيميل مسجلاً أم لا)
+const DUMMY_HASH = bcrypt.hashSync("dummy-password", 10);
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt", maxAge: SESSION_MAX_AGE },
@@ -22,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Mot de passe", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         if (!credentials?.email || !credentials?.password) return null;
 
         const emailClean = credentials.email.toLowerCase().trim();
@@ -30,17 +34,16 @@ export const authOptions: NextAuthOptions = {
           where: { email: emailClean },
         });
 
-        if (!user) return null;
-
-        // للطلاب: إذا كان الحساب غير مفعل يرفض الدخول فوراً
-        if (user.role !== "ADMIN" && !user.isActive) {
-          return null;
+        if (!user) {
+          await bcrypt.compare(credentials.password, DUMMY_HASH);
+          return null; // رسالة عامة: "Email ou mot de passe incorrect"
         }
 
+        // نتحقق من كلمة المرور أولاً: سبب التعليق يُكشف لصاحب الحساب فقط
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
 
-        // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
+        // الأدمن: إعادة تفعيل تلقائية إن كان معطلاً
         if (user.role === "ADMIN" && !user.isActive) {
           await prisma.user.update({
             where: { id: user.id },
@@ -48,16 +51,25 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
+        // التلميذ: حساب معطل (من الأدمن أو تلقائياً) → رسالة "حساب معلّق"
+        if (user.role !== "ADMIN" && !user.isActive) {
+          throw new Error("ACCOUNT_SUSPENDED");
+        }
+
         // ====================================================
-        // تطبيق حد الجهازين (2 Devices Max) وتجميد الحساب
+        // تطبيق حد الجهازين وتجميد الحساب
         // ====================================================
         let currentSessionToken: string | undefined = undefined;
 
         if (user.role !== "ADMIN") {
+          const uaHeader = req?.headers?.["user-agent"];
+          const userAgent = typeof uaHeader === "string" ? uaHeader : undefined;
+
+          let newToken: string | null = null;
+
           try {
             // كل العمليات داخل transaction واحدة لتفادي تسجيل دخولين متزامنين
-            // يتجاوزان الحد معاً (race condition)
-            const newToken = await prisma.$transaction(
+            newToken = await prisma.$transaction(
               async (tx) => {
                 // 1. حذف الجلسات المنتهية الصلاحية حتى لا تُحسب كأجهزة وهمية
                 await tx.session.deleteMany({
@@ -85,27 +97,34 @@ export const authOptions: NextAuthOptions = {
                     where: { userId: user.id },
                   });
 
-                  return null; // رفض الدخول (لا نرمي خطأ حتى لا يُلغى التجميد)
+                  return null; // لا نرمي خطأ هنا حتى لا يُلغى التجميد
                 }
 
-                // 3. أقل من الحد → إنشاء sessionToken لهذا الجهاز
+                // 3. أقل من الحد → إنشاء جلسة لهذا الجهاز مع وصفه
                 const token = randomUUID();
                 await tx.session.create({
-                  data: { userId: user.id, sessionToken: token },
+                  data: {
+                    userId: user.id,
+                    sessionToken: token,
+                    deviceInfo: describeDevice(userAgent),
+                  },
                 });
                 return token;
               },
               // ملاحظة: خيار isolationLevel غير مدعوم في SQLite / MongoDB — احذفه إن كنت تستعملهما
               { isolationLevel: "Serializable" }
             );
-
-            if (!newToken) return null;
-            currentSessionToken = newToken;
           } catch (error) {
             console.error("Error managing student sessions limit:", error);
-            // Fail closed: عند أي خطأ لا نسمح بالدخول بدون تسجيل الجلسة
+            // Fail closed: عند أي خطأ في القاعدة لا نسمح بالدخول
             return null;
           }
+
+          // تجاوز حد الأجهزة → رسالة خاصة (الحساب جُمّد داخل الـ transaction)
+          if (!newToken) {
+            throw new Error("DEVICE_LIMIT");
+          }
+          currentSessionToken = newToken;
         }
 
         return {
@@ -177,6 +196,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // 2. التحقق من أن sessionToken هذا المتصفح ما زال موجوداً في BDD
+        //    (يُحذف عند "إخراج جهاز" من صفحة أجهزتي، أو عند تجاوز الحد)
         const dbSession = await prisma.session.findUnique({
           where: { sessionToken: token.sessionToken as string },
         });
