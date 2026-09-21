@@ -24,41 +24,40 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email.toLowerCase().trim() },
         });
 
-        // إذا كان المستخدم غير موجود أو حسابه غير نشط (معطل)
+        // إذا كان المستخدم غير موجود أو حسابه معطل
         if (!user || !user.isActive) return null;
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
 
-        // التحقق من عدد الأجهزة/الجلسات النشطة
-        try {
-          const activeSessions = await prisma.session.findMany({
-            where: { userId: user.id },
-          });
-
-          // إذا كان المستخدم يمتلك بالفعل جهازين أو أكثر مسجلين
-          if (activeSessions.length >= 2) {
-            // 1. تعطيل الحساب بالكامل
-            await prisma.user.update({
-              where: { id: user.id },
-              data: { isActive: false },
-            });
-
-            // 2. حذف جميع الجلسات السابقة لإخراجه من كل الأجهزة
-            await prisma.session.deleteMany({
+        // تطبيق شرط حد الأجهزة (2 أجهزة) والتجميد على الطلاب فقط وليس الأدمن
+        if (user.role !== "ADMIN") {
+          try {
+            const activeSessions = await prisma.session.findMany({
               where: { userId: user.id },
             });
 
-            console.warn(`تم تعطيل حساب المستخدم ${user.email} لتجاوزه الحد الأقصى للأجهزة (2).`);
-            
-            // إلغاء محاولة تسجيل الدخول الحالية
-            return null;
+            if (activeSessions.length >= 2) {
+              // 1. تعطيل حساب الطالب
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { isActive: false },
+              });
+
+              // 2. حذف كل جلساته
+              await prisma.session.deleteMany({
+                where: { userId: user.id },
+              });
+
+              console.warn(`تم تعطيل حساب الطالب ${user.email} لتجاوزه الحد الأقصى للأجهزة.`);
+              return null;
+            }
+          } catch (error) {
+            console.error("خطأ أثناء التحقق من عدد الأجهزة المسموحة:", error);
           }
-        } catch (error) {
-          console.error("خطأ أثناء التحقق من عدد الأجهزة المسموحة:", error);
         }
 
-        // إنشاء sessionToken جديد للجلسة الحالية
+        // إنشاء sessionToken للجلسة الجديدة
         const generatedSessionToken = crypto.randomBytes(32).toString("hex");
 
         try {
@@ -98,12 +97,14 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // التحقق من وجود الجلسة وقابليتها للاستخدام
+      // التحقق من وجود الجلسة في قاعدة البيانات
       const dbSession = await prisma.session.findUnique({
         where: { sessionToken: token.sessionToken as string },
+        include: { user: true },
       });
 
-      if (!dbSession) {
+      // إذا كانت الجلسة حذفها أو الحساب أصبح معطلاً
+      if (!dbSession || !dbSession.user.isActive) {
         return { ...session, user: undefined };
       }
 
