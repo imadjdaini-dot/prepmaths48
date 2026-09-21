@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import type { Role } from "@prisma/client";
-import crypto from "crypto";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -27,7 +26,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        // Pour les étudiants : vérifier si le compte est actif
+        // للطلاب فقط: التأكد من أن الحساب مفعل
         if (user.role !== "ADMIN" && !user.isActive) {
           return null;
         }
@@ -35,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
 
-        // Réactiver l'admin automatiquement s'il est désactivé
+        // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
         if (user.role === "ADMIN" && !user.isActive) {
           await prisma.user.update({
             where: { id: user.id },
@@ -43,63 +42,20 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
-        // Gestion de la limite des sessions pour les étudiants
-        if (user.role !== "ADMIN") {
-          try {
-            const activeSessions = await prisma.session.findMany({
-              where: { userId: user.id },
-            });
-
-            if (activeSessions.length >= 2) {
-              await prisma.user.update({
-                where: { id: user.id },
-                data: { isActive: false },
-              });
-
-              await prisma.session.deleteMany({
-                where: { userId: user.id },
-              });
-
-              return null;
-            }
-          } catch (error) {
-            console.error("Error checking sessions:", error);
-          }
-        }
-
-        // Création du token de session dans la base
-        const generatedSessionToken = crypto.randomBytes(32).toString("hex");
-        const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
-        try {
-          await prisma.session.create({
-            data: {
-              userId: user.id,
-              sessionToken: generatedSessionToken,
-              deviceInfo: "Web Browser",
-              expires: sessionExpiry,
-            },
-          });
-        } catch (error) {
-          console.error("Error creating session in DB:", error);
-        }
-
         return {
           id: user.id,
           name: user.name,
           email: user.email,
           role: user.role,
-          sessionToken: generatedSessionToken,
         };
       },
     }),
   ],
- callbacks: {
+  callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = (user as { role: Role }).role;
-        token.sessionToken = (user as { sessionToken?: string }).sessionToken;
       }
       return token;
     },
@@ -109,13 +65,14 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as Role;
-        (session as { sessionToken?: string }).sessionToken = token.sessionToken as string;
-      }
-
-      return session;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id as string,
+          role: token.role as Role,
+        },
+      };
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
