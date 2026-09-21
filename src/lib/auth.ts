@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        // للتلاميذ: إذا كان الحساب غير نشط يرفض الدخول فوراً
+        // للطلاب فقط: التأكد من أن الحساب مفعل
         if (user.role !== "ADMIN" && !user.isActive) {
           return null;
         }
@@ -43,58 +43,41 @@ export const authOptions: NextAuthOptions = {
         }
 
         // ====================================================
-        // تطبيق المنطق الصارم: تعطيل الحساب عند تجاوز جهازين
+        // تطبيق حد الجهازين (2 Devices Max) والتجميد التلقائي
         // ====================================================
         if (user.role !== "ADMIN") {
           try {
-            const now = new Date();
-
-            // تنظيف الجلسات المنتهية
-            await prisma.session.deleteMany({
-              where: {
-                userId: user.id,
-                expires: { lt: now },
-              },
-            });
-
-            // جلب الجلسات النشطة
+            // جلب الجلسات المسجلة للطالب
             const activeSessions = await prisma.session.findMany({
-              where: {
-                userId: user.id,
-                expires: { gt: now },
-              },
+              where: { userId: user.id },
             });
 
-            // إذا حاول الدخول وكان لديه بالفعل 2 أجهزة نشطة
+            // إذا حاول الدخول وكان لديه بالفعل 2 أجهزة مسجلة أو أكثر
             if (activeSessions.length >= 2) {
-              // 1. تحويل حالة الحساب إلى غير نشط (Inactif)
+              // 1. تعطيل الحساب أوتوماتيكياً
               await prisma.user.update({
                 where: { id: user.id },
                 data: { isActive: false },
               });
 
-              // 2. مسح جميع جلساته المسجلة
+              // 2. مسح جميع الجلسات القديمة
               await prisma.session.deleteMany({
                 where: { userId: user.id },
               });
 
-              // 3. رفض الدخول
+              // 3. رفض عملية الدخول
               return null;
             }
 
-            // إذا كان أقل من جهازين، ننشئ كود الجلسة الجديدة
-            const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            // إنشاء سجل جلسة جديدة في BDD
             await prisma.session.create({
               data: {
                 userId: user.id,
                 sessionToken: Math.random().toString(36).substring(2) + Date.now().toString(36),
-                deviceInfo: "Web Browser",
-                expires: sessionExpiry,
               },
             });
-
           } catch (error) {
-            console.error("Error checking session limits:", error);
+            console.error("Error checking student sessions limit:", error);
           }
         }
 
@@ -121,7 +104,7 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // للطلاب: التأكد من أن الحساب ما زال نشطاً في قاعدة البيانات أثناء التصفح
+      // للطلاب: فحص ما إذا كان الحساب ما زال نشطاً في قاعدة البيانات
       if (token.role !== "ADMIN") {
         try {
           const dbUser = await prisma.user.findUnique({
