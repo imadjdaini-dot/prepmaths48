@@ -16,6 +16,7 @@ import {
   Users,
   CreditCard,
   Settings,
+  MonitorSmartphone,
   type LucideIcon,
 } from "lucide-react";
 
@@ -35,6 +36,7 @@ const ICONS = {
   students: Users,
   payments: CreditCard,
   settings: Settings,
+  devices: MonitorSmartphone,
 } satisfies Record<string, LucideIcon>;
 
 export type IconKey = keyof typeof ICONS;
