@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        // للطلاب فقط: التأكد من أن الحساب مفعل
+        // للطلاب: إذا كان الحساب غير مفعل يرفض الدخول فوراً
         if (user.role !== "ADMIN" && !user.isActive) {
           return null;
         }
@@ -45,37 +45,38 @@ export const authOptions: NextAuthOptions = {
         // ====================================================
         // تطبيق حد الجهازين (2 Devices Max) وتجميد الحساب
         // ====================================================
+        let currentSessionToken: string | undefined = undefined;
+
         if (user.role !== "ADMIN") {
           try {
-            // 1. حساب عدد الجلسات الحالية للطالب
-            const sessionCount = await prisma.session.count({
+            const activeSessions = await prisma.session.findMany({
               where: { userId: user.id },
             });
 
-            // 2. إذا تجاوز أو وصل للحد المسموح (2 أجهزة) وحاول فتح جهاز ثالث
-            if (sessionCount >= 2) {
-              // تعطيل الحساب أوتوماتيكياً
+            // إذا حاول الدخول وكان لديه 2 أجهزة أو أكثر
+            if (activeSessions.length >= 2) {
+              // 1. تعطيل الحساب أوتوماتيكياً
               await prisma.user.update({
                 where: { id: user.id },
                 data: { isActive: false },
               });
 
-              // مسح الجلسات القديمة
+              // 2. مسح جميع الجلسات المسجلة من BDD
               await prisma.session.deleteMany({
                 where: { userId: user.id },
               });
 
-              // رفض عملية الدخول الثالثة
+              // 3. طرد المتصفح الثالث ومنع الدخول
               return null;
             }
 
-            // 3. إنشآء الجلسة بدون حقل expires
-            const tokenString = Math.random().toString(36).substring(2) + Date.now().toString(36);
+            // إذا كان أقل من 2، ننشئ sessionToken خاص بهذا المتصفح ونخزنه
+            currentSessionToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
 
             await prisma.session.create({
               data: {
                 userId: user.id,
-                sessionToken: tokenString,
+                sessionToken: currentSessionToken,
               },
             });
           } catch (error) {
@@ -88,6 +89,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
+          sessionToken: currentSessionToken,
         };
       },
     }),
@@ -97,6 +99,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role: Role }).role;
+        token.sessionToken = (user as { sessionToken?: string }).sessionToken;
       }
       return token;
     },
@@ -106,20 +109,43 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // للطلاب: فحص حالة الحساب في BDD أثناء التصفح
-      if (token.role !== "ADMIN") {
-        try {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: token.id as string },
-            select: { isActive: true },
+      // حسابات الأدمن: استثناء وتجاوز مباشر
+      if (token.role === "ADMIN") {
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: token.id as string,
+            role: token.role as Role,
+          },
+        };
+      }
+
+      // للطلاب: التحقق المزدوج من حالة الحساب ووجود الجلسة الحالية في BDD
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { isActive: true },
+        });
+
+        // 1. إذا تم تعطيل الحساب من الأدمن أو أوتوماتيكياً
+        if (!dbUser || !dbUser.isActive) {
+          return { ...session, user: undefined };
+        }
+
+        // 2. التحقق من أن sessionToken هذا المتصفح ما زال موجوداً في BDD ولم يُحذف
+        if (token.sessionToken) {
+          const dbSession = await prisma.session.findUnique({
+            where: { sessionToken: token.sessionToken as string },
           });
 
-          if (!dbUser || !dbUser.isActive) {
+          // إذا حُذفت الجلسة، يتم إبطال الـ Session فوراً وطرد المتصفح القديم
+          if (!dbSession) {
             return { ...session, user: undefined };
           }
-        } catch (error) {
-          console.error("Session check error:", error);
         }
+      } catch (error) {
+        console.error("Session verification error:", error);
       }
 
       return {
