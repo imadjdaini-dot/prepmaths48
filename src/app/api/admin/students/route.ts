@@ -36,6 +36,7 @@ export async function POST(req: Request) {
       email: normalizedEmail,
       passwordHash,
       role: "STUDENT",
+      isActive: true, // <-- تفعيل حساب الطالب فور إنشائه من الأدمن
       level: level ?? null,
       track: track ?? null,
     },
