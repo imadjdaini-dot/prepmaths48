@@ -7,7 +7,11 @@ import type { SessionUser } from "@/types";
 /** Exige un utilisateur connecté, sinon redirige vers /login. */
 export async function requireUser(): Promise<SessionUser> {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  
+  if (!session || !session.user || !session.user.id) {
+    redirect("/login");
+  }
+  
   return session.user as SessionUser;
 }
 
@@ -20,9 +24,6 @@ export async function requireAdmin(): Promise<SessionUser> {
 
 /**
  * Détermine si un utilisateur peut accéder au contenu d'une leçon.
- * Règle : contenu gratuit (preview ou cours non premium) accessible à tous les
- * connectés ; le reste exige l'abonnement correspondant au type de cours
- * (Cours → plan COURS, Concours → plan CONCOURS). Les admins ont tout accès.
  */
 export async function canAccessLesson(
   user: SessionUser | null,
@@ -35,7 +36,7 @@ export async function canAccessLesson(
   return hasPlanForKind(user.id, opts.courseKind);
 }
 
-/** Accès au contenu premium d'un cours (la page détail reste visible). */
+/** Accès au contenu premium d'un cours. */
 export async function canAccessPremiumCourse(
   user: SessionUser | null,
   courseKind: CourseKind
