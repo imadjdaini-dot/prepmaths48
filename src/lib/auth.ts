@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import type { Role } from "@prisma/client";
+import crypto from "crypto";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -22,16 +23,62 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLowerCase().trim() },
         });
+
+        // إذا كان المستخدم غير موجود أو حسابه غير نشط (معطل)
         if (!user || !user.isActive) return null;
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
+
+        // التحقق من عدد الأجهزة/الجلسات النشطة
+        try {
+          const activeSessions = await prisma.session.findMany({
+            where: { userId: user.id },
+          });
+
+          // إذا كان المستخدم يمتلك بالفعل جهازين أو أكثر مسجلين
+          if (activeSessions.length >= 2) {
+            // 1. تعطيل الحساب بالكامل
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { isActive: false },
+            });
+
+            // 2. حذف جميع الجلسات السابقة لإخراجه من كل الأجهزة
+            await prisma.session.deleteMany({
+              where: { userId: user.id },
+            });
+
+            console.warn(`تم تعطيل حساب المستخدم ${user.email} لتجاوزه الحد الأقصى للأجهزة (2).`);
+            
+            // إلغاء محاولة تسجيل الدخول الحالية
+            return null;
+          }
+        } catch (error) {
+          console.error("خطأ أثناء التحقق من عدد الأجهزة المسموحة:", error);
+        }
+
+        // إنشاء sessionToken جديد للجلسة الحالية
+        const generatedSessionToken = crypto.randomBytes(32).toString("hex");
+
+        try {
+          await prisma.session.create({
+            data: {
+              userId: user.id,
+              sessionToken: generatedSessionToken,
+              deviceInfo: "Web Browser",
+            },
+          });
+        } catch (error) {
+          console.error("خطأ أثناء إنشاء الجلسة في قاعدة البيانات:", error);
+        }
 
         return {
           id: user.id,
           name: user.name,
           email: user.email,
           role: user.role,
+          sessionToken: generatedSessionToken,
         };
       },
     }),
@@ -41,21 +88,37 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role: Role }).role;
+        token.sessionToken = (user as { sessionToken?: string }).sessionToken;
       }
       return token;
     },
+
     async session({ session, token }) {
+      if (!token?.sessionToken) {
+        return { ...session, user: undefined };
+      }
+
+      // التحقق من وجود الجلسة وقابليتها للاستخدام
+      const dbSession = await prisma.session.findUnique({
+        where: { sessionToken: token.sessionToken as string },
+      });
+
+      if (!dbSession) {
+        return { ...session, user: undefined };
+      }
+
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
+        (session as { sessionToken?: string }).sessionToken = token.sessionToken as string;
       }
+
       return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-/** Récupère la session côté serveur (Server Components / Route Handlers). */
 export function auth() {
   return getServerSession(authOptions);
 }

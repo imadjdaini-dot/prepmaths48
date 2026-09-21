@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   TrendingUp,
   BookOpen,
@@ -19,10 +20,20 @@ import { formatDuration } from "@/lib/utils";
 
 export default async function DashboardPage() {
   const sessionUser = await requireUser();
-  const data = await getDashboardData(sessionUser.id);
-  const recommended = await getCourseCards({ take: 3 });
 
-  const firstName = (data.user?.name ?? sessionUser.name).split(" ")[0];
+  if (!sessionUser?.id) {
+    redirect("/login");
+  }
+
+  const data = await getDashboardData(sessionUser.id);
+
+  // Si la session a été supprimée en BDD ou si le dashboard retourne null
+  if (!data) {
+    redirect("/login");
+  }
+
+  const recommended = await getCourseCards({ take: 3 });
+  const firstName = (data.user?.name ?? sessionUser.name ?? "Élève").split(" ")[0];
 
   return (
     <div className="mx-auto max-w-6xl space-y-7">

@@ -2,6 +2,11 @@ import { prisma } from "@/lib/prisma";
 
 /** Agrège les données du tableau de bord élève. */
 export async function getDashboardData(userId: string) {
+  // حماية وتأكد من وجود المعرّف قبل تنفيذ أي استعلام في Prisma
+  if (!userId) {
+    return null;
+  }
+
   const [user, courseProgress, lastProgress, attempts, watched] = await Promise.all([
     prisma.user.findUnique({ where: { id: userId } }),
     prisma.courseProgress.findMany({
@@ -27,6 +32,11 @@ export async function getDashboardData(userId: string) {
       _sum: { watchedSeconds: true },
     }),
   ]);
+
+  // إذا لم يتم العثور على المستخدم في قاعدة البيانات
+  if (!user) {
+    return null;
+  }
 
   const inProgress = courseProgress.filter(
     (cp) => cp.progressPercent > 0 && cp.progressPercent < 100
@@ -54,6 +64,11 @@ export async function getDashboardData(userId: string) {
 
 /** Cours suivis par l'élève (avec progression), pour /courses. */
 export async function getMyCourses(userId: string) {
+  // حماية وتأكد من وجود المعرّف
+  if (!userId) {
+    return [];
+  }
+
   const cps = await prisma.courseProgress.findMany({
     where: { userId },
     include: {

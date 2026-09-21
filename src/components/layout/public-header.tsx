@@ -27,7 +27,9 @@ export function PublicHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const dashHref = session?.user.role === "ADMIN" ? "/admin" : "/dashboard";
+  // استخدام Optional Chaining المزدوج لتجنب خطأ reading 'role'
+  const isAuthenticated = Boolean(session?.user);
+  const dashHref = session?.user?.role === "ADMIN" ? "/admin" : "/dashboard";
 
   return (
     <header
@@ -47,7 +49,7 @@ export function PublicHeader() {
         </nav>
 
         <div className="ml-auto hidden items-center gap-3.5 md:flex">
-          {session ? (
+          {isAuthenticated ? (
             <ButtonLink href={dashHref} variant="dark" size="sm">
               Mon espace
             </ButtonLink>
@@ -83,7 +85,7 @@ export function PublicHeader() {
               </Link>
             ))}
             <div className="mt-2 flex gap-3">
-              {session ? (
+              {isAuthenticated ? (
                 <ButtonLink href={dashHref} variant="dark" size="sm" className="flex-1">
                   Mon espace
                 </ButtonLink>
