@@ -25,12 +25,19 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const data = await getDashboardData(sessionUser.id);
+  const rawData = await getDashboardData(sessionUser.id);
 
-  // Si la session a été supprimée en BDD ou si le dashboard retourne null
-  if (!data) {
-    redirect("/login");
-  }
+  // حماية من null دون إعادة التوجيه إلى صفحة الدخول
+  const data = rawData ?? {
+    user: { name: sessionUser.name },
+    globalProgress: 0,
+    enrolledCount: 0,
+    completedCourses: 0,
+    totalWatchedSeconds: 0,
+    attempts: [],
+    inProgress: [],
+    lastProgress: null,
+  };
 
   const recommended = await getCourseCards({ take: 3 });
   const firstName = (data.user?.name ?? sessionUser.name ?? "Élève").split(" ")[0];
