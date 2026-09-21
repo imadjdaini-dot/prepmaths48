@@ -2,61 +2,91 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Crown, ShieldOff, ShieldCheck } from "lucide-react";
 
-export function StudentActions({
-  userId,
-  isActive,
-  hasPremium,
-}: {
+interface StudentActionsProps {
   userId: string;
   isActive: boolean;
   hasPremium: boolean;
-}) {
+}
+
+export function StudentActions({ userId, isActive, hasPremium }: StudentActionsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  async function patch(body: Record<string, unknown>, msg: string) {
+  // Basculer l'état Actif / Inactif
+  const toggleActive = async () => {
     setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/students/${userId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) throw new Error();
-      toast.success(msg);
+    await fetch(`/api/admin/students/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isActive: !isActive }),
+    });
+    setLoading(false);
+    router.refresh();
+  };
+
+  // Basculer l'état Premium
+  const togglePremium = async () => {
+    setLoading(true);
+    await fetch(`/api/admin/students/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ grantPremium: !hasPremium }),
+    });
+    setLoading(false);
+    router.refresh();
+  };
+
+  // 📍 Supprimer l'élève définitivement
+  const handleDeleteStudent = async () => {
+    if (!confirm("Voulez-vous vraiment supprimer cet élève définitivement ?")) return;
+
+    setLoading(true);
+    const res = await fetch(`/api/admin/students/${userId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
       router.refresh();
-    } catch {
-      toast.error("Erreur");
-    } finally {
+    } else {
+      alert("Erreur lors de la suppression de l'élève");
       setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex items-center gap-2">
       <button
-        onClick={() => patch({ grantPremium: !hasPremium }, hasPremium ? "Premium révoqué." : "Premium activé.")}
+        onClick={togglePremium}
         disabled={loading}
-        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold ${
-          hasPremium ? "bg-accent-soft text-accent-2" : "bg-line-2 text-ink-2"
+        className={`mono rounded-md px-2.5 py-1 text-[12px] font-medium transition ${
+          hasPremium
+            ? "bg-amber-500/15 text-amber-600 hover:bg-amber-500/25"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
         }`}
-        title={hasPremium ? "Révoquer le premium" : "Activer le premium"}
       >
-        <Crown className="h-3.5 w-3.5" /> {hasPremium ? "Premium" : "Activer"}
+        {hasPremium ? "👑 Premium" : "Activer Premium"}
       </button>
+
       <button
-        onClick={() => patch({ isActive: !isActive }, isActive ? "Compte désactivé." : "Compte réactivé.")}
+        onClick={toggleActive}
         disabled={loading}
-        className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-semibold ${
-          isActive ? "bg-green/15 text-green" : "bg-red-50 text-[color:var(--red)]"
+        className={`mono rounded-md px-2.5 py-1 text-[12px] font-medium transition ${
+          isActive
+            ? "bg-emerald-500/15 text-emerald-600 hover:bg-emerald-500/25"
+            : "bg-red-500/15 text-red-600 hover:bg-red-500/25"
         }`}
-        title={isActive ? "Désactiver" : "Réactiver"}
       >
-        {isActive ? <ShieldCheck className="h-3.5 w-3.5" /> : <ShieldOff className="h-3.5 w-3.5" />}
         {isActive ? "Actif" : "Inactif"}
+      </button>
+
+      {/* 📍 Bouton Supprimer */}
+      <button
+        onClick={handleDeleteStudent}
+        disabled={loading}
+        className="mono rounded-md bg-red-500/10 px-2.5 py-1 text-[12px] font-medium text-red-600 hover:bg-red-500/20 transition disabled:opacity-50"
+      >
+        Supprimer
       </button>
     </div>
   );

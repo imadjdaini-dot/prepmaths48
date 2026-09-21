@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import type { Role } from "@prisma/client";
-import crypto from "crypto";
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
@@ -27,7 +26,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
-        // للطلاب فقط: التأكد من أن الحساب مفعل
+        // للتلاميذ: إذا كان الحساب غير نشط يرفض الدخول فوراً
         if (user.role !== "ADMIN" && !user.isActive) {
           return null;
         }
@@ -43,16 +42,14 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
-        // ==========================================
-        // إدارة حد جهازين (2 Devices Max) للطلاب
-        // ==========================================
-        let sessionToken: string | undefined = undefined;
-
+        // ====================================================
+        // تطبيق المنطق الصارم: تعطيل الحساب عند تجاوز جهازين
+        // ====================================================
         if (user.role !== "ADMIN") {
           try {
             const now = new Date();
 
-            // 1. تنظيف الجلسات المنتهية الصلاحية
+            // تنظيف الجلسات المنتهية
             await prisma.session.deleteMany({
               where: {
                 userId: user.id,
@@ -60,37 +57,44 @@ export const authOptions: NextAuthOptions = {
               },
             });
 
-            // 2. جلب الجلسات النشطة
+            // جلب الجلسات النشطة
             const activeSessions = await prisma.session.findMany({
               where: {
                 userId: user.id,
                 expires: { gt: now },
               },
-              orderBy: { expires: "asc" },
             });
 
-            // 3. إذا وصل أو تجاوز الحد (جلسة أو أكثر)، نحذف أقدم جلسة لإبقاء مكان للجلسة الجديدة
+            // إذا حاول الدخول وكان لديه بالفعل 2 أجهزة نشطة
             if (activeSessions.length >= 2) {
-              const oldestSession = activeSessions[0];
-              await prisma.session.delete({
-                where: { id: oldestSession.id },
+              // 1. تحويل حالة الحساب إلى غير نشط (Inactif)
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { isActive: false },
               });
+
+              // 2. مسح جميع جلساته المسجلة
+              await prisma.session.deleteMany({
+                where: { userId: user.id },
+              });
+
+              // 3. رفض الدخول
+              return null;
             }
 
-            // 4. إنتاج معرف جلسة جديد وتخزينه
-            sessionToken = crypto.randomBytes(32).toString("hex");
+            // إذا كان أقل من جهازين، ننشئ كود الجلسة الجديدة
             const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-
             await prisma.session.create({
               data: {
                 userId: user.id,
-                sessionToken: sessionToken,
+                sessionToken: Math.random().toString(36).substring(2) + Date.now().toString(36),
                 deviceInfo: "Web Browser",
                 expires: sessionExpiry,
               },
             });
+
           } catch (error) {
-            console.error("Error managing student sessions limit:", error);
+            console.error("Error checking session limits:", error);
           }
         }
 
@@ -99,7 +103,6 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           role: user.role,
-          sessionToken,
         };
       },
     }),
@@ -109,7 +112,6 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role: Role }).role;
-        token.sessionToken = (user as { sessionToken?: string }).sessionToken;
       }
       return token;
     },
@@ -119,31 +121,19 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // حسابات الأدمن: استثناء وتجاوز مباشر دون فحص
-      if (token.role === "ADMIN") {
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            id: token.id as string,
-            role: token.role as Role,
-          },
-        };
-      }
-
-      // حسابات الطلاب: التحقق من وجود sessionToken في قاعدة البيانات
-      if (token.sessionToken) {
+      // للطلاب: التأكد من أن الحساب ما زال نشطاً في قاعدة البيانات أثناء التصفح
+      if (token.role !== "ADMIN") {
         try {
-          const dbSession = await prisma.session.findUnique({
-            where: { sessionToken: token.sessionToken as string },
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { isActive: true },
           });
 
-          // إذا تم مسح الجلسة من BDD بسبب دخول جهاز ثالث، يتم إبطال الجلسة وطرد المتصفح القديم فوراً
-          if (!dbSession) {
+          if (!dbUser || !dbUser.isActive) {
             return { ...session, user: undefined };
           }
         } catch (error) {
-          console.error("Error verifying active session in DB:", error);
+          console.error("Session check error:", error);
         }
       }
 
@@ -154,7 +144,6 @@ export const authOptions: NextAuthOptions = {
           id: token.id as string,
           role: token.role as Role,
         },
-        sessionToken: token.sessionToken as string,
       };
     },
   },

@@ -52,3 +52,36 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
   return NextResponse.json({ ok: true });
 }
+
+// ==========================================
+// Suppression définitive d'un élève (DELETE)
+// ==========================================
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  const guard = await guardAdmin();
+  if (guard.error) return guard.error;
+
+  try {
+    // 1. مسح جميع جلسات التلميذ
+    await prisma.session.deleteMany({
+      where: { userId: params.id },
+    });
+
+    // 2. مسح كافة اشتراكات التلميذ
+    await prisma.subscription.deleteMany({
+      where: { userId: params.id },
+    });
+
+    // 3. حذف حساب التلميذ بشكل نهائي من قاعدة البيانات
+    await prisma.user.delete({
+      where: { id: params.id },
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Erreur lors de la suppression de l'élève:", error);
+    return NextResponse.json(
+      { error: "Impossible de supprimer cet élève" },
+      { status: 500 }
+    );
+  }
+}
