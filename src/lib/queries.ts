@@ -49,6 +49,7 @@ export async function getCourseCards(filters?: {
       slug: c.slug,
       title: c.title,
       shortDescription: c.shortDescription,
+      thumbnailUrl: c.thumbnailUrl,
       level: c.level,
       track: c.track,
       kind: c.kind,

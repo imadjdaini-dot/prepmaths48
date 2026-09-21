@@ -10,6 +10,7 @@ export type CourseCardData = {
   slug: string;
   title: string;
   shortDescription: string | null;
+  thumbnailUrl: string | null;
   level: Level | null;
   track: Track | null;
   kind: string;
@@ -28,16 +29,28 @@ export function CourseCard({ course }: { course: CourseCardData }) {
     >
       {/* Vignette */}
       <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-br from-navy-2 to-navy-3">
-        <div
-          className="absolute inset-0 opacity-25"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 30% 20%, color-mix(in srgb,var(--cyan) 60%, transparent), transparent 55%)",
-          }}
-        />
-        <div className="absolute inset-0 grid place-items-center text-white/90">
-          <PlayCircle className="h-11 w-11" strokeWidth={1.4} />
-        </div>
+        {course.thumbnailUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={course.thumbnailUrl}
+            alt=""
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <>
+            <div
+              className="absolute inset-0 opacity-25"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 30% 20%, color-mix(in srgb,var(--cyan) 60%, transparent), transparent 55%)",
+              }}
+            />
+            <div className="absolute inset-0 grid place-items-center text-white/90">
+              <PlayCircle className="h-11 w-11" strokeWidth={1.4} />
+            </div>
+          </>
+        )}
         <div className="absolute left-3 top-3 flex gap-1.5">
           {course.isPremium ? (
             <Badge variant="premium">Premium</Badge>
