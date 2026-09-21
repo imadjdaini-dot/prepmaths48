@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Save } from "lucide-react";
+import { Save, Upload, Loader2 } from "lucide-react";
 import { LevelTrackFields } from "@/components/forms/level-track-fields";
 
 type CourseValues = {
@@ -23,6 +23,25 @@ export function CourseForm({ initial }: { initial?: Partial<CourseValues> }) {
   const router = useRouter();
   const isEdit = Boolean(initial?.id);
   const [loading, setLoading] = useState(false);
+  const [thumbnailUrl, setThumbnailUrl] = useState(initial?.thumbnailUrl ?? "");
+  const [uploading, setUploading] = useState(false);
+
+  async function uploadThumbnail(file: File) {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Échec upload");
+      setThumbnailUrl(data.url);
+      toast.success("Image téléversée.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Erreur");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -31,7 +50,7 @@ export function CourseForm({ initial }: { initial?: Partial<CourseValues> }) {
       title: String(fd.get("title")),
       description: String(fd.get("description")),
       shortDescription: String(fd.get("shortDescription")),
-      thumbnailUrl: String(fd.get("thumbnailUrl")),
+      thumbnailUrl: thumbnailUrl || String(fd.get("thumbnailUrl")),
       // Le type (Cours / Concours) est dérivé du niveau côté serveur.
       level: String(fd.get("level")) || null,
       track: String(fd.get("track")) || null,
@@ -107,10 +126,35 @@ export function CourseForm({ initial }: { initial?: Partial<CourseValues> }) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="field-label">Image miniature (URL)</label>
-          <div className="input-wrap">
-            <input name="thumbnailUrl" defaultValue={initial?.thumbnailUrl ?? ""} placeholder="https://…" />
-          </div>
+          <label className="field-label">Image miniature</label>
+          {thumbnailUrl && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={thumbnailUrl}
+              alt=""
+              className="mb-2 h-24 w-full rounded-md border border-line object-cover"
+            />
+          )}
+          <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-line bg-surface-2 px-3 py-2.5 text-[13px] text-ink-2">
+            {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            {thumbnailUrl ? "Changer l'image" : "Choisir une image (JPG, PNG, WebP)"}
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={(e) => e.target.files?.[0] && uploadThumbnail(e.target.files[0])}
+            />
+          </label>
+          <p className="mono mt-1 text-[11px] text-muted">
+            …ou colle une URL :{" "}
+            <input
+              name="thumbnailUrl"
+              defaultValue={thumbnailUrl}
+              onChange={(e) => setThumbnailUrl(e.target.value)}
+              className="ml-1 w-56 rounded border border-line px-2 py-0.5"
+              placeholder="https://…"
+            />
+          </p>
         </div>
         <div>
           <label className="field-label">Ordre d&apos;affichage</label>
