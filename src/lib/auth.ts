@@ -30,6 +30,9 @@ export const authOptions: NextAuthOptions = {
           where: { email: emailClean },
         });
 
+        // DEBUG (مؤقت): احذفه بعد التشخيص
+        console.log("[AUTH] email:", emailClean, "| found:", !!user, "| active:", user?.isActive, "| role:", user?.role);
+
         if (!user) return null;
 
         // للطلاب: إذا كان الحساب غير مفعل يرفض الدخول فوراً
@@ -38,6 +41,9 @@ export const authOptions: NextAuthOptions = {
         }
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+        // DEBUG (مؤقت): احذفه بعد التشخيص
+        console.log("[AUTH] password valid:", valid, "| hash prefix:", user.passwordHash?.slice(0, 4));
+
         if (!valid) return null;
 
         // إعادة تفعيل الأدمن تلقائياً إن كان معطلاً
@@ -75,6 +81,9 @@ export const authOptions: NextAuthOptions = {
 
                 // 2. وصل للحد الأقصى ويحاول جهاز جديد الدخول → تجميد الحساب
                 if (activeCount >= MAX_DEVICES) {
+                  // DEBUG (مؤقت): احذفه بعد التشخيص
+                  console.log("[AUTH] device limit reached, deactivating user:", user.id, "| sessions:", activeCount);
+
                   await tx.user.update({
                     where: { id: user.id },
                     data: { isActive: false },
