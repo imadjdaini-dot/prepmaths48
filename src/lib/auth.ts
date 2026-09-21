@@ -50,6 +50,7 @@ export const authOptions: NextAuthOptions = {
               where: { userId: user.id },
             });
 
+            // إذا كان لدى التلميذ أكثر من أو يساوي جلسات الحد المسموح
             if (activeSessions.length >= 2) {
               await prisma.user.update({
                 where: { id: user.id },
@@ -67,8 +68,9 @@ export const authOptions: NextAuthOptions = {
           }
         }
 
-        // إنشاء SessionToken دائم للجميع بما في ذلك الأدمن
+        // إنشاء SessionToken دائم وترحيله لقاعدة البيانات مع حقل expires
         const generatedSessionToken = crypto.randomBytes(32).toString("hex");
+        const sessionExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 يوماً
 
         try {
           await prisma.session.create({
@@ -76,10 +78,13 @@ export const authOptions: NextAuthOptions = {
               userId: user.id,
               sessionToken: generatedSessionToken,
               deviceInfo: "Web Browser",
+              expires: sessionExpiry,
             },
           });
         } catch (error) {
           console.error("Error creating session in DB:", error);
+          // في حال فشل الحفظ في قاعدة البيانات، نرفض الدخول لمنع حلقة التكرار
+          if (user.role !== "ADMIN") return null;
         }
 
         return {
@@ -107,7 +112,7 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // بالنسبة للأدمن: يمر دائماً بسلام إذا كان الـ Token يحتوي على دور ADMIN
+      // بالنسبة للأدمن: يمر دائماً بسلام
       if (token.role === "ADMIN") {
         if (session.user) {
           session.user.id = token.id as string;
@@ -117,13 +122,18 @@ export const authOptions: NextAuthOptions = {
         return session;
       }
 
-      // للطلاب: التحقق من وجود الجلسة في قاعدة البيانات
-      const dbSession = await prisma.session.findUnique({
-        where: { sessionToken: token.sessionToken as string },
-        include: { user: true },
-      });
+      // للطلاب: التحقق من وجود الجلسة في قاعدة البيانات ونشاط الحساب
+      try {
+        const dbSession = await prisma.session.findUnique({
+          where: { sessionToken: token.sessionToken as string },
+          include: { user: true },
+        });
 
-      if (!dbSession || !dbSession.user.isActive) {
+        if (!dbSession || !dbSession.user.isActive) {
+          return { ...session, user: undefined };
+        }
+      } catch (error) {
+        console.error("Error verifying session in DB:", error);
         return { ...session, user: undefined };
       }
 
