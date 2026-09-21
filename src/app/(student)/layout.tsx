@@ -14,6 +14,7 @@ const primary: NavItem[] = [
 
 const secondary: NavItem[] = [
   { href: "/profile", label: "Profil", icon: "settings" },
+  { href: "/appareils", label: "Mes appareils", icon: "devices" },
   { href: "/pricing", label: "Abonnement", icon: "award" },
 ];
 
@@ -23,11 +24,16 @@ export default async function StudentLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
+  // L'admin n'a pas de sessions d'appareils : on lui masque « Mes appareils ».
+  const secondaryItems =
+    user.role === "ADMIN"
+      ? secondary.filter((item) => item.href !== "/appareils")
+      : secondary;
   return (
     <AppShell
       brandHref="/dashboard"
       primaryNav={primary}
-      secondaryNav={secondary}
+      secondaryNav={secondaryItems}
       user={{ name: user.name, email: user.email, isAdmin: user.role === "ADMIN" }}
     >
       {children}
