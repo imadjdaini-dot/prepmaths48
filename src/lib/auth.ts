@@ -20,15 +20,29 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
+        const emailClean = credentials.email.toLowerCase().trim();
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email.toLowerCase().trim() },
+          where: { email: emailClean },
         });
 
-        // إذا كان المستخدم غير موجود أو حسابه معطل
-        if (!user || !user.isActive) return null;
+        if (!user) return null;
+
+        // للطلاب فقط: التحقق من أن الحساب نشط
+        if (user.role !== "ADMIN" && !user.isActive) {
+          console.warn(`Attempt to login to disabled student account: ${user.email}`);
+          return null;
+        }
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
+
+        // إذا كان أدمن وكان معطلاً في قاعدة البيانات أونلاين، نعيد تفعيله فوراً
+        if (user.role === "ADMIN" && !user.isActive) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { isActive: true },
+          });
+        }
 
         // تطبيق شرط حد الأجهزة (2 أجهزة) والتجميد على الطلاب فقط وليس الأدمن
         if (user.role !== "ADMIN") {
@@ -38,22 +52,19 @@ export const authOptions: NextAuthOptions = {
             });
 
             if (activeSessions.length >= 2) {
-              // 1. تعطيل حساب الطالب
               await prisma.user.update({
                 where: { id: user.id },
                 data: { isActive: false },
               });
 
-              // 2. حذف كل جلساته
               await prisma.session.deleteMany({
                 where: { userId: user.id },
               });
 
-              console.warn(`تم تعطيل حساب الطالب ${user.email} لتجاوزه الحد الأقصى للأجهزة.`);
               return null;
             }
           } catch (error) {
-            console.error("خطأ أثناء التحقق من عدد الأجهزة المسموحة:", error);
+            console.error("Error checking sessions:", error);
           }
         }
 
@@ -69,7 +80,7 @@ export const authOptions: NextAuthOptions = {
             },
           });
         } catch (error) {
-          console.error("خطأ أثناء إنشاء الجلسة في قاعدة البيانات:", error);
+          console.error("Error creating session:", error);
         }
 
         return {
@@ -97,13 +108,22 @@ export const authOptions: NextAuthOptions = {
         return { ...session, user: undefined };
       }
 
-      // التحقق من وجود الجلسة في قاعدة البيانات
+      // إذا كان المستخدم ADMIN، اسمح له بالمرور مباشرة دون تعقيد الجلسات
+      if (token.role === "ADMIN") {
+        if (session.user) {
+          session.user.id = token.id as string;
+          session.user.role = token.role as Role;
+          (session as { sessionToken?: string }).sessionToken = token.sessionToken as string;
+        }
+        return session;
+      }
+
+      // بالنسبة للطلاب: التحقق من وجود الجلسة في قاعدة البيانات
       const dbSession = await prisma.session.findUnique({
         where: { sessionToken: token.sessionToken as string },
         include: { user: true },
       });
 
-      // إذا كانت الجلسة حذفها أو الحساب أصبح معطلاً
       if (!dbSession || !dbSession.user.isActive) {
         return { ...session, user: undefined };
       }
