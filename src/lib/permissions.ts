@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { CourseKind } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { hasPlanForKind } from "@/lib/subscription";
+import { CONCOURS_BUNDLED_WITH_COURS, getAudience } from "@/lib/content-access";
 import type { SessionUser } from "@/types";
 
 /** Exige un utilisateur connecté, sinon redirige vers /login. */
@@ -23,6 +24,20 @@ export async function requireAdmin(): Promise<SessionUser> {
 }
 
 /**
+ * Abonnement requis pour un type de cours. Cette année, les concours sont inclus
+ * dans le plan COURS pour les comptes ayant « concoursAccess » (voir content-access.ts).
+ */
+async function hasEntitlement(userId: string, kind: CourseKind): Promise<boolean> {
+  if (await hasPlanForKind(userId, kind)) return true;
+
+  if (kind === "CONCOURS" && CONCOURS_BUNDLED_WITH_COURS) {
+    const audience = await getAudience(userId);
+    if (audience?.concoursAccess) return hasPlanForKind(userId, "COURS");
+  }
+  return false;
+}
+
+/**
  * Détermine si un utilisateur peut accéder au contenu d'une leçon.
  */
 export async function canAccessLesson(
@@ -33,7 +48,7 @@ export async function canAccessLesson(
   if (free) return true;
   if (!user) return false;
   if (user.role === "ADMIN") return true;
-  return hasPlanForKind(user.id, opts.courseKind);
+  return hasEntitlement(user.id, opts.courseKind);
 }
 
 /** Accès au contenu premium d'un cours. */
@@ -43,5 +58,5 @@ export async function canAccessPremiumCourse(
 ): Promise<boolean> {
   if (!user) return false;
   if (user.role === "ADMIN") return true;
-  return hasPlanForKind(user.id, courseKind);
+  return hasEntitlement(user.id, courseKind);
 }

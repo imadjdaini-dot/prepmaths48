@@ -4,6 +4,8 @@ import { CourseCard } from "@/components/courses/course-card";
 import { CatalogueFilters } from "@/components/courses/catalogue-filters";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getCourseCards } from "@/lib/queries";
+import { auth } from "@/lib/auth";
+import { getAudience } from "@/lib/content-access";
 
 export const metadata: Metadata = { title: "Catalogue — Prép-Maths48" };
 
@@ -12,12 +14,20 @@ export default async function CataloguePage({
 }: {
   searchParams: { track?: string; kind?: string; level?: string; premium?: string };
 }) {
-  const courses = await getCourseCards({
-    track: searchParams.track,
-    kind: searchParams.kind,
-    level: searchParams.level,
-    premium: searchParams.premium as "free" | "premium" | undefined,
-  });
+  // Élève connecté : uniquement les cours de son niveau / sa branche.
+  // Visiteur (non connecté) : tout le catalogue, page vitrine.
+  const session = await auth();
+  const audience = session?.user?.id ? await getAudience(session.user.id) : null;
+
+  const courses = await getCourseCards(
+    {
+      track: searchParams.track,
+      kind: searchParams.kind,
+      level: searchParams.level,
+      premium: searchParams.premium as "free" | "premium" | undefined,
+    },
+    audience
+  );
 
   return (
     <div className="wrap py-12">

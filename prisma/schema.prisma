@@ -98,6 +98,7 @@ model User {
   city         String?
   school       String?
   isActive     Boolean  @default(true)
+  concoursAccess Boolean @default(false) // accès au contenu des concours (défini par l'admin)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

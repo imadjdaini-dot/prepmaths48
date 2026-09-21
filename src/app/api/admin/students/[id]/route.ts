@@ -16,13 +16,19 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
   const d = parsed.data;
 
-  if (d.role !== undefined || d.isActive !== undefined || d.level !== undefined) {
+  if (
+    d.role !== undefined ||
+    d.isActive !== undefined ||
+    d.level !== undefined ||
+    d.concoursAccess !== undefined
+  ) {
     await prisma.user.update({
       where: { id: params.id },
       data: {
         ...(d.role !== undefined ? { role: d.role } : {}),
         ...(d.isActive !== undefined ? { isActive: d.isActive } : {}),
         ...(d.level !== undefined ? { level: d.level, track: d.track ?? null } : {}),
+        ...(d.concoursAccess !== undefined ? { concoursAccess: d.concoursAccess } : {}),
       },
     });
   }

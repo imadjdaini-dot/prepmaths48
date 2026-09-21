@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { requireUser, canAccessLesson } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { canSeeCourse, getAudience } from "@/lib/content-access";
 import { signVideoToken, buildPlaybackSource } from "@/lib/video";
 import { VideoPlayer } from "@/components/video/video-player";
 import { LessonNotes } from "@/components/video/lesson-notes";
@@ -53,6 +54,11 @@ export default async function LearnPage({
   if (!lesson || !lesson.isPublished) notFound();
 
   const course = lesson.chapter.course;
+
+  // Visibilité par niveau / branche : 404 (et non /pricing) pour un contenu hors périmètre.
+  const audience = await getAudience(user.id);
+  if (!audience || !canSeeCourse(audience, course)) notFound();
+
   const allowed = await canAccessLesson(user as SessionUser, {
     isFreePreview: lesson.isFreePreview,
     courseIsPremium: course.isPremium,

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BarChart3, Clock, CheckCircle2, Target, TrendingDown } from "lucide-react";
 import { requireUser } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { courseVisibilityWhere, getAudience } from "@/lib/content-access";
 import { StatCard } from "@/components/ui/stat-card";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -9,10 +10,15 @@ import { formatDuration } from "@/lib/utils";
 
 export default async function ProgressPage() {
   const user = await requireUser();
+  const audience = await getAudience(user.id);
 
   const [courseProgress, attempts, watched, completedCount] = await Promise.all([
     prisma.courseProgress.findMany({
-      where: { userId: user.id },
+      // Uniquement les cours visibles pour cet élève (évite les liens vers des cours en 404).
+      where: {
+        userId: user.id,
+        course: courseVisibilityWhere(audience ?? { level: null, track: null }),
+      },
       include: { course: true },
       orderBy: { progressPercent: "desc" },
     }),

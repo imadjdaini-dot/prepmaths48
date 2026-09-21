@@ -7,9 +7,15 @@ interface StudentActionsProps {
   userId: string;
   isActive: boolean;
   hasPremium: boolean;
+  concoursAccess: boolean;
 }
 
-export function StudentActions({ userId, isActive, hasPremium }: StudentActionsProps) {
+export function StudentActions({
+  userId,
+  isActive,
+  hasPremium,
+  concoursAccess,
+}: StudentActionsProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -32,6 +38,18 @@ export function StudentActions({ userId, isActive, hasPremium }: StudentActionsP
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ grantPremium: !hasPremium }),
+    });
+    setLoading(false);
+    router.refresh();
+  };
+
+  // Basculer l'accès au contenu des concours
+  const toggleConcours = async () => {
+    setLoading(true);
+    await fetch(`/api/admin/students/${userId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ concoursAccess: !concoursAccess }),
     });
     setLoading(false);
     router.refresh();
@@ -66,6 +84,19 @@ export function StudentActions({ userId, isActive, hasPremium }: StudentActionsP
         }`}
       >
         {hasPremium ? "👑 Premium" : "Activer Premium"}
+      </button>
+
+      <button
+        onClick={toggleConcours}
+        disabled={loading}
+        title="Accès au contenu des concours"
+        className={`mono rounded-md px-2.5 py-1 text-[12px] font-medium transition ${
+          concoursAccess
+            ? "bg-sky-500/15 text-sky-700 hover:bg-sky-500/25"
+            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+        }`}
+      >
+        {concoursAccess ? "🏆 Concours" : "Activer Concours"}
       </button>
 
       <button

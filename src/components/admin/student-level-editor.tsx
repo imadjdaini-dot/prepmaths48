@@ -34,8 +34,9 @@ export function StudentLevelEditor({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          level: String(fd.get("level")) || null,
-          track: String(fd.get("track")) || null,
+          // Voir student-create-form : évite d'envoyer la chaîne "null".
+          level: (fd.get("level") as string | null) || null,
+          track: (fd.get("track") as string | null) || null,
         }),
       });
       const data = await res.json().catch(() => ({}));

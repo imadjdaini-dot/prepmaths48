@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { guardAdmin } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { createStudentSchema } from "@/lib/validations";
+import { CONCOURS_BUNDLED_WITH_COURS } from "@/lib/content-access";
 
 /**
  * Création d'un compte élève.
@@ -21,7 +22,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const { name, email, password, level, track } = parsed.data;
+  const { name, email, password, level, track, concoursAccess } = parsed.data;
+
+  // Cette année, le contenu concours est inclus pour les 2ème bac (voir content-access.ts).
+  // L'admin peut forcer true/false ; sinon la valeur par défaut suit le niveau.
+  const grantConcours = concoursAccess ?? (CONCOURS_BUNDLED_WITH_COURS && level === "BAC_2");
   const normalizedEmail = email.toLowerCase().trim();
 
   const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
@@ -39,6 +44,7 @@ export async function POST(req: Request) {
       isActive: true, // <-- تفعيل حساب الطالب فور إنشائه من الأدمن
       level: level ?? null,
       track: track ?? null,
+      concoursAccess: grantConcours,
     },
     select: { id: true, email: true },
   });

@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronRight, Download, ArrowLeft, Lock } from "lucide-react";
 import { requireUser, canAccessLesson, canAccessPremiumCourse } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { canSeeCourse, getAudience } from "@/lib/content-access";
 import { PDFViewer } from "@/components/pdf/pdf-viewer";
 import { ButtonLink } from "@/components/ui/button";
 import type { SessionUser } from "@/types";
@@ -24,6 +25,13 @@ export default async function ResourcePage({
   if (!resource || !resource.isPublished) notFound();
 
   const course = resource.lesson?.chapter.course ?? resource.course;
+
+  // Visibilité par niveau / branche : 404 pour une ressource hors périmètre.
+  const audience = await getAudience(user.id);
+  const visible =
+    audience !== null &&
+    (course ? canSeeCourse(audience, course) : audience.role === "ADMIN");
+  if (!visible) notFound();
 
   let allowed = true;
   if (resource.lesson) {

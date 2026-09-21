@@ -37,8 +37,10 @@ export function StudentCreateForm() {
       name: String(fd.get("name")),
       email: String(fd.get("email")),
       password,
-      level: String(fd.get("level")) || null,
-      track: String(fd.get("track")) || null,
+      // fd.get() renvoie null si le champ n'est pas rendu (ex. aucune branche) :
+      // String(null) donnerait la chaîne "null", rejetée par la validation.
+      level: (fd.get("level") as string | null) || null,
+      track: (fd.get("track") as string | null) || null,
     };
 
     setLoading(true);

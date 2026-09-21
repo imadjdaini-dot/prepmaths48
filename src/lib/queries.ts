@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import type { CourseCardData } from "@/components/courses/course-card";
 import type { Prisma } from "@prisma/client";
 import { isLevel, isTrack } from "@/types";
+import { courseVisibilityWhere, type Audience } from "@/lib/content-access";
 
 /** Récupère les cours publiés sous forme de cartes, avec filtres optionnels. */
 export async function getCourseCards(filters?: {
@@ -10,7 +11,7 @@ export async function getCourseCards(filters?: {
   level?: string;
   premium?: "free" | "premium";
   take?: number;
-}): Promise<CourseCardData[]> {
+}, audience?: Audience | null): Promise<CourseCardData[]> {
   const where: Prisma.CourseWhereInput = { isPublished: true };
   // Les valeurs viennent de l'URL : on ignore silencieusement celles hors enum.
   if (isTrack(filters?.track)) where.track = filters.track;
@@ -19,8 +20,14 @@ export async function getCourseCards(filters?: {
   if (filters?.premium === "free") where.isPremium = false;
   if (filters?.premium === "premium") where.isPremium = true;
 
+  // Si on connaît l'élève, on restreint à son niveau / sa branche (les filtres d'URL
+  // ne peuvent pas contourner cette restriction : combinaison par AND).
+  const finalWhere: Prisma.CourseWhereInput = audience
+    ? { AND: [where, courseVisibilityWhere(audience)] }
+    : where;
+
   const courses = await prisma.course.findMany({
-    where,
+    where: finalWhere,
     orderBy: { order: "asc" },
     take: filters?.take,
     include: {

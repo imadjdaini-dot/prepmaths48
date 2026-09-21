@@ -4,6 +4,7 @@ import path from "node:path";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { canAccessLesson, canAccessPremiumCourse } from "@/lib/permissions";
+import { canSeeCourse, getAudience } from "@/lib/content-access";
 import type { SessionUser } from "@/types";
 
 /**
@@ -30,6 +31,16 @@ export async function GET(
     },
   });
   if (!resource || !resource.isPublished) {
+    return NextResponse.json({ error: "Ressource introuvable" }, { status: 404 });
+  }
+
+  // Visibilité par niveau / branche (404 pour ne pas révéler l'existence).
+  const owningCourse = resource.lesson?.chapter.course ?? resource.course;
+  const audience = await getAudience(session.user.id);
+  const visible =
+    audience !== null &&
+    (owningCourse ? canSeeCourse(audience, owningCourse) : audience.role === "ADMIN");
+  if (!visible) {
     return NextResponse.json({ error: "Ressource introuvable" }, { status: 404 });
   }
 

@@ -1,4 +1,9 @@
 import { prisma } from "@/lib/prisma";
+import {
+  courseVisibilityWhere,
+  getAudience,
+  lessonVisibilityWhere,
+} from "@/lib/content-access";
 
 /** Agrège les données du tableau de bord élève. */
 export async function getDashboardData(userId: string) {
@@ -7,15 +12,21 @@ export async function getDashboardData(userId: string) {
     return null;
   }
 
-  const [user, courseProgress, lastProgress, attempts, watched] = await Promise.all([
-    prisma.user.findUnique({ where: { id: userId } }),
+  // On lit d'abord l'élève : son niveau / sa branche servent à filtrer le contenu visible.
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  // إذا لم يتم العثور على المستخدم في قاعدة البيانات
+  if (!user) {
+    return null;
+  }
+
+  const [courseProgress, lastProgress, attempts, watched] = await Promise.all([
     prisma.courseProgress.findMany({
-      where: { userId },
+      where: { userId, course: courseVisibilityWhere(user) },
       include: { course: true },
       orderBy: { updatedAt: "desc" },
     }),
     prisma.lessonProgress.findFirst({
-      where: { userId },
+      where: { userId, lesson: lessonVisibilityWhere(user) },
       orderBy: { updatedAt: "desc" },
       include: {
         lesson: { include: { chapter: { include: { course: true } } } },
@@ -32,11 +43,6 @@ export async function getDashboardData(userId: string) {
       _sum: { watchedSeconds: true },
     }),
   ]);
-
-  // إذا لم يتم العثور على المستخدم في قاعدة البيانات
-  if (!user) {
-    return null;
-  }
 
   const inProgress = courseProgress.filter(
     (cp) => cp.progressPercent > 0 && cp.progressPercent < 100
@@ -69,8 +75,14 @@ export async function getMyCourses(userId: string) {
     return [];
   }
 
+  // Uniquement les cours visibles pour le niveau / la branche de l'élève.
+  const audience = await getAudience(userId);
+
   const cps = await prisma.courseProgress.findMany({
-    where: { userId },
+    where: {
+      userId,
+      course: courseVisibilityWhere(audience ?? { level: null, track: null }),
+    },
     include: {
       course: {
         include: {

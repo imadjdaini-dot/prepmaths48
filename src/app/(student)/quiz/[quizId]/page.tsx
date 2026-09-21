@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { requireUser, canAccessLesson, canAccessPremiumCourse } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { canSeeCourse, getAudience } from "@/lib/content-access";
 import { QuizRunner, type QuizQuestion } from "@/components/quiz/quiz-runner";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { SessionUser } from "@/types";
@@ -23,6 +24,14 @@ export default async function QuizPage({
     },
   });
   if (!quiz || !quiz.isPublished) notFound();
+
+  // Visibilité par niveau / branche : 404 pour un quiz hors périmètre.
+  const owningCourse = quiz.lesson?.chapter.course ?? quiz.course;
+  const audience = await getAudience(user.id);
+  const visible =
+    audience !== null &&
+    (owningCourse ? canSeeCourse(audience, owningCourse) : audience.role === "ADMIN");
+  if (!visible) notFound();
 
   // Contrôle d'accès premium
   let allowed = true;

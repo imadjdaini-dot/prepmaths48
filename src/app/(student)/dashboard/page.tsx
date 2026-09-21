@@ -16,6 +16,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { ButtonLink } from "@/components/ui/button";
 import { CourseCard } from "@/components/courses/course-card";
 import { getCourseCards } from "@/lib/queries";
+import { getAudience } from "@/lib/content-access";
 import { formatDuration } from "@/lib/utils";
 
 export default async function DashboardPage() {
@@ -39,7 +40,12 @@ export default async function DashboardPage() {
     lastProgress: null,
   };
 
-  const recommended = await getCourseCards({ take: 3 });
+  // Recommandations limitées au niveau / à la branche de l'élève.
+  const audience = await getAudience(sessionUser.id);
+  const recommended = await getCourseCards(
+    { take: 3 },
+    audience ?? { level: null, track: null }
+  );
   const firstName = (data.user?.name ?? sessionUser.name ?? "Élève").split(" ")[0];
 
   return (

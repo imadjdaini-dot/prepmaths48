@@ -6,10 +6,17 @@ const RES_TYPES = ["PDF", "DOC", "IMAGE", "OTHER"] as const;
 const DIFFICULTIES = ["FACILE", "MOYEN", "DIFFICILE"] as const;
 const PLANS = ["GRATUIT", "COURS", "CONCOURS"] as const;
 
+/**
+ * Les <select> HTML envoient parfois "" ou la CHAÎNE "null" pour « aucune valeur »
+ * (ex. Tronc commun + « Aucune branche »). On les convertit en vrai null.
+ * On laisse `undefined` intact pour ne pas écraser un champ absent d'un PATCH.
+ */
+const emptyToNull = (v: unknown) => (v === "" || v === "null" ? null : v);
+
 /** Niveau + branche optionnels, mais la branche doit appartenir au niveau. */
 const levelTrackFields = {
-  level: z.enum(LEVELS).optional().nullable(),
-  track: z.enum(TRACKS).optional().nullable(),
+  level: z.preprocess(emptyToNull, z.enum(LEVELS).nullable()).optional(),
+  track: z.preprocess(emptyToNull, z.enum(TRACKS).nullable()).optional(),
 };
 const levelTrackCoherent = (d: { level?: string | null; track?: string | null }) =>
   isTrackForLevel(d.level, d.track);
@@ -21,6 +28,8 @@ export const createStudentSchema = z
     name: z.string().min(2, "Nom trop court").max(80),
     email: z.string().email("Email invalide"),
     password: z.string().min(8, "8 caractères minimum"),
+    // Accès au contenu des concours (défini par l'admin, voir content-access.ts)
+    concoursAccess: z.boolean().optional(),
     ...levelTrackFields,
   })
   .refine(levelTrackCoherent, LEVEL_TRACK_ERROR);
@@ -44,6 +53,7 @@ export const updateStudentSchema = z
     role: z.enum(["STUDENT", "ADMIN"]).optional(),
     isActive: z.boolean().optional(),
     grantPremium: z.boolean().optional(),
+    concoursAccess: z.boolean().optional(),
     ...levelTrackFields,
   })
   .refine(levelTrackCoherent, LEVEL_TRACK_ERROR);

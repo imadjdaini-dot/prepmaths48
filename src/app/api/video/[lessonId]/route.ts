@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { verifyVideoToken } from "@/lib/video";
 import { canAccessLesson } from "@/lib/permissions";
+import { canSeeCourse, getAudience } from "@/lib/content-access";
 import type { SessionUser } from "@/types";
 
 /**
@@ -38,6 +39,12 @@ export async function GET(
     include: { chapter: { include: { course: true } } },
   });
   if (!lesson || !lesson.videoUrl) {
+    return NextResponse.json({ error: "Vidéo introuvable" }, { status: 404 });
+  }
+
+  // Visibilité par niveau / branche (404 pour ne pas révéler l'existence).
+  const audience = await getAudience(session.user.id);
+  if (!audience || !canSeeCourse(audience, lesson.chapter.course)) {
     return NextResponse.json({ error: "Vidéo introuvable" }, { status: 404 });
   }
 

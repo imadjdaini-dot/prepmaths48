@@ -13,6 +13,7 @@ import {
 import { requireUser } from "@/lib/permissions";
 import { canAccessPremiumCourse } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
+import { canSeeCourse, getAudience } from "@/lib/content-access";
 import { ProgressBar } from "@/components/ui/progress-bar";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
@@ -47,6 +48,10 @@ export default async function CourseDetailPage({
   });
 
   if (!course || (!course.isPublished && user.role !== "ADMIN")) notFound();
+
+  // Visibilité par niveau / branche : 404 pour un cours hors périmètre.
+  const audience = await getAudience(user.id);
+  if (!audience || !canSeeCourse(audience, course)) notFound();
 
   const hasPremium = await canAccessPremiumCourse(user as SessionUser, course.kind);
   const progressMap = new Map(

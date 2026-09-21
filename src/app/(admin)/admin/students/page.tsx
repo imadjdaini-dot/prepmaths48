@@ -56,7 +56,12 @@ export default async function AdminStudentsPage() {
                 <div className="mono hidden text-[11px] text-muted sm:block">
                   {s._count.courseProgress} cours · {s._count.quizAttempts} quiz
                 </div>
-                <StudentActions userId={s.id} isActive={s.isActive} hasPremium={hasPremium} />
+                <StudentActions
+                  userId={s.id}
+                  isActive={s.isActive}
+                  hasPremium={hasPremium}
+                  concoursAccess={s.concoursAccess}
+                />
               </div>
             );
           })}
