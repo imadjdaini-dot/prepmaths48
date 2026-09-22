@@ -56,22 +56,22 @@ export default async function PricingPage() {
                     Contacte-nous sur WhatsApp au{" "}
                     <span className="font-semibold text-ink">07 08 97 08 14</span>.
                   </p>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
+                  <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                     <a
                       href={WHATSAPP_COURS_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-primary btn-sm"
+                      className="btn btn-primary btn-sm w-full sm:w-auto"
                     >
-                      <MessageCircle className="h-4 w-4" /> WhatsApp — Cours
+                      <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp — Cours
                     </a>
                     <a
                       href={WHATSAPP_CONCOURS_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-dark btn-sm"
+                      className="btn btn-dark btn-sm w-full sm:w-auto"
                     >
-                      <MessageCircle className="h-4 w-4" /> WhatsApp — Concours
+                      <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp — Concours
                     </a>
                   </div>
                 </div>
