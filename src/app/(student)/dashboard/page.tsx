@@ -94,7 +94,16 @@ export default async function DashboardPage() {
         <section className="card overflow-hidden shadow-sm">
           <div className="flex flex-col gap-5 p-5 md:flex-row md:items-center">
             <div className="relative grid h-24 w-full shrink-0 place-items-center overflow-hidden rounded-md bg-gradient-to-br from-navy-2 to-navy-3 md:w-44">
-              <PlayCircle className="h-10 w-10 text-white/90" strokeWidth={1.4} />
+              {data.lastProgress.lesson.chapter.course.thumbnailUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={data.lastProgress.lesson.chapter.course.thumbnailUrl}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <PlayCircle className="h-10 w-10 text-white/90" strokeWidth={1.4} />
+              )}
             </div>
             <div className="min-w-0 flex-1">
               <span className="mono text-[10px] uppercase tracking-wider text-accent-2">
