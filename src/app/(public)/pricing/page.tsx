@@ -1,11 +1,19 @@
 import type { Metadata } from "next";
-import { Landmark, ShieldCheck } from "lucide-react";
+import { MessageCircle, ShieldCheck } from "lucide-react";
 import { PlanCard } from "@/components/pricing/plan-card";
 import { Accordion } from "@/components/ui/accordion";
 import { PLANS } from "@/lib/plans";
 import { auth } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Tarifs — Prép-Maths48" };
+
+const WHATSAPP_NUMBER = "212708970814";
+const WHATSAPP_COURS_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  "Bonjour, je souhaite m'abonner à l'offre Cours (600 MAD)."
+)}`;
+const WHATSAPP_CONCOURS_HREF = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  "Bonjour, je souhaite m'abonner à l'offre Concours (500 MAD)."
+)}`;
 
 export default async function PricingPage() {
   const session = await auth();
@@ -34,14 +42,62 @@ export default async function PricingPage() {
       <div className="mt-12 grid gap-5 rounded-lg border border-line bg-surface p-7 shadow-sm md:grid-cols-2">
         <div className="flex gap-4">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-accent-soft text-accent-2">
-            <Landmark className="h-6 w-6" />
+            <MessageCircle className="h-6 w-6" />
           </span>
-          <div>
-            <h3 className="font-display text-[18px] font-semibold">Paiement manuel</h3>
-            <p className="mt-1.5 text-[15px] text-muted">
-              Choisis un plan, effectue le virement / transfert (CIH, Attijari, Wafacash…)
-              puis envoie ta preuve. Ton accès premium est activé après validation par
-              notre équipe — généralement sous 24 h.
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display text-[18px] font-semibold">Comment s&apos;abonner ?</h3>
+            <ol className="mt-3.5 space-y-4">
+              <li className="flex items-start gap-3">
+                <span className="mono grid h-7 w-7 shrink-0 place-items-center rounded-full bg-navy text-[13px] font-bold text-white">
+                  1
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[15px] text-muted">
+                    Contacte-nous sur WhatsApp au{" "}
+                    <span className="font-semibold text-ink">07 08 97 08 14</span>.
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    <a
+                      href={WHATSAPP_COURS_HREF}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      <MessageCircle className="h-4 w-4" /> WhatsApp — Cours
+                    </a>
+                    <a
+                      href={WHATSAPP_CONCOURS_HREF}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-dark btn-sm"
+                    >
+                      <MessageCircle className="h-4 w-4" /> WhatsApp — Concours
+                    </a>
+                  </div>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mono grid h-7 w-7 shrink-0 place-items-center rounded-full bg-navy text-[13px] font-bold text-white">
+                  2
+                </span>
+                <p className="text-[15px] text-muted">
+                  Tu recevras un numéro de compte bancaire. Effectue le paiement du montant
+                  correspondant à l&apos;offre choisie.
+                </p>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mono grid h-7 w-7 shrink-0 place-items-center rounded-full bg-navy text-[13px] font-bold text-white">
+                  3
+                </span>
+                <p className="text-[15px] text-muted">
+                  Envoie une capture d&apos;écran du paiement dans la même conversation
+                  WhatsApp.
+                </p>
+              </li>
+            </ol>
+            <p className="mt-4 rounded-md bg-accent-soft px-4 py-3 text-[13.5px] font-medium text-accent-2">
+              Après vérification du paiement, tu reçois un accès personnel, non partageable —
+              valable sur 2 appareils maximum.
             </p>
           </div>
         </div>
