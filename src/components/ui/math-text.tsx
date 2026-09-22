@@ -66,20 +66,33 @@ export function MathText({
   if (!children) return null;
 
   return (
-    <Tag className={className}>
+    // dir="auto" : la direction (RTL pour l'arabe, LTR pour le français) est
+    // déterminée par le premier caractère fort de CE bloc, indépendamment de
+    // la direction (LTR) du reste de l'interface.
+    <Tag className={className} dir="auto">
       {segments.map((seg, i) => {
         if (seg.kind === "text") {
           // whiteSpace: pre-line garde les sauts de ligne du texte source.
+          // unicodeBidi: plaintext isole chaque ligne : un mot français au
+          // milieu d'une phrase arabe (ou l'inverse) garde sa propre
+          // direction sans perturber l'ordre du reste de la ligne.
           return (
-            <span key={i} style={{ whiteSpace: "pre-line" }}>
+            <span key={i} style={{ whiteSpace: "pre-line", unicodeBidi: "plaintext" }}>
               {seg.value}
             </span>
           );
         }
-        return seg.block ? (
-          <BlockMath key={i} math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
-        ) : (
-          <InlineMath key={i} math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
+        // Les formules sont toujours en LTR (chiffres, rac, parenthèses…).
+        // dir="ltr" + unicodeBidi: isolate empêchent le moteur bidi de
+        // mélanger l'ordre des symboles avec le texte arabe environnant.
+        return (
+          <span key={i} dir="ltr" style={{ unicodeBidi: "isolate" }}>
+            {seg.block ? (
+              <BlockMath math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
+            ) : (
+              <InlineMath math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
+            )}
+          </span>
         );
       })}
     </Tag>

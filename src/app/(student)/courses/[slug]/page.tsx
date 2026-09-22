@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { formatDuration } from "@/lib/utils";
 import { formatLevelTrack } from "@/types";
+import { MathText } from "@/components/ui/math-text";
 import type { SessionUser } from "@/types";
 
 export default async function CourseDetailPage({
@@ -117,9 +118,9 @@ export default async function CourseDetailPage({
             <h1 className="mt-3 font-display text-[clamp(26px,3vw,36px)] font-semibold">
               {course.title}
             </h1>
-            <p className="mt-2 whitespace-pre-line text-[15.5px] text-ink-2">
+            <MathText className="mt-2 text-[15.5px] text-ink-2">
               {course.description}
-            </p>
+            </MathText>
             <div className="mono mt-4 flex flex-wrap gap-4 text-[12px] text-muted">
               <span className="inline-flex items-center gap-1.5">
                 <PlayCircle className="h-4 w-4" /> {allLessons.length} séances
