@@ -342,3 +342,20 @@ model Note {
 
   @@unique([userId, lessonId])
 }
+
+// ----------------------------------------------------------------
+// Jalons live (Google Meet)
+// ----------------------------------------------------------------
+model LiveSession {
+  id              String   @id @default(cuid())
+  title           String
+  description     String?  @db.Text
+  meetUrl         String
+  level           Level? // null = tous niveaux
+  track           Track? // null = toutes les branches du niveau
+  startAt         DateTime
+  durationMinutes Int      @default(60)
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 const primary: NavItem[] = [
   { href: "/dashboard", label: "Tableau de bord", icon: "dashboard", exact: true },
+  { href: "/live", label: "Direct", icon: "live" },
   { href: "/courses", label: "Mes cours", icon: "courses" },
   { href: "/progress", label: "Mon parcours", icon: "route" },
   { href: "/catalogue", label: "Catalogue", icon: "catalogue" },

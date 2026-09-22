@@ -17,6 +17,7 @@ import {
   CreditCard,
   Settings,
   MonitorSmartphone,
+  Radio,
   type LucideIcon,
 } from "lucide-react";
 
@@ -37,6 +38,7 @@ const ICONS = {
   payments: CreditCard,
   settings: Settings,
   devices: MonitorSmartphone,
+  live: Radio,
 } satisfies Record<string, LucideIcon>;
 
 export type IconKey = keyof typeof ICONS;

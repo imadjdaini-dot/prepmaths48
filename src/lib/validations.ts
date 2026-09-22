@@ -136,6 +136,16 @@ export const quizSubmissionSchema = z.object({
   ),
 });
 
+export const liveSessionSchema = z.object({
+  title: z.string().min(2).max(160),
+  description: z.string().optional().nullable(),
+  meetUrl: z.string().url("Lien Meet invalide"),
+  ...levelTrackFields,
+  startAt: z.coerce.date(),
+  durationMinutes: z.coerce.number().int().min(1).max(600).default(60),
+  isPublished: z.boolean().default(false),
+});
+
 export const subscriptionRequestSchema = z.object({
   plan: z.enum(PLANS),
   proofUrl: z.string().optional().nullable(),
