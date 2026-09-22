@@ -40,7 +40,7 @@ export default async function PricingPage() {
 
       {/* Paiement manuel marocain */}
       <div className="mt-12 grid gap-5 rounded-lg border border-line bg-surface p-7 shadow-sm md:grid-cols-2">
-        <div className="flex gap-4">
+        <div className="flex min-w-0 gap-4">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-accent-soft text-accent-2">
             <MessageCircle className="h-6 w-6" />
           </span>
@@ -61,7 +61,7 @@ export default async function PricingPage() {
                       href={WHATSAPP_COURS_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-primary btn-sm w-full sm:w-auto"
+                      className="btn btn-primary btn-sm w-full max-w-full whitespace-normal break-words text-center leading-tight sm:w-auto"
                     >
                       <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp — Cours
                     </a>
@@ -69,7 +69,7 @@ export default async function PricingPage() {
                       href={WHATSAPP_CONCOURS_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn btn-dark btn-sm w-full sm:w-auto"
+                      className="btn btn-dark btn-sm w-full max-w-full whitespace-normal break-words text-center leading-tight sm:w-auto"
                     >
                       <MessageCircle className="h-4 w-4 shrink-0" /> WhatsApp — Concours
                     </a>
@@ -101,11 +101,11 @@ export default async function PricingPage() {
             </p>
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="flex min-w-0 gap-4">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-[12px] bg-navy text-accent">
             <ShieldCheck className="h-6 w-6" />
           </span>
-          <div>
+          <div className="min-w-0 flex-1">
             <h3 className="font-display text-[18px] font-semibold">Paiement par carte</h3>
             <p className="mt-1.5 text-[15px] text-muted">
               L&apos;intégration Stripe / paiement en ligne arrive bientôt. L&apos;architecture
