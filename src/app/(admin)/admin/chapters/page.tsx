@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { InlineCreate } from "@/components/admin/inline-create";
+import { InlineCreate, InlineEdit } from "@/components/admin/inline-create";
 import { PublishToggle } from "@/components/admin/publish-toggle";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { EmptyState } from "@/components/ui/empty-state";
+import { chapterFields } from "@/lib/admin-fields";
 
 export default async function AdminChaptersPage() {
   const [chapters, courses] = await Promise.all([
@@ -12,6 +13,7 @@ export default async function AdminChaptersPage() {
     }),
     prisma.course.findMany({ orderBy: { order: "asc" }, select: { id: true, title: true } }),
   ]);
+  const courseOptions = courses.map((c) => ({ value: c.id, label: c.title }));
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -26,20 +28,7 @@ export default async function AdminChaptersPage() {
         title="Nouveau chapitre"
         buttonLabel="Nouveau chapitre"
         endpoint="/api/admin/chapters"
-        fields={[
-          {
-            name: "courseId",
-            label: "Cours",
-            type: "select",
-            required: true,
-            colSpan: 2,
-            options: courses.map((c) => ({ value: c.id, label: c.title })),
-          },
-          { name: "title", label: "Titre", required: true, colSpan: 2 },
-          { name: "description", label: "Description", type: "textarea" },
-          { name: "order", label: "Ordre", type: "number", defaultValue: 0 },
-          { name: "isPublished", label: "Publié", type: "checkbox", defaultValue: true },
-        ]}
+        fields={chapterFields(courseOptions)}
       />
 
       {chapters.length === 0 ? (
@@ -55,6 +44,11 @@ export default async function AdminChaptersPage() {
                 </p>
               </div>
               <PublishToggle endpoint={`/api/admin/chapters/${ch.id}`} initial={ch.isPublished} />
+              <InlineEdit
+                title={`Modifier « ${ch.title} »`}
+                endpoint={`/api/admin/chapters/${ch.id}`}
+                fields={chapterFields(courseOptions, ch)}
+              />
               <ConfirmDelete endpoint={`/api/admin/chapters/${ch.id}`} iconOnly confirmText={`Supprimer « ${ch.title} » ?`} />
             </div>
           ))}

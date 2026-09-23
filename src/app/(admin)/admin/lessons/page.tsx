@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { InlineCreate } from "@/components/admin/inline-create";
+import { InlineCreate, InlineEdit } from "@/components/admin/inline-create";
 import { PublishToggle } from "@/components/admin/publish-toggle";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { EmptyState } from "@/components/ui/empty-state";
 import { formatDuration } from "@/lib/utils";
+import { lessonFields } from "@/lib/admin-fields";
 
 export default async function AdminLessonsPage() {
   const [lessons, chapters] = await Promise.all([
@@ -16,6 +17,7 @@ export default async function AdminLessonsPage() {
       include: { course: { select: { title: true } } },
     }),
   ]);
+  const chapterOptions = chapters.map((c) => ({ value: c.id, label: `${c.course.title} — ${c.title}` }));
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -28,36 +30,7 @@ export default async function AdminLessonsPage() {
         title="Nouvelle séance"
         buttonLabel="Nouvelle séance"
         endpoint="/api/admin/lessons"
-        fields={[
-          {
-            name: "chapterId",
-            label: "Chapitre",
-            type: "select",
-            required: true,
-            colSpan: 2,
-            options: chapters.map((c) => ({ value: c.id, label: `${c.course.title} — ${c.title}` })),
-          },
-          { name: "title", label: "Titre", required: true, colSpan: 2 },
-          { name: "description", label: "Description", type: "textarea" },
-          { name: "videoUrl", label: "URL vidéo", type: "url", colSpan: 2, placeholder: "https://… ou /uploads/…" },
-          {
-            name: "videoProvider",
-            label: "Fournisseur",
-            type: "select",
-            defaultValue: "LOCAL",
-            options: [
-              { value: "LOCAL", label: "Local / signé" },
-              { value: "BUNNY", label: "Bunny Stream" },
-              { value: "CLOUDFLARE", label: "Cloudflare Stream" },
-              { value: "VIMEO", label: "Vimeo privé" },
-              { value: "YOUTUBE", label: "YouTube (preview)" },
-            ],
-          },
-          { name: "duration", label: "Durée (s)", type: "number", defaultValue: 600 },
-          { name: "order", label: "Ordre", type: "number", defaultValue: 0 },
-          { name: "isFreePreview", label: "Aperçu gratuit", type: "checkbox" },
-          { name: "isPublished", label: "Publié", type: "checkbox", defaultValue: true },
-        ]}
+        fields={lessonFields(chapterOptions)}
       />
 
       {lessons.length === 0 ? (
@@ -75,6 +48,11 @@ export default async function AdminLessonsPage() {
               <span className="mono text-[11px] text-muted">{formatDuration(l.duration)}</span>
               {l.isFreePreview && <span className="badge badge-free">Aperçu</span>}
               <PublishToggle endpoint={`/api/admin/lessons/${l.id}`} initial={l.isPublished} />
+              <InlineEdit
+                title={`Modifier « ${l.title} »`}
+                endpoint={`/api/admin/lessons/${l.id}`}
+                fields={lessonFields(chapterOptions, l)}
+              />
               <ConfirmDelete endpoint={`/api/admin/lessons/${l.id}`} iconOnly confirmText={`Supprimer « ${l.title} » ?`} />
             </div>
           ))}

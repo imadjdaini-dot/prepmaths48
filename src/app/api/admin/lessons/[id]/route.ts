@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { guardAdmin } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { lessonSchema } from "@/lib/validations";
@@ -14,11 +15,24 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 
   const parsed = lessonSchema.partial().safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: "Invalide" }, { status: 400 });
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalide" }, { status: 400 });
+  }
   const d = parsed.data;
+
+  const existing = await prisma.lesson.findUnique({ where: { id: params.id }, select: { id: true } });
+  if (!existing) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
+
+  // Changement de chapitre parent : le chapitre cible doit exister.
+  if (d.chapterId !== undefined) {
+    const chapter = await prisma.chapter.findUnique({ where: { id: d.chapterId }, select: { id: true } });
+    if (!chapter) return NextResponse.json({ error: "Chapitre introuvable" }, { status: 400 });
+  }
+
   await prisma.lesson.update({
     where: { id: params.id },
     data: {
+      ...(d.chapterId !== undefined ? { chapterId: d.chapterId } : {}),
       ...(d.title !== undefined ? { title: d.title } : {}),
       ...(d.description !== undefined ? { description: d.description || null } : {}),
       ...(d.videoUrl !== undefined ? { videoUrl: d.videoUrl || null } : {}),
@@ -29,6 +43,9 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       ...(d.isPublished !== undefined ? { isPublished: d.isPublished } : {}),
     },
   });
+  revalidatePath("/admin/lessons");
+  revalidatePath("/admin/chapters");
+  revalidatePath("/admin/courses", "layout");
   return NextResponse.json({ ok: true });
 }
 
