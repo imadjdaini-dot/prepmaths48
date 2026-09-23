@@ -4,6 +4,7 @@ import {
   getAudience,
   lessonVisibilityWhere,
 } from "@/lib/content-access";
+import { computeStreak } from "@/lib/streak";
 
 /** Agrège les données du tableau de bord élève. */
 export async function getDashboardData(userId: string) {
@@ -19,7 +20,8 @@ export async function getDashboardData(userId: string) {
     return null;
   }
 
-  const [courseProgress, lastProgress, attempts, watched] = await Promise.all([
+  const [courseProgress, lastProgress, attempts, watched, lessonDates, quizDates] =
+    await Promise.all([
     prisma.courseProgress.findMany({
       where: { userId, course: courseVisibilityWhere(user) },
       include: { course: true },
@@ -42,6 +44,19 @@ export async function getDashboardData(userId: string) {
       where: { userId },
       _sum: { watchedSeconds: true },
     }),
+    prisma.lessonProgress.findMany({
+      where: { userId },
+      select: { updatedAt: true },
+    }),
+    prisma.quizAttempt.findMany({
+      where: { userId },
+      select: { createdAt: true },
+    }),
+  ]);
+
+  const streak = computeStreak([
+    ...lessonDates.map((p) => p.updatedAt),
+    ...quizDates.map((a) => a.createdAt),
   ]);
 
   const inProgress = courseProgress.filter(
@@ -65,6 +80,7 @@ export async function getDashboardData(userId: string) {
     lastProgress,
     attempts,
     totalWatchedSeconds: watched._sum.watchedSeconds ?? 0,
+    streak,
   };
 }
 

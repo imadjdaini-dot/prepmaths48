@@ -88,6 +88,7 @@ export default async function LearnPage({
     videoUrl: lesson.videoUrl,
     lessonId: lesson.id,
     signedToken: token,
+    startSeconds: progress?.isCompleted ? 0 : (progress?.watchedSeconds ?? 0),
   });
 
   return (
