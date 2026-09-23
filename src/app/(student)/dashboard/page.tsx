@@ -38,6 +38,7 @@ export default async function DashboardPage() {
     attempts: [],
     inProgress: [],
     lastProgress: null,
+    streak: 0,
   };
 
   // Recommandations limitées au niveau / à la branche de l'élève.
@@ -53,9 +54,16 @@ export default async function DashboardPage() {
       {/* En-tête */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-[28px] font-semibold">
-            Bonjour {firstName} 👋
-          </h1>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-display text-[28px] font-semibold">
+              Bonjour {firstName} 👋
+            </h1>
+            {data.streak > 0 && (
+              <span className="badge badge-premium">
+                🔥 {data.streak} jour{data.streak > 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
           <p className="mt-1 text-[15px] text-muted">
             {data.globalProgress > 0
               ? "Continue sur ta lancée, chaque séance compte."

@@ -54,8 +54,9 @@ export function buildPlaybackSource(opts: {
   videoUrl: string | null;
   lessonId: string;
   signedToken: string;
+  startSeconds?: number;
 }): { type: "iframe" | "file"; src: string } | null {
-  const { provider, videoUrl, lessonId, signedToken } = opts;
+  const { provider, videoUrl, lessonId, signedToken, startSeconds } = opts;
   if (!videoUrl) return null;
 
   switch (provider) {
@@ -64,15 +65,18 @@ export function buildPlaybackSource(opts: {
     case "VIMEO":
       return { type: "iframe", src: videoUrl };
     case "YOUTUBE":
-      return { type: "iframe", src: toYoutubeEmbed(videoUrl) };
+      return { type: "iframe", src: toYoutubeEmbed(videoUrl, startSeconds) };
     case "LOCAL":
     default:
       return { type: "file", src: `/api/video/${lessonId}?token=${signedToken}` };
   }
 }
 
-function toYoutubeEmbed(url: string): string {
+function toYoutubeEmbed(url: string, startSeconds?: number): string {
   const match = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
   const id = match?.[1];
-  return id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1` : url;
+  // Reprise de lecture : on ignore les toutes premières secondes.
+  const start =
+    startSeconds && startSeconds > 20 ? `&start=${Math.round(startSeconds)}` : "";
+  return id ? `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1${start}` : url;
 }
