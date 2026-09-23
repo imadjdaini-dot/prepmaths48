@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { guardAdmin } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { courseSchema, LEVEL_TRACK_ERROR } from "@/lib/validations";
@@ -54,6 +55,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       ...(d.order !== undefined ? { order: d.order } : {}),
     },
   });
+  revalidatePath("/admin/courses", "layout");
+  revalidatePath("/admin/chapters");
 
   return NextResponse.json({ ok: true });
 }

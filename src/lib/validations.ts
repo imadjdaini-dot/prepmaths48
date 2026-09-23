@@ -150,3 +150,28 @@ export const subscriptionRequestSchema = z.object({
   plan: z.enum(PLANS),
   proofUrl: z.string().optional().nullable(),
 });
+
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Paiement manuel saisi par l'admin (virement, espèces…). */
+export const recordPaymentSchema = z
+  .object({
+    userId: z.string().min(1, "Choisis un élève"),
+    plan: z.enum(["COURS", "CONCOURS"]),
+    amount: z.coerce.number().positive("Montant invalide").max(100000), // en MAD
+    paidAt: z.string().regex(ISO_DAY, "Date de paiement invalide"),
+    endDate: z.string().regex(ISO_DAY, "Date de fin obligatoire"),
+    note: z.string().max(200).optional().nullable(),
+  })
+  .refine((d) => d.endDate > d.paidAt, {
+    message: "La date de fin doit être postérieure au paiement",
+    path: ["endDate"],
+  });
+
+/** Modification d'un abonnement par l'admin (statut et/ou date de fin). */
+export const updateSubscriptionSchema = z
+  .object({
+    status: z.enum(["PENDING", "ACTIVE", "EXPIRED", "CANCELLED", "REJECTED"]).optional(),
+    endDate: z.string().regex(ISO_DAY, "Date de fin invalide").optional(),
+  })
+  .refine((d) => d.status !== undefined || d.endDate !== undefined, { message: "Rien à modifier" });

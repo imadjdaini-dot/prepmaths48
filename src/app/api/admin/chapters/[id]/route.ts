@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { guardAdmin } from "@/lib/admin-guard";
 import { prisma } from "@/lib/prisma";
 import { chapterSchema } from "@/lib/validations";
@@ -14,17 +15,33 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 
   const parsed = chapterSchema.partial().safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: "Invalide" }, { status: 400 });
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalide" }, { status: 400 });
+  }
   const d = parsed.data;
+
+  const existing = await prisma.chapter.findUnique({ where: { id: params.id }, select: { id: true } });
+  if (!existing) return NextResponse.json({ error: "Introuvable" }, { status: 404 });
+
+  // Changement de cours parent : le cours cible doit exister.
+  if (d.courseId !== undefined) {
+    const course = await prisma.course.findUnique({ where: { id: d.courseId }, select: { id: true } });
+    if (!course) return NextResponse.json({ error: "Cours introuvable" }, { status: 400 });
+  }
+
   await prisma.chapter.update({
     where: { id: params.id },
     data: {
+      ...(d.courseId !== undefined ? { courseId: d.courseId } : {}),
       ...(d.title !== undefined ? { title: d.title } : {}),
       ...(d.description !== undefined ? { description: d.description || null } : {}),
       ...(d.order !== undefined ? { order: d.order } : {}),
       ...(d.isPublished !== undefined ? { isPublished: d.isPublished } : {}),
     },
   });
+  revalidatePath("/admin/chapters");
+  revalidatePath("/admin/lessons");
+  revalidatePath("/admin/courses", "layout");
   return NextResponse.json({ ok: true });
 }
 

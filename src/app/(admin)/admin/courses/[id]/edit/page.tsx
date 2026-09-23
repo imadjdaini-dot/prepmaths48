@@ -3,10 +3,11 @@ import { notFound } from "next/navigation";
 import { ChevronLeft, PlayCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { CourseForm } from "@/components/admin/course-form";
-import { InlineCreate } from "@/components/admin/inline-create";
+import { InlineCreate, InlineEdit } from "@/components/admin/inline-create";
 import { PublishToggle } from "@/components/admin/publish-toggle";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { formatDuration } from "@/lib/utils";
+import { chapterFields, lessonFields } from "@/lib/admin-fields";
 
 export default async function EditCoursePage({ params }: { params: { id: string } }) {
   const course = await prisma.course.findUnique({
@@ -19,6 +20,16 @@ export default async function EditCoursePage({ params }: { params: { id: string 
     },
   });
   if (!course) notFound();
+
+  // Options des sélecteurs parent pour l'édition (déplacer un chapitre / une séance).
+  const allCourses = await prisma.course.findMany({
+    orderBy: { order: "asc" },
+    select: { id: true, title: true, chapters: { orderBy: { order: "asc" }, select: { id: true, title: true } } },
+  });
+  const courseOptions = allCourses.map((c) => ({ value: c.id, label: c.title }));
+  const chapterOptions = allCourses.flatMap((c) =>
+    c.chapters.map((ch) => ({ value: ch.id, label: `${c.title} — ${ch.title}` }))
+  );
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -97,6 +108,11 @@ export default async function EditCoursePage({ params }: { params: { id: string 
                     { name: "isPublished", label: "Publié", type: "checkbox", defaultValue: true },
                   ]}
                 />
+                <InlineEdit
+                  title={`Modifier le chapitre « ${ch.title} »`}
+                  endpoint={`/api/admin/chapters/${ch.id}`}
+                  fields={chapterFields(courseOptions, ch)}
+                />
                 <ConfirmDelete endpoint={`/api/admin/chapters/${ch.id}`} iconOnly confirmText={`Supprimer le chapitre « ${ch.title} » ?`} />
               </div>
             </div>
@@ -111,6 +127,11 @@ export default async function EditCoursePage({ params }: { params: { id: string 
                   {l.isFreePreview && <span className="badge badge-free">Aperçu</span>}
                   <span className="mono text-[11px] text-muted">{formatDuration(l.duration)}</span>
                   <PublishToggle endpoint={`/api/admin/lessons/${l.id}`} initial={l.isPublished} />
+                  <InlineEdit
+                    title={`Modifier la séance « ${l.title} »`}
+                    endpoint={`/api/admin/lessons/${l.id}`}
+                    fields={lessonFields(chapterOptions, l)}
+                  />
                   <ConfirmDelete endpoint={`/api/admin/lessons/${l.id}`} iconOnly confirmText={`Supprimer la séance « ${l.title} » ?`} />
                 </li>
               ))}
