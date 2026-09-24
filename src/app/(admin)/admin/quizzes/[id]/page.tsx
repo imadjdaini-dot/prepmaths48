@@ -2,9 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { InlineCreate } from "@/components/admin/inline-create";
+import { InlineCreate, InlineEdit } from "@/components/admin/inline-create";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { EmptyState } from "@/components/ui/empty-state";
+import { questionFields } from "@/lib/admin-fields";
 import { DIFFICULTY_LABELS } from "@/types";
 
 export default async function AdminQuizQuestionsPage({
@@ -34,29 +35,7 @@ export default async function AdminQuizQuestionsPage({
         endpoint="/api/admin/questions"
         fields={[
           { name: "quizId", label: "quizId", type: "text", defaultValue: quiz.id, colSpan: 2 },
-          { name: "statement", label: "Énoncé", type: "textarea", required: true },
-          { name: "optionA", label: "Option A", required: true },
-          { name: "optionB", label: "Option B", required: true },
-          { name: "optionC", label: "Option C" },
-          { name: "optionD", label: "Option D" },
-          { name: "optionE", label: "Option E" },
-          {
-            name: "correctAnswer",
-            label: "Bonne réponse",
-            type: "select",
-            required: true,
-            options: ["A", "B", "C", "D", "E"].map((x) => ({ value: x, label: x })),
-          },
-          {
-            name: "difficulty",
-            label: "Difficulté",
-            type: "select",
-            defaultValue: "MOYEN",
-            options: Object.entries(DIFFICULTY_LABELS).map(([v, l]) => ({ value: v, label: l })),
-          },
-          { name: "explanation", label: "Explication", type: "textarea" },
-          { name: "tip", label: "Astuce", colSpan: 2 },
-          { name: "order", label: "Ordre", type: "number", defaultValue: quiz.questions.length },
+          ...questionFields(undefined, quiz.questions.length),
         ]}
       />
 
@@ -70,6 +49,11 @@ export default async function AdminQuizQuestionsPage({
                 <span className="mono text-[12px] text-muted">Q{i + 1}</span>
                 <p className="flex-1 font-medium">{q.statement}</p>
                 <span className="badge badge-new">{DIFFICULTY_LABELS[q.difficulty]}</span>
+                <InlineEdit
+                  title={`Modifier la question Q${i + 1}`}
+                  endpoint={`/api/admin/questions/${q.id}`}
+                  fields={questionFields(q)}
+                />
                 <ConfirmDelete endpoint={`/api/admin/questions/${q.id}`} iconOnly confirmText="Supprimer cette question ?" />
               </div>
               <ul className="mono mt-2 space-y-0.5 text-[13px] text-ink-2">
