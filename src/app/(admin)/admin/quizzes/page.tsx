@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { HelpCircle, Settings2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
-import { InlineCreate } from "@/components/admin/inline-create";
+import { InlineCreate, InlineEdit } from "@/components/admin/inline-create";
 import { PublishToggle } from "@/components/admin/publish-toggle";
 import { ConfirmDelete } from "@/components/ui/confirm-delete";
 import { EmptyState } from "@/components/ui/empty-state";
+import { quizFields } from "@/lib/admin-fields";
 
 export default async function AdminQuizzesPage() {
   const [quizzes, courses] = await Promise.all([
@@ -18,6 +19,7 @@ export default async function AdminQuizzesPage() {
     }),
     prisma.course.findMany({ orderBy: { order: "asc" }, select: { id: true, title: true } }),
   ]);
+  const courseOptions = courses.map((c) => ({ value: c.id, label: c.title }));
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
@@ -30,18 +32,7 @@ export default async function AdminQuizzesPage() {
         title="Nouveau quiz"
         buttonLabel="Nouveau quiz"
         endpoint="/api/admin/quizzes"
-        fields={[
-          { name: "title", label: "Titre", required: true, colSpan: 2 },
-          { name: "description", label: "Description", type: "textarea" },
-          {
-            name: "courseId",
-            label: "Cours associé (optionnel)",
-            type: "select",
-            colSpan: 2,
-            options: [{ value: "", label: "— Aucun —" }, ...courses.map((c) => ({ value: c.id, label: c.title }))],
-          },
-          { name: "isPublished", label: "Publié", type: "checkbox", defaultValue: true },
-        ]}
+        fields={quizFields(courseOptions)}
       />
 
       {quizzes.length === 0 ? (
@@ -64,6 +55,11 @@ export default async function AdminQuizzesPage() {
                 <Settings2 className="h-4 w-4" /> Questions
               </Link>
               <PublishToggle endpoint={`/api/admin/quizzes/${q.id}`} initial={q.isPublished} />
+              <InlineEdit
+                title={`Modifier « ${q.title} »`}
+                endpoint={`/api/admin/quizzes/${q.id}`}
+                fields={quizFields(courseOptions, q)}
+              />
               <ConfirmDelete endpoint={`/api/admin/quizzes/${q.id}`} iconOnly confirmText={`Supprimer « ${q.title} » ?`} />
             </div>
           ))}
