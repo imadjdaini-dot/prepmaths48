@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { LEVELS, TRACKS, isTrackForLevel } from "@/types";
+import { BULK_STUDENTS_MAX } from "@/lib/constants";
 
 const PROVIDERS = ["LOCAL", "BUNNY", "CLOUDFLARE", "VIMEO", "YOUTUBE"] as const;
 const RES_TYPES = ["PDF", "DOC", "IMAGE", "OTHER"] as const;
@@ -34,6 +35,25 @@ export const createStudentSchema = z
   })
   .refine(levelTrackCoherent, LEVEL_TRACK_ERROR);
 export type CreateStudentInput = z.infer<typeof createStudentSchema>;
+
+/** Une ligne de l'import groupé (validée ligne par ligne, sans bloquer les autres). */
+export const bulkStudentRowSchema = z.object({
+  name: z.string().trim().min(2, "Nom trop court").max(80, "Nom trop long"),
+  email: z.string().trim().toLowerCase().email("Email invalide"),
+});
+
+/** Import groupé : même niveau/branche et même mot de passe pour toute la liste. */
+export const bulkStudentsSchema = z
+  .object({
+    password: z.string().min(8, "8 caractères minimum"),
+    concoursAccess: z.boolean().optional(),
+    ...levelTrackFields,
+    rows: z
+      .array(z.object({ name: z.string().default(""), email: z.string().default("") }))
+      .min(1, "Aucun élève à importer")
+      .max(BULK_STUDENTS_MAX, `${BULK_STUDENTS_MAX} élèves maximum par import`),
+  })
+  .refine(levelTrackCoherent, LEVEL_TRACK_ERROR);
 
 export const loginSchema = z.object({
   email: z.string().email("Email invalide"),

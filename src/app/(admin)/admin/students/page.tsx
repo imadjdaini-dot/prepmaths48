@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { StudentActions } from "@/components/admin/student-actions";
+import { BulkStudentImport } from "@/components/admin/bulk-student-import";
 import { StudentCreateForm } from "@/components/admin/student-create-form";
 import { StudentLevelEditor } from "@/components/admin/student-level-editor";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -32,7 +33,10 @@ export default async function AdminStudentsPage() {
         </p>
       </div>
 
-      <StudentCreateForm />
+      <div className="flex flex-wrap items-start gap-2">
+        <StudentCreateForm />
+        <BulkStudentImport />
+      </div>
 
       {students.length === 0 ? (
         <EmptyState
