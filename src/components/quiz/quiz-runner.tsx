@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { DIFFICULTY_LABELS } from "@/types";
+import { MathText } from "@/components/ui/math-text";
 
 export type QuizQuestion = {
   id: string;
@@ -132,7 +133,9 @@ export function QuizRunner({
               <div key={qq.id} className="card p-5 shadow-sm">
                 <div className="flex items-start gap-2">
                   <span className="mono mt-0.5 text-[12px] text-muted">Q{i + 1}</span>
-                  <p className="flex-1 font-medium">{qq.statement}</p>
+                  <MathText as="p" className="flex-1 font-medium">
+                    {qq.statement}
+                  </MathText>
                   {r?.isCorrect ? (
                     <CheckCircle2 className="h-5 w-5 shrink-0 text-green" />
                   ) : (
@@ -155,20 +158,24 @@ export function QuizRunner({
                         }`}
                       >
                         <span className="mono font-bold">{o.key}</span>
-                        <span className="flex-1">{o.text}</span>
+                        <MathText as="span" className="flex-1">
+                          {o.text}
+                        </MathText>
                         {isCorrect && <span className="text-[11px] font-bold text-green">Bonne réponse</span>}
                       </div>
                     );
                   })}
                 </div>
                 {r?.explanation && (
-                  <p className="mt-3 rounded-md bg-surface-2 p-3 text-[13.5px] text-ink-2">
-                    <b>Explication :</b> {r.explanation}
-                  </p>
+                  <div className="mt-3 rounded-md bg-surface-2 p-3 text-[13.5px] text-ink-2">
+                    <b>Explication :</b>{" "}
+                    <MathText as="span">{r.explanation}</MathText>
+                  </div>
                 )}
                 {r?.tip && (
                   <p className="mt-2 flex items-start gap-2 text-[13px] text-accent-2">
-                    <Lightbulb className="h-4 w-4 shrink-0" /> {r.tip}
+                    <Lightbulb className="h-4 w-4 shrink-0" />
+                    <MathText as="span">{r.tip}</MathText>
                   </p>
                 )}
               </div>
@@ -193,7 +200,9 @@ export function QuizRunner({
       </div>
 
       <div className="card p-6 shadow-sm">
-        <h2 className="font-display text-[20px] font-semibold leading-snug">{q.statement}</h2>
+        <h2 className="font-display text-[20px] font-semibold leading-snug">
+          <MathText as="span">{q.statement}</MathText>
+        </h2>
         <div className="mt-5 space-y-2.5">
           {q.options.map((o) => {
             const selected = answers[q.id] === o.key;
@@ -214,7 +223,7 @@ export function QuizRunner({
                 >
                   {o.key}
                 </span>
-                {o.text}
+                <MathText as="span">{o.text}</MathText>
               </button>
             );
           })}
