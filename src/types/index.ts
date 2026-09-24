@@ -77,6 +77,3 @@ export const DIFFICULTY_LABELS: Record<string, string> = {
   MOYEN: "Moyen",
   DIFFICILE: "Difficile",
 };
-
-/** Nombre maximal d'élèves par import groupé (API + formulaire admin). */
-export const BULK_STUDENTS_MAX = 100;

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { BULK_STUDENTS_MAX, LEVELS, TRACKS, isTrackForLevel } from "@/types";
+import { LEVELS, TRACKS, isTrackForLevel } from "@/types";
+import { BULK_STUDENTS_MAX } from "@/lib/constants";
 
 const PROVIDERS = ["LOCAL", "BUNNY", "CLOUDFLARE", "VIMEO", "YOUTUBE"] as const;
 const RES_TYPES = ["PDF", "DOC", "IMAGE", "OTHER"] as const;

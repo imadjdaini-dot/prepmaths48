@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Users, X, Loader2, Wand2, Copy, Check } from "lucide-react";
 import { LevelTrackFields } from "@/components/forms/level-track-fields";
 import { generatePassword } from "@/lib/generate-password";
-import { BULK_STUDENTS_MAX } from "@/types";
+import { BULK_STUDENTS_MAX } from "@/lib/constants";
 
 type Row = { name: string; email: string };
 type Result = {
