@@ -109,6 +109,7 @@ model User {
   quizAttempts   QuizAttempt[]
   notes          Note[]
   sessions       Session[] // <--- إغناء العلاقة مع الجلسات
+  dailyChallengeAttempts DailyChallengeAttempt[]
 }
 
 // ----------------------------------------------------------------
@@ -216,6 +217,7 @@ model Quiz {
   course    Course?       @relation(fields: [courseId], references: [id], onDelete: SetNull)
   questions Question[]
   attempts  QuizAttempt[]
+  dailyChallenges DailyChallenge[]
 }
 
 model Question {
@@ -358,4 +360,37 @@ model LiveSession {
   isPublished     Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+// ----------------------------------------------------------------
+// Défi du jour (points + badges de régularité, aucune valeur monétaire)
+// ----------------------------------------------------------------
+// `date` = midi heure du Maroc du jour visé (dayNoon, voir school-year.ts).
+// PostgreSQL considère deux NULL comme différents : @@unique n'empêche donc pas
+// deux défis avec le même ciblage partiellement NULL le même jour — l'API admin
+// vérifie ce cas elle-même.
+model DailyChallenge {
+  id        String   @id @default(cuid())
+  date      DateTime
+  quizId    String
+  quiz      Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  level     Level? // null = tous niveaux
+  track     Track? // null = toutes les branches du niveau
+  createdAt DateTime @default(now())
+  attempts  DailyChallengeAttempt[]
+
+  @@unique([date, level, track])
+}
+
+model DailyChallengeAttempt {
+  id               String         @id @default(cuid())
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dailyChallengeId String
+  dailyChallenge   DailyChallenge @relation(fields: [dailyChallengeId], references: [id], onDelete: Cascade)
+  score            Int // pourcentage 0-100
+  pointsEarned     Int
+  createdAt        DateTime       @default(now())
+
+  @@unique([userId, dailyChallengeId])
 }

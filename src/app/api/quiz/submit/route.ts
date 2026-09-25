@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { quizSubmissionSchema } from "@/lib/validations";
 import { canSeeCourse, getAudience } from "@/lib/content-access";
 import { canAccessLesson, canAccessPremiumCourse } from "@/lib/permissions";
+import { gradeQuiz } from "@/lib/quiz-grading";
 import type { SessionUser } from "@/types";
 
 /**
@@ -56,24 +57,7 @@ export async function POST(req: Request) {
   }
   if (!allowed) return NextResponse.json({ error: "Accès refusé" }, { status: 403 });
 
-  const byId = new Map(quiz.questions.map((q) => [q.id, q]));
-  let correct = 0;
-  const graded = answers.map((a) => {
-    const q = byId.get(a.questionId);
-    const isCorrect = Boolean(q && a.selectedAnswer === q.correctAnswer);
-    if (isCorrect) correct++;
-    return {
-      questionId: a.questionId,
-      selectedAnswer: a.selectedAnswer,
-      isCorrect,
-      correctAnswer: q?.correctAnswer ?? null,
-      explanation: q?.explanation ?? null,
-      tip: q?.tip ?? null,
-    };
-  });
-
-  const total = quiz.questions.length;
-  const score = total === 0 ? 0 : Math.round((correct / total) * 100);
+  const { graded, correct, total, score } = gradeQuiz(quiz.questions, answers);
 
   const attempt = await prisma.quizAttempt.create({
     data: {

@@ -156,6 +156,20 @@ export const quizSubmissionSchema = z.object({
   ),
 });
 
+/** Soumission du défi du jour : mêmes réponses qu'un quiz, le quiz découle du défi. */
+export const dailyChallengeSubmissionSchema = quizSubmissionSchema
+  .omit({ quizId: true })
+  .extend({ dailyChallengeId: z.string().min(1) });
+
+/** Création d'un défi du jour par l'admin (level/track vides = défi général). */
+export const dailyChallengeSchema = z
+  .object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date invalide"),
+    quizId: z.string().min(1, "Choisis un quiz"),
+    ...levelTrackFields,
+  })
+  .refine(levelTrackCoherent, LEVEL_TRACK_ERROR);
+
 export const liveSessionSchema = z.object({
   title: z.string().min(2).max(160),
   description: z.string().optional().nullable(),

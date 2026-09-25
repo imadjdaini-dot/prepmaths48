@@ -10,6 +10,7 @@ const primary: NavItem[] = [
   { href: "/live", label: "Direct", icon: "live" },
   { href: "/courses", label: "Mes cours", icon: "courses" },
   { href: "/progress", label: "Mon parcours", icon: "route" },
+  { href: "/classement", label: "Classement", icon: "trophy" },
   { href: "/catalogue", label: "Catalogue", icon: "catalogue" },
 ];
 

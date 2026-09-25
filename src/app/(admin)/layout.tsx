@@ -13,6 +13,7 @@ const primary: NavItem[] = [
   { href: "/admin/resources", label: "Ressources PDF", icon: "resources" },
   { href: "/admin/quizzes", label: "Quiz", icon: "quiz" },
   { href: "/admin/live", label: "Sessions live", icon: "live" },
+  { href: "/admin/daily-challenge", label: "Défi du jour", icon: "target" },
 ];
 
 const secondary: NavItem[] = [
