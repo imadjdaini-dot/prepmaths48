@@ -88,7 +88,12 @@ export function MathText({
         return (
           <span key={i} dir="ltr" style={{ unicodeBidi: "isolate" }}>
             {seg.block ? (
-              <BlockMath math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
+              // Conteneur de défilement : une formule en bloc trop large (mobile)
+              // défile horizontalement au lieu de déborder de l'écran.
+              // <span> en display:block (et non <div>) pour rester valide dans un <p>.
+              <span className="block max-w-full overflow-x-auto overflow-y-hidden py-1">
+                <BlockMath math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
+              </span>
             ) : (
               <InlineMath math={seg.value} renderError={() => <MathError>{seg.value}</MathError>} />
             )}
