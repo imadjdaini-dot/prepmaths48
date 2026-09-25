@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   CheckCircle2,
@@ -36,16 +37,20 @@ type SubmitResponse = {
   correct: number;
   total: number;
   results: GradedResult[];
+  pointsEarned?: number; // défi du jour uniquement
 };
 
 export function QuizRunner({
   quizId,
   title,
   questions,
+  dailyChallengeId,
 }: {
   quizId: string;
   title: string;
   questions: QuizQuestion[];
+  /** Présent = défi du jour : soumission unique vers /api/daily-challenge/submit. */
+  dailyChallengeId?: string;
 }) {
   const router = useRouter();
   const [current, setCurrent] = useState(0);
@@ -70,11 +75,11 @@ export function QuizRunner({
     }
     setSubmitting(true);
     try {
-      const res = await fetch("/api/quiz/submit", {
+      const res = await fetch(dailyChallengeId ? "/api/daily-challenge/submit" : "/api/quiz/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          quizId,
+          ...(dailyChallengeId ? { dailyChallengeId } : { quizId }),
           duration: Math.round((Date.now() - startedAt) / 1000),
           answers: questions.map((qq) => ({
             questionId: qq.id,
@@ -118,11 +123,20 @@ export function QuizRunner({
             {result.correct} bonne(s) réponse(s) sur {result.total}.{" "}
             {passed ? "Bravo, c'est validé !" : "Continue, tu y es presque."}
           </p>
-          <div className="mt-2 flex gap-2">
-            <button onClick={restart} className="btn btn-ghost btn-sm">
-              <RotateCcw className="h-4 w-4" /> Recommencer
-            </button>
-          </div>
+          {dailyChallengeId ? (
+            <div className="mt-2 flex flex-col items-center gap-2">
+              <p className="font-semibold text-accent-2">+{result.pointsEarned ?? 0} points</p>
+              <Link href="/classement" className="btn btn-ghost btn-sm">
+                Voir le classement
+              </Link>
+            </div>
+          ) : (
+            <div className="mt-2 flex gap-2">
+              <button onClick={restart} className="btn btn-ghost btn-sm">
+                <RotateCcw className="h-4 w-4" /> Recommencer
+              </button>
+            </div>
+          )}
         </div>
 
         <h3 className="font-display text-[18px] font-semibold">Correction</h3>

@@ -18,6 +18,8 @@ import {
   Settings,
   MonitorSmartphone,
   Radio,
+  Trophy,
+  Target,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,6 +41,8 @@ const ICONS = {
   settings: Settings,
   devices: MonitorSmartphone,
   live: Radio,
+  trophy: Trophy,
+  target: Target,
 } satisfies Record<string, LucideIcon>;
 
 export type IconKey = keyof typeof ICONS;

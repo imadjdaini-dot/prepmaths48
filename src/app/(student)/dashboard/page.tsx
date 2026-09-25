@@ -7,6 +7,7 @@ import {
   Trophy,
   PlayCircle,
   ArrowRight,
+  Target,
 } from "lucide-react";
 import { requireUser } from "@/lib/permissions";
 import { getDashboardData } from "@/lib/student";
@@ -18,6 +19,8 @@ import { CourseCard } from "@/components/courses/course-card";
 import { getCourseCards } from "@/lib/queries";
 import { getAudience } from "@/lib/content-access";
 import { formatDuration } from "@/lib/utils";
+import { prisma } from "@/lib/prisma";
+import { findTodayChallenge } from "@/lib/daily-challenge";
 
 export default async function DashboardPage() {
   const sessionUser = await requireUser();
@@ -49,6 +52,16 @@ export default async function DashboardPage() {
   );
   const firstName = (data.user?.name ?? sessionUser.name ?? "Élève").split(" ")[0];
 
+  // Défi du jour : carte masquée s'il n'y en a pas pour le profil de l'élève.
+  const challenge = audience ? await findTodayChallenge(audience) : null;
+  const challengeAttempt = challenge
+    ? await prisma.dailyChallengeAttempt.findUnique({
+        where: {
+          userId_dailyChallengeId: { userId: sessionUser.id, dailyChallengeId: challenge.id },
+        },
+      })
+    : null;
+
   return (
     <div className="mx-auto max-w-6xl space-y-7">
       {/* En-tête */}
@@ -71,6 +84,36 @@ export default async function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Défi du jour */}
+      {challenge && (
+        <section className="card flex flex-col gap-4 p-5 shadow-sm sm:flex-row sm:items-center">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-2">
+            <Target className="h-6 w-6" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <span className="mono text-[10px] uppercase tracking-wider text-accent-2">
+              Défi du jour
+            </span>
+            <h3 className="mt-1 font-display text-[18px] font-semibold">{challenge.quiz.title}</h3>
+            <p className="text-sm text-muted">
+              Une seule tentative · 10 points + bonus selon ton score
+            </p>
+          </div>
+          {challengeAttempt ? (
+            <Link href="/classement" className="shrink-0 text-[15px] font-semibold text-green">
+              Terminé ✅ — {challengeAttempt.pointsEarned} points
+            </Link>
+          ) : (
+            <ButtonLink
+              href={`/quiz/${challenge.quiz.id}?dailyChallengeId=${challenge.id}`}
+              className="shrink-0"
+            >
+              Commencer le défi <ArrowRight className="h-4 w-4" />
+            </ButtonLink>
+          )}
+        </section>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
