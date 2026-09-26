@@ -2,7 +2,7 @@
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { randomUUID } from "crypto";
+import { createHash, randomUUID } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { MAX_DEVICES, describeDevice } from "@/lib/device";
 import type { Role } from "@prisma/client";
@@ -64,6 +64,11 @@ export const authOptions: NextAuthOptions = {
         if (user.role !== "ADMIN") {
           const uaHeader = req?.headers?.["user-agent"];
           const userAgent = typeof uaHeader === "string" ? uaHeader : undefined;
+          // بصمة الجهاز: hash للـ User-Agent الخام (وليس describeDevice الذي قد يدمج جهازين مختلفين)
+          // بدون User-Agent لا نستطيع التعرف على الجهاز → يُحسب جهازاً جديداً
+          const userAgentHash = userAgent
+            ? createHash("sha256").update(userAgent).digest("hex")
+            : null;
 
           let newToken: string | null = null;
 
@@ -81,11 +86,26 @@ export const authOptions: NextAuthOptions = {
                   },
                 });
 
+                // 2. نفس الجهاز (نفس User-Agent) سبق له الدخول → نجدد جلسته بدل حسابه جهازاً جديداً
+                //    (التوكن القديم لهذا الجهاز يصبح غير صالح)
+                if (userAgentHash) {
+                  const token = randomUUID();
+                  const { count } = await tx.session.updateMany({
+                    where: { userId: user.id, userAgentHash },
+                    data: {
+                      sessionToken: token,
+                      createdAt: new Date(),
+                      deviceInfo: describeDevice(userAgent),
+                    },
+                  });
+                  if (count > 0) return token;
+                }
+
                 const activeCount = await tx.session.count({
                   where: { userId: user.id },
                 });
 
-                // 2. وصل للحد الأقصى ويحاول جهاز جديد الدخول → تجميد الحساب
+                // 3. وصل للحد الأقصى ويحاول جهاز جديد الدخول → تجميد الحساب
                 if (activeCount >= MAX_DEVICES) {
                   await tx.user.update({
                     where: { id: user.id },
@@ -100,13 +120,14 @@ export const authOptions: NextAuthOptions = {
                   return null; // لا نرمي خطأ هنا حتى لا يُلغى التجميد
                 }
 
-                // 3. أقل من الحد → إنشاء جلسة لهذا الجهاز مع وصفه
+                // 4. أقل من الحد → إنشاء جلسة لهذا الجهاز مع وصفه وبصمته
                 const token = randomUUID();
                 await tx.session.create({
                   data: {
                     userId: user.id,
                     sessionToken: token,
                     deviceInfo: describeDevice(userAgent),
+                    userAgentHash,
                   },
                 });
                 return token;
